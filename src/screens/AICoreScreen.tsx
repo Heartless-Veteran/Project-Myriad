@@ -285,7 +285,8 @@ const AICoreScreen: React.FC = () => {
           </View>
           <ContentList
             data={artStyleMatches.map((match: any) => match.item)}
-            onItemPress={(item: any) => console.log('Open similar content:', item.title)}
+            data={artStyleMatches.map((match: ArtStyleMatch) => match.item)}
+            onItemPress={(item: ArtStyleItem) => console.log('Open similar content:', item.title)}
             style={styles.matchesList}
           />
         </View>
