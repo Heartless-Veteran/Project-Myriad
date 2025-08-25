@@ -24,8 +24,8 @@ jest.mock('@react-navigation/stack', () => ({
 
 jest.mock('@react-navigation/bottom-tabs', () => ({
   createBottomTabNavigator: () => ({
-    Navigator: ({ children }: any) => children,
-    Screen: ({ name, component }: any) => {
+    Navigator: ({ children }: { children: React.ReactNode }) => children,
+    Screen: ({ name, component }: { name: string; component: React.ComponentType<any> }) => {
       const Component = component;
       return <Component testID={`tab-${name}`} />;
     },
