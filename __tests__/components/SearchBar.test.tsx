@@ -7,6 +7,14 @@ describe('SearchBar Component', () => {
   let consoleSpy: jest.SpyInstance;
   let warnings: string[] = [];
 
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     warnings = [];
     consoleSpy = jest.spyOn(console, 'warn').mockImplementation((message: string) => {
@@ -16,6 +24,8 @@ describe('SearchBar Component', () => {
 
   afterEach(() => {
     consoleSpy.mockRestore();
+    // Clear any pending timers to avoid Jest environment issues
+    jest.clearAllTimers();
   });
 
   const defaultProps = {
