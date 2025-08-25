@@ -18,15 +18,12 @@ const HomeScreen: React.FC = () => {
     navigation.navigate('Library');
   };
 
-  // These navigation functions have been removed as the screens are no longer in the navigation stack
   const handleBrowseOnline = () => {
-    // Temporarily navigate to Library instead
-    navigation.navigate('Library');
+    navigation.navigate('Browse');
   };
 
   const handleAICore = () => {
-    // Temporarily navigate to Settings instead
-    navigation.navigate('Settings');
+    navigation.navigate('AICore');
   };
 
   const recentItems = [
@@ -62,7 +59,7 @@ const HomeScreen: React.FC = () => {
               style={styles.actionButton}
             />
             <Button
-              title="Go to Library" // Changed from "Browse Online"
+              title="Browse Online"
               onPress={handleBrowseOnline}
               style={[styles.actionButton, styles.secondaryButton]}
             />
@@ -83,17 +80,17 @@ const HomeScreen: React.FC = () => {
         </View>
 
         <View style={styles.featuresSection}>
-          <Text style={styles.sectionTitle}>Settings & Features</Text>
+          <Text style={styles.sectionTitle}>Features</Text>
           <TouchableOpacity style={styles.featureCard} onPress={handleAICore}>
+            <Text style={styles.featureTitle}>AI Core</Text>
+            <Text style={styles.featureDescription}>
+              Access AI-powered tools for your media
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.featureCard} onPress={() => navigation.navigate('Settings')}>
             <Text style={styles.featureTitle}>App Settings</Text>
             <Text style={styles.featureDescription}>
               Configure application preferences and options
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.featureCard} onPress={handleImportMedia}>
-            <Text style={styles.featureTitle}>Library Management</Text>
-            <Text style={styles.featureDescription}>
-              Organize and manage your local media collection
             </Text>
           </TouchableOpacity>
         </View>
