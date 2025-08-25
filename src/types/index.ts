@@ -142,7 +142,8 @@ export interface UserPreferences {
   offlineMode: boolean;
   genres: string[];
   // Phase 2 enhancements
-  readingMode: 'single' | 'double' | 'webtoon';
+  readingMode: 'single' | 'double' | 'webtoon' | 'continuous' | 'fit-width' | 'fit-height';
+  readingDirection: 'ltr' | 'rtl' | 'vertical';
   videoQuality: 'auto' | 'low' | 'medium' | 'high' | 'ultra';
   autoDownload: boolean;
   notifications: NotificationSettings;
@@ -461,4 +462,66 @@ export interface SourceSettings {
   defaultSource: string;
   rateLimit: number;
   autoRefresh: boolean;
+}
+
+// Collections System Types
+export interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  coverImage?: string;
+  contentIds: string[];
+  contentType: 'manga' | 'anime' | 'mixed';
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+  sortOrder: number;
+  tags?: string[];
+}
+
+export interface CollectionItem {
+  collectionId: string;
+  contentId: string;
+  contentType: 'manga' | 'anime';
+  addedAt: string;
+  position: number;
+}
+
+// Reading Statistics Types
+export interface ReadingSession {
+  id: string;
+  contentId: string;
+  contentType: 'manga' | 'anime';
+  chapterId?: string;
+  episodeId?: string;
+  startTime: string;
+  endTime: string;
+  pagesRead?: number;
+  duration: number; // minutes
+  completed: boolean;
+}
+
+export interface ReadingStatistics {
+  totalReadingSessions: number;
+  totalReadingTime: number; // minutes
+  totalWatchingTime: number; // minutes
+  averageSessionTime: number; // minutes
+  streakDays: number;
+  longestStreak: number;
+  booksCompleted: number;
+  chaptersRead: number;
+  episodesWatched: number;
+  favoriteGenres: Array<{ genre: string; count: number }>;
+  readingTimeByDay: Array<{ date: string; minutes: number }>;
+  completedThisWeek: number;
+  completedThisMonth: number;
+  completedThisYear: number;
+  lastUpdated: string;
+}
+
+export interface DailyReadingGoal {
+  targetMinutes: number;
+  currentMinutes: number;
+  date: string;
+  achieved: boolean;
 }

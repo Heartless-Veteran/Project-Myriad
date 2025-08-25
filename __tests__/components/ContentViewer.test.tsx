@@ -49,6 +49,7 @@ describe('ContentViewer Component', () => {
 
   const defaultProps = {
     title: 'Test Content',
+    contentId: 'test-content-id',
     onClose: jest.fn(),
     onProgressUpdate: jest.fn(),
   };

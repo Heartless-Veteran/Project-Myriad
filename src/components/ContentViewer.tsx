@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  ScrollView,
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
@@ -12,19 +13,24 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { MangaChapter, AnimeEpisode } from '../types';
+import { StatisticsService } from '../services/StatisticsService';
 
 const { width, height } = Dimensions.get('window');
+const statisticsService = StatisticsService.getInstance();
 
 type ContentType = 'manga' | 'anime';
+type ReadingMode = 'single' | 'double' | 'webtoon' | 'continuous' | 'fit-width' | 'fit-height';
 
 interface ContentViewerProps {
   contentType: ContentType;
   title: string;
   content: MangaChapter | AnimeEpisode;
+  contentId: string;
   onClose: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
   readingDirection?: 'ltr' | 'rtl' | 'vertical';
+  readingMode?: ReadingMode;
   onProgressUpdate: (progress: number) => void;
 }
 
@@ -32,16 +38,20 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
   contentType,
   title,
   content,
+  contentId,
   onClose,
   onNext,
   onPrevious,
   readingDirection = 'ltr',
+  readingMode = 'single',
   onProgressUpdate,
 }) => {
   const [showControls, setShowControls] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [sessionId, setSessionId] = useState<string>('');
   const flatListRef = useRef<FlatList>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // Determine if we're viewing manga or anime
   const isManga = contentType === 'manga';
@@ -73,6 +83,36 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
     }
   }, [content]);
 
+  // Start reading session on component mount
+  useEffect(() => {
+    const startSession = async () => {
+      try {
+        const newSessionId = await statisticsService.startReadingSession(
+          contentId,
+          contentType,
+          mangaChapter?.id,
+          animeEpisode?.id
+        );
+        setSessionId(newSessionId);
+      } catch (error) {
+        console.warn('Failed to start reading session:', error);
+      }
+    };
+
+    startSession();
+
+    // End session on unmount
+    return () => {
+      if (sessionId) {
+        statisticsService.endReadingSession(
+          sessionId,
+          mangaChapter?.pages.length,
+          false // We don't know if it was completed
+        ).catch(error => console.warn('Failed to end reading session:', error));
+      }
+    };
+  }, [contentId, contentType, mangaChapter?.id, animeEpisode?.id]);
+
   const toggleControls = () => {
     setShowControls(!showControls);
   };
@@ -91,17 +131,45 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
     }
   };
 
+  const getPageDimensions = (mode: ReadingMode) => {
+    const resizeMode = 'contain'; // FastImage.resizeMode.contain equivalent
+    switch (mode) {
+      case 'fit-width':
+        return { width, height: undefined, resizeMode };
+      case 'fit-height':
+        return { width: undefined, height, resizeMode };
+      case 'double':
+        return { width: width / 2, height, resizeMode };
+      default:
+        return { width, height, resizeMode };
+    }
+  };
+
   const renderMangaPage = ({ item, index }: { item: string; index: number }) => {
+    const { width: pageWidth, height: pageHeight, resizeMode } = getPageDimensions(readingMode);
+    
     return (
       <TouchableOpacity
         activeOpacity={1}
-        style={[styles.pageContainer, { width, height: isHorizontal ? height : undefined }]}
+        style={[
+          styles.pageContainer, 
+          { 
+            width: pageWidth || width, 
+            height: readingMode === 'webtoon' ? undefined : (pageHeight || height),
+            minHeight: readingMode === 'webtoon' ? height : undefined
+          }
+        ]}
         onPress={toggleControls}
       >
         <FastImage
-          source={{ uri: item, priority: FastImage.priority.normal }}
-          style={styles.pageImage}
-          resizeMode={FastImage.resizeMode.contain}
+          source={{ uri: item, priority: 'normal' }}
+          style={[
+            styles.pageImage,
+            readingMode === 'webtoon' && styles.webtoonImage,
+            readingMode === 'fit-width' && styles.fitWidthImage,
+            readingMode === 'fit-height' && styles.fitHeightImage
+          ]}
+          resizeMode={resizeMode}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
         />
@@ -112,6 +180,71 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
         )}
       </TouchableOpacity>
     );
+  };
+
+  const renderDoublePage = ({ item, index }: { item: string[]; index: number }) => {
+    return (
+      <View style={[styles.doublePageContainer, { width, height }]}>
+        {item.map((pageUri, pageIndex) => (
+          <TouchableOpacity
+            key={pageIndex}
+            activeOpacity={1}
+            style={styles.doublePageItem}
+            onPress={toggleControls}
+          >
+            <FastImage
+              source={{ uri: pageUri, priority: 'normal' }}
+              style={styles.doublePageImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  const renderContinuousScroll = () => {
+    return (
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.continuousScrollContainer}
+        showsVerticalScrollIndicator={false}
+        onScroll={(event) => {
+          const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+          const progress = (contentOffset.y + layoutMeasurement.height) / contentSize.height;
+          onProgressUpdate(Math.min(progress, 1));
+        }}
+        scrollEventThrottle={16}
+      >
+        {contentItems.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            activeOpacity={1}
+            style={styles.continuousPageContainer}
+            onPress={toggleControls}
+          >
+            <FastImage
+              source={{ uri: item, priority: 'normal' }}
+              style={styles.continuousPageImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    );
+  };
+
+  // Prepare data for double page mode
+  const prepareDoublePageData = (pages: string[]): string[][] => {
+    const doublePages: string[][] = [];
+    for (let i = 0; i < pages.length; i += 2) {
+      if (i + 1 < pages.length) {
+        doublePages.push([pages[i], pages[i + 1]]);
+      } else {
+        doublePages.push([pages[i]]);
+      }
+    }
+    return doublePages;
   };
 
   // For anime, we would render a video player component here
@@ -134,18 +267,35 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
       
       {/* Content Viewer */}
       {isManga ? (
-        <FlatList
-          ref={flatListRef}
-          data={reverseOrder ? [...contentItems].reverse() : contentItems}
-          renderItem={renderMangaPage}
-          keyExtractor={(_, index) => `page-${index}`}
-          horizontal={isHorizontal}
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        />
+        readingMode === 'continuous' ? (
+          renderContinuousScroll()
+        ) : readingMode === 'double' ? (
+          <FlatList
+            ref={flatListRef}
+            data={prepareDoublePageData(contentItems)}
+            renderItem={renderDoublePage}
+            keyExtractor={(_, index) => `double-page-${index}`}
+            horizontal={isHorizontal}
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          />
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={reverseOrder ? [...contentItems].reverse() : contentItems}
+            renderItem={renderMangaPage}
+            keyExtractor={(_, index) => `page-${index}`}
+            horizontal={isHorizontal && readingMode !== 'webtoon'}
+            pagingEnabled={readingMode !== 'webtoon'}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          />
+        )
       ) : (
         renderAnimePlayer()
       )}
@@ -201,6 +351,49 @@ const styles = StyleSheet.create({
   pageImage: {
     width: '100%',
     height: '100%',
+  },
+  webtoonImage: {
+    width: '100%',
+    height: undefined,
+    aspectRatio: undefined,
+  },
+  fitWidthImage: {
+    width: '100%',
+    height: undefined,
+    aspectRatio: undefined,
+  },
+  fitHeightImage: {
+    width: undefined,
+    height: '100%',
+    aspectRatio: undefined,
+  },
+  doublePageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  doublePageItem: {
+    flex: 1,
+    height: '100%',
+  },
+  doublePageImage: {
+    width: '100%',
+    height: '100%',
+  },
+  continuousScrollContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  continuousPageContainer: {
+    width: '100%',
+    minHeight: height * 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  continuousPageImage: {
+    width: '100%',
+    minHeight: height * 0.8,
   },
   videoContainer: {
     flex: 1,
