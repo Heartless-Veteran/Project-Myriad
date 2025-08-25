@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { Text, ViewStyle } from 'react-native';
 import ContentList, { ContentItem } from '../../src/components/ContentList';
 import { Manga, Anime } from '../../src/types';
 
+// Type definition for mock Card props based on actual Card component interface
 // Mock data for testing
 const mockMangaItems: Manga[] = [
   {
@@ -84,7 +85,7 @@ const mockAnimeItems: Anime[] = [
 jest.mock('../../src/components/Card', () => {
   const { View, Text, TouchableOpacity } = require('react-native');
   // Mock Card to match the real Card's behavior - TouchableOpacity when pressable, View when container
-  return function MockCard({ title, imageUrl, tags, progress, onPress, children, style }: any) {
+  return function MockCard({ title, imageUrl, tags, progress, onPress, children, style }: MockCardProps) {
     // If children are provided, render as container (like real Card)
     if (children) {
       return (
