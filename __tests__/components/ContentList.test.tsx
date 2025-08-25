@@ -63,6 +63,7 @@ const mockMangaItems: Manga[] = [
 
 // Mock the Card component since we're only testing ContentList
 jest.mock('../../src/components/Card', () => {
+  const { View } = require('react-native');
   return function MockCard({ children, style }: any) {
     return (
       <View testID="mock-card" style={style}>
@@ -93,31 +94,30 @@ describe('ContentList Component', () => {
 
   it('removes loading indicator after items are loaded', async () => {
     // Render with loading state
-    const { getByTestId, queryByTestId, rerender } = render(
+    const { getByText, queryByText, rerender } = render(
       <ContentList
         title="Test List"
         items={[]}
-        loading={true}
+        onItemPress={() => {}}
+        isLoading={true}
       />
     );
 
     // Assert loading indicator is present
-    expect(getByTestId('loading-indicator')).toBeTruthy();
+    expect(getByText('Loading content...')).toBeTruthy();
 
     // Update to loaded state
     rerender(
       <ContentList
         title="Test List"
-        items={[
-          { id: 1, title: 'Test Manga 1' },
-          { id: 2, title: 'Test Manga 2' }
-        ]}
-        loading={false}
+        items={mockMangaItems}
+        onItemPress={() => {}}
+        isLoading={false}
       />
     );
 
     // Assert loading indicator is absent
-    expect(queryByTestId('loading-indicator')).toBeNull();
+    expect(queryByText('Loading content...')).toBeNull();
 
     // Assert items are rendered
     expect(getByText('Test Manga 1')).toBeTruthy();

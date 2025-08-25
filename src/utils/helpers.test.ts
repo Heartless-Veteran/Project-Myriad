@@ -12,7 +12,7 @@ describe('Helper Functions', () => {
   describe('truncateText', () => {
     it('should truncate text when it exceeds maxLength', () => {
       const longText = 'This is a very long text that needs to be truncated';
-      expect(truncateText(longText, 20)).toBe('This is a very lon...');
+      expect(truncateText(longText, 20)).toBe('This is a very lo...');
     });
   });
 });

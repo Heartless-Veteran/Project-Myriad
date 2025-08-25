@@ -14,6 +14,7 @@ interface ProgressBarProps {
   label?: string;
   labelStyle?: TextStyle;
   animated?: boolean;
+  testID?: string;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -29,6 +30,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   label,
   labelStyle,
   animated = true,
+  testID,
 }) => {
   // Ensure progress is between 0 and 1
   const normalizedProgress = Math.min(Math.max(progress, 0), 1);
@@ -37,7 +39,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   const percentage = Math.round(normalizedProgress * 100);
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       {label && (
         <Text style={[styles.label, labelStyle]}>{label}</Text>
       )}

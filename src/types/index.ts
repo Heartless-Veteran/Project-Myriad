@@ -12,6 +12,12 @@ export interface MangaChapter {
    * Example: "2024-06-10T12:34:56.789Z"
    */
   dateAdded: string;
+  // Phase 2 enhancements
+  downloadStatus?: 'pending' | 'downloading' | 'completed' | 'error';
+  size?: number;
+  quality?: string;
+  sourceUrl?: string;
+  lastRead?: string;
 }
 
 export interface Manga {
@@ -25,6 +31,21 @@ export interface Manga {
   status: 'ongoing' | 'completed' | 'hiatus';
   rating: number;
   tags: string[];
+  // Phase 2 enhancements
+  alternativeTitles?: string[];
+  originalLanguage?: string;
+  publicationYear?: number;
+  contentRating?: 'G' | 'PG' | 'PG-13' | 'R' | 'NC-17';
+  themes?: string[];
+  demographics?: string[];
+  source?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
+  totalSize?: number;
+  favorited?: boolean;
+  personalRating?: number;
+  notes?: string;
+  readingProgress?: number;
 }
 
 export interface AnimeEpisode {
@@ -41,6 +62,20 @@ export interface AnimeEpisode {
    * Example: "2024-06-10T12:34:56.789Z"
    */
   dateAdded: string;
+  // Phase 2 enhancements
+  downloadStatus?: 'pending' | 'downloading' | 'completed' | 'error';
+  size?: number;
+  quality?: string;
+  subtitles?: SubtitleTrack[];
+  streamingUrls?: string[];
+  lastWatched?: string;
+}
+
+export interface SubtitleTrack {
+  language: string;
+  url: string;
+  format: string;
+  label: string;
 }
 
 export interface Anime {
@@ -54,6 +89,21 @@ export interface Anime {
   rating: number;
   studio: string;
   tags: string[];
+  // Phase 2 enhancements
+  alternativeTitles?: string[];
+  originalLanguage?: string;
+  airYear?: number;
+  contentRating?: 'G' | 'PG' | 'PG-13' | 'R' | 'NC-17';
+  themes?: string[];
+  demographics?: string[];
+  source?: string;
+  sourceUrl?: string;
+  lastUpdated?: string;
+  totalSize?: number;
+  favorited?: boolean;
+  personalRating?: number;
+  notes?: string;
+  watchProgress?: number;
 }
 
 export interface User {
@@ -61,6 +111,28 @@ export interface User {
   username: string;
   preferences: UserPreferences;
   history: UserHistory;
+  // Phase 2 enhancements
+  profile: UserProfile;
+  statistics: UserStatistics;
+}
+
+export interface UserProfile {
+  avatar?: string;
+  displayName?: string;
+  bio?: string;
+  location?: string;
+  joinDate: string;
+  lastActive: string;
+}
+
+export interface UserStatistics {
+  mangaRead: number;
+  animeWatched: number;
+  totalReadingTime: number; // minutes
+  totalWatchingTime: number; // minutes
+  favoriteGenres: string[];
+  readingStreak: number; // days
+  achievementsUnlocked: string[];
 }
 
 export interface UserPreferences {
@@ -69,6 +141,25 @@ export interface UserPreferences {
   autoTranslate: boolean;
   offlineMode: boolean;
   genres: string[];
+  // Phase 2 enhancements
+  readingMode: 'single' | 'double' | 'webtoon';
+  videoQuality: 'auto' | 'low' | 'medium' | 'high' | 'ultra';
+  autoDownload: boolean;
+  notifications: NotificationSettings;
+  privacy: PrivacySettings;
+}
+
+export interface NotificationSettings {
+  newChapters: boolean;
+  newEpisodes: boolean;
+  recommendations: boolean;
+  system: boolean;
+}
+
+export interface PrivacySettings {
+  shareReadingHistory: boolean;
+  showOnlineStatus: boolean;
+  allowRecommendations: boolean;
 }
 
 export interface UserHistory {
@@ -76,6 +167,43 @@ export interface UserHistory {
   animeWatched: string[];
   searchHistory: string[];
   recommendations: string[];
+  // Phase 2 enhancements
+  recentlyViewed: RecentItem[];
+  bookmarks: Bookmark[];
+  downloadHistory: DownloadItem[];
+}
+
+export interface RecentItem {
+  contentId: string;
+  contentType: 'manga' | 'anime';
+  title: string;
+  coverImage: string;
+  lastAccessedAt: string;
+  progress: number;
+}
+
+export interface Bookmark {
+  id: string;
+  contentId: string;
+  contentType: 'manga' | 'anime';
+  title: string;
+  chapterId?: string;
+  episodeId?: string;
+  note?: string;
+  createdAt: string;
+}
+
+export interface DownloadItem {
+  id: string;
+  contentId: string;
+  contentType: 'manga' | 'anime';
+  title: string;
+  status: 'pending' | 'downloading' | 'completed' | 'paused' | 'error';
+  progress: number;
+  size: number;
+  downloadedSize: number;
+  createdAt: string;
+  completedAt?: string;
 }
 
 // AI Core Types
@@ -91,6 +219,11 @@ export interface AITranslation {
    * Example: "2024-06-10T12:34:56.789Z"
    */
   timestamp: string;
+  // Phase 2 enhancements
+  cached: boolean;
+  processingTime: number;
+  method: 'online' | 'offline' | 'hybrid';
+  context?: string;
 }
 
 export interface BoundingBox {
@@ -98,7 +231,111 @@ export interface BoundingBox {
   y: number;
   width: number;
   height: number;
+  // Phase 2 enhancements
+  confidence?: number;
+  text?: string;
+}
+
+// Phase 2: Enhanced AI Types
+export interface ArtStyleAnalysis {
+  style: string;
   confidence: number;
+  characteristics: string[];
+  colorPalette: string[];
+  genre: string;
+  era: string;
+  similarWorks: string[];
+}
+
+export interface ContentRecommendation {
+  contentId: string;
+  title: string;
+  score: number;
+  reasons: string[];
+  similarity: number;
+  type: 'manga' | 'anime';
+  coverImage?: string;
+  genres?: string[];
+}
+
+export interface MetadataAnalysis {
+  title?: string;
+  author?: string;
+  genres?: string[];
+  year?: number;
+  description?: string;
+  confidence: number;
+  source: string;
+  extractionMethod: string;
+}
+
+// Phase 2: Smart Caching Types
+export interface CacheEntry {
+  key: string;
+  data: any;
+  size: number;
+  createdAt: Date;
+  lastAccessed: Date;
+  expiresAt: Date;
+  accessCount: number;
+  tags: string[];
+}
+
+export interface CacheStats {
+  totalSize: number;
+  entryCount: number;
+  hitRate: number;
+  missRate: number;
+  averageAccessTime: number;
+}
+
+// Phase 2: Source Extension Types
+export interface ContentSource {
+  id: string;
+  name: string;
+  version: string;
+  description: string;
+  baseUrl: string;
+  enabled: boolean;
+  requiresAuth: boolean;
+  rateLimit: number;
+  priority: number;
+  supportedTypes: ContentType[];
+  capabilities: SourceCapabilities;
+}
+
+export interface SourceCapabilities {
+  search: boolean;
+  browse: boolean;
+  download: boolean;
+  stream: boolean;
+  chapters: boolean;
+  episodes: boolean;
+  metadata: boolean;
+}
+
+export enum ContentType {
+  MANGA = 'manga',
+  ANIME = 'anime',
+  LIGHT_NOVEL = 'light_novel',
+  WEB_NOVEL = 'web_novel',
+}
+
+export interface SearchResult {
+  id: string;
+  sourceId: string;
+  title: string;
+  description: string;
+  coverUrl: string;
+  url: string;
+  type: ContentType;
+  genres: string[];
+  status: string;
+  rating: number;
+  chapters?: number;
+  episodes?: number;
+  year?: number;
+}
 }
 
 export interface ArtStyleMatch {
