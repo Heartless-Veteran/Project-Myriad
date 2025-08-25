@@ -86,8 +86,13 @@ class MangaRepositoryImpl @Inject constructor(
     }
     
     override suspend fun updateChapterProgress(chapterId: String, progress: Float): Result<Unit> {
-        // TODO: Implement chapter progress update
-        return Result.success(Unit)
+        return try {
+            val clampedProgress = progress.coerceIn(0f, 1f)
+            mangaDao.updateChapterProgress(chapterId, clampedProgress)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     
     override fun searchManga(query: String): Flow<List<Manga>> {
