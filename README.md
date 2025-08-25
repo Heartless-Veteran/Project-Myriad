@@ -1,7 +1,9 @@
 # Project Myriad
 ## The Definitive Manga and Anime Platform
 
-**Project Myriad** is a comprehensive Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery.
+> **🚀 Migration in Progress**: Project Myriad is currently undergoing a comprehensive migration from React Native to native Android with Kotlin + Jetpack Compose. See [Android Migration Guide](docs/ANDROID_MIGRATION.md) for details.
+
+**Project Myriad** is a comprehensive Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery. Built with modern Android architecture using **Kotlin**, **Jetpack Compose**, and **Clean Architecture** principles.
 
 ### 🚀 Features
 
@@ -31,58 +33,62 @@
 - **Performance**: Hermes JavaScript engine enabled
 
 ### 🛠️ Technology Stack
-- **React Native 0.80.2** with TypeScript
-- **React Navigation** for seamless navigation
-- **AsyncStorage** for local data persistence
-- **SQLite** for structured data storage
-- **Fast Image** for optimized image loading
-- **WebView** for online content integration
+- **Kotlin** with strict null safety
+- **Jetpack Compose** with Material 3 Design
+- **Clean Architecture** (MVVM pattern)
+- **Hilt** for dependency injection
+- **Room + Flow** for reactive database operations
+- **Retrofit + Kotlinx Serialization** for networking
+- **Coil** for image loading
+- **Navigation Compose** for navigation
+- **WorkManager** for background tasks
 
-### 🏗️ Project Structure
+### 🏗️ Project Structure (Clean Architecture)
 ```
-src/
-├── components/          # Reusable UI components
-├── screens/            # Application screens
-├── navigation/         # Navigation configuration
-├── services/           # Core business logic
-│   ├── VaultService.ts    # Local media management
-│   ├── AIService.ts       # AI-powered features
-│   └── BrowserService.ts  # Online content discovery
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── stores/             # State management
+kotlin/
+├── domain/               # Business logic layer
+│   ├── entities/         # Core business entities
+│   ├── repositories/     # Repository interfaces
+│   └── usecases/         # Business use cases
+├── data/                 # Data access layer  
+│   ├── repositories/     # Repository implementations
+│   ├── database/         # Room database
+│   └── network/          # API services
+└── presentation/         # UI layer
+    ├── components/       # Reusable Compose components
+    ├── navigation/       # Navigation setup
+    ├── theme/            # Material 3 theme
+    └── viewmodels/       # State management
 ```
 
 ### 🚀 Getting Started
 
 #### Prerequisites
-- Node.js (>= 18.0.0)
-- Android Studio with Android SDK
+- **Android Studio** Flamingo or newer
+- **Java 17** or newer
+- **Android SDK** API 21-34
 - React Native CLI
 - Java Development Kit (JDK) 11 or higher
 
 #### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/Project-Myriad.git
+git clone https://github.com/Heartless-Veteran/Project-Myriad.git
 cd Project-Myriad
 
-# Install dependencies
-npm install
+# Build Android project
+cd android
+./gradlew assembleDebug
 
-# Note: The project uses .npmrc with legacy-peer-deps=true to handle React 19 compatibility and @react-native/babel-preset
-
-# Start Metro bundler
-npm start
-
-# Run on Android device/emulator
-npm run android
+# Install on connected device/emulator
+./gradlew installDebug
 ```
 
 #### Building for Release
 ```bash
 # Build release APK
-npm run build:android
+cd android
+./gradlew assembleRelease
 
 # The APK will be generated in:
 # android/app/build/outputs/apk/release/app-release.apk
@@ -90,32 +96,35 @@ npm run build:android
 
 ### 🧪 Testing
 ```bash
-# Run tests
-npm test
+# Run unit tests
+cd android
+./gradlew test
 
-# Run linting
-npm run lint
+# Run instrumented tests
+./gradlew connectedAndroidTest
 ```
 
 ### 📦 Key Dependencies
-- **@react-navigation/native**: Navigation framework
-- **react-native-fs**: File system operations
-- **react-native-sqlite-storage**: Local database
-- **react-native-fast-image**: Optimized image loading
-- **react-native-webview**: Web content integration
-- **react-native-document-picker**: File picker functionality
-- **react-native-zip-archive**: Archive handling
+- **Jetpack Compose BOM**: UI toolkit
+- **Material 3**: Design system components
+- **Hilt**: Dependency injection framework
+- **Room**: Database with Flow support
+- **Retrofit**: HTTP client with Kotlinx Serialization
+- **Coil**: Image loading library
+- **Navigation Compose**: Declarative navigation
+- **WorkManager**: Background task management
 
 ### 🔧 Configuration
 The project uses:
-- **TypeScript** for type safety
-- **ESLint** for code quality
-- **Prettier** for code formatting
-- **Jest** for testing
-- **Metro** for bundling
-- **Hermes** for JavaScript engine
+- **Kotlin 1.9.22** with strict null safety
+- **Gradle** with Version Catalogs
+- **ktlint** for code formatting
+- **Detekt** for static analysis
+- **JUnit 5** for unit testing
+- **Espresso** for UI testing
 
 ### 📋 Documentation
+- [Android Migration Guide](docs/ANDROID_MIGRATION.md) 
 - [Development Guide](docs/DEVELOPMENT.md)
 - [Dependency Management](docs/dependency-management.md)
 
@@ -134,4 +143,13 @@ For support and questions, please open an issue on GitHub.
 
 ---
 
-**Project Myriad** - Bringing manga and anime content together with the power of AI and modern mobile technology.
+**Project Myriad** - Bringing manga and anime content together with the power of AI and modern Android technology.
+
+### 🔄 Migration Status
+- ✅ **Foundation**: Kotlin + Jetpack Compose architecture
+- ✅ **Domain Layer**: Clean Architecture entities and repositories
+- ✅ **UI Layer**: Material 3 theme and Navigation Compose
+- 🚧 **Data Layer**: Room database implementation (in progress)
+- 📋 **Features**: Vault, AI Core, and Browser migration (planned)
+
+See the [Android Migration Guide](docs/ANDROID_MIGRATION.md) for comprehensive migration details and progress tracking.
