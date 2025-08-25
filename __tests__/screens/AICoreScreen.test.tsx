@@ -1,7 +1,5 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react-native';
-import { ViewStyle } from 'react-native';
-import { ContentItem } from '../../src/components/ContentList';
 import AICoreScreen from '../../src/screens/AICoreScreen';
 import { renderWithProvider, defaultMockState } from '../utils/testUtils';
 
