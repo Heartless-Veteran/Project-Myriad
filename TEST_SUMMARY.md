@@ -97,6 +97,15 @@ This document summarizes the unit tests created for the files changed in PR #100
 - Error handling for async operations
 - Edge cases (null payloads, non-existent items)
 
+
+## Test Utilities
+
+### Shared Test Utilities
+**File:** `__tests__/utils/testUtils.tsx`
+
+- Centralized mock store creation with configurable initial state
+- Shared `renderWithProvider` function for Redux-connected components
+- Default mock state structure for consistent testing across components
 ## Testing Approach
 
 - **Consistent Mock Behavior:** Card component mocks are consistent across test files, properly handling press events
