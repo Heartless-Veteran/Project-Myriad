@@ -87,7 +87,7 @@ export class CollectionService {
       const collections = await this.getCollections();
       const newCollection: Collection = {
         ...collection,
-        id: `collection_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `collection_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
