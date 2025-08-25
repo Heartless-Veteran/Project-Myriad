@@ -4,4 +4,4 @@ merge_protections:
     if:
       - base = main
     success_conditions:
-      - "#commits-behind <= 10"
+      - "#commits-behind <= 5"
