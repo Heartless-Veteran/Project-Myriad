@@ -12,15 +12,21 @@ jest.mock('react-native-image-picker', () => ({
 
 // Use shared mock components
 jest.mock('../../src/components/Button', () => {
-  return require('../utils/mockComponents').MockButton;
+  const { mockButton } = require('../utils/mockComponents');
+  return mockButton();
 });
 
 jest.mock('../../src/components/Card', () => {
-  return require('../utils/mockComponents').MockCard;
+  const { mockCard } = require('../utils/mockComponents');
+  return mockCard();
 });
 
 jest.mock('../../src/components/ContentList', () => ({
-  ContentList: require('../utils/mockComponents').MockContentList,
+  ContentList: (() => {
+    const { mockContentList } = require('../utils/mockComponents');
+    const contentListMock = mockContentList();
+    return contentListMock.ContentList;
+  })(),
 }));
 
 describe('AICoreScreen', () => {
