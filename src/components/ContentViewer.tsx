@@ -162,7 +162,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
         onPress={toggleControls}
       >
         <FastImage
-          source={{ uri: item, priority: 'normal' }}
+          source={{ uri: item, priority: FastImage.priority.normal }}
           style={[
             styles.pageImage,
             readingMode === 'webtoon' && styles.webtoonImage,
