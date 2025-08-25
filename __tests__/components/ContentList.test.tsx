@@ -189,6 +189,7 @@ describe('ContentList Component', () => {
     );
 
     const cards = getAllByTestId('mock-card');
+    // Press the card directly since our mock Card is a TouchableOpacity with onPress
     fireEvent.press(cards[0]);
     
     expect(mockOnItemPress).toHaveBeenCalledTimes(1);
