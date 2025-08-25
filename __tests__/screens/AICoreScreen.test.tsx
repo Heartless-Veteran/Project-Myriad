@@ -8,50 +8,17 @@ jest.mock('react-native-image-picker', () => ({
   launchImageLibrary: jest.fn(),
 }));
 
+// Use shared mock components
 jest.mock('../../src/components/Button', () => {
-  const { TouchableOpacity, Text } = require('react-native');
-  return function MockButton({ title, onPress, disabled, style }: any) {
-    return (
-      <TouchableOpacity
-        testID={`button-${title.toLowerCase().replace(/\s+/g, '-')}`}
-        onPress={onPress}
-        disabled={disabled}
-        style={style}
-      >
-        <Text>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+  return require('../utils/mockComponents').MockButton;
 });
 
 jest.mock('../../src/components/Card', () => {
-  const { View } = require('react-native');
-  return function MockCard({ children, style }: any) {
-    return (
-      <View testID="card" style={style}>
-        {children}
-      </View>
-    );
-  };
+  return require('../utils/mockComponents').MockCard;
 });
 
 jest.mock('../../src/components/ContentList', () => ({
-  ContentList: function MockContentList({ data, onItemPress }: any) {
-    const { View, Text, TouchableOpacity } = require('react-native');
-    return (
-      <View testID="content-list">
-        {data.map((item: any, index: number) => (
-          <TouchableOpacity
-            key={index}
-            testID={`content-item-${index}`}
-            onPress={() => onItemPress(item)}
-          >
-            <Text>{item.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  },
+  ContentList: require('../utils/mockComponents').MockContentList,
 }));
 
 describe('AICoreScreen', () => {
