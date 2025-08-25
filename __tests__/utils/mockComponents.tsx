@@ -3,14 +3,10 @@ import { ViewStyle, TextStyle } from 'react-native';
 
 // Type definitions for mock components based on actual component interfaces
 
-// Base content item interface for ContentList
-interface ContentItem {
-  id: string;
-  title: string;
-  [key: string]: unknown;
-}
+// Generic content item type for ContentList
+type ContentItem = { id: string; title: string; [key: string]: unknown };
 
-// Filter interface for FilterPanel
+// Filter state type
 interface FilterState {
   genre: string[];
   status: string[];
