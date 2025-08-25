@@ -5,6 +5,15 @@ import ContentList, { ContentItem } from '../../src/components/ContentList';
 import { Manga, Anime } from '../../src/types';
 
 // Type definition for mock Card props based on actual Card component interface
+interface MockCardProps {
+  title?: string;
+  imageUrl?: string;
+  tags?: string[];
+  progress?: number;
+  onPress?: () => void;
+  children?: React.ReactNode;
+  style?: ViewStyle;
+}
 // Mock data for testing
 const mockMangaItems: Manga[] = [
   {
