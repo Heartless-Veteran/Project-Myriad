@@ -1,21 +1,40 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import { ViewProps } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AppNavigator from '../../src/navigation/AppNavigator';
+
+// Type definitions for navigation mock components
+interface NavigationContainerProps {
+  children: React.ReactNode;
+}
+
+interface NavigatorProps {
+  children: React.ReactNode;
+}
+
+interface ScreenProps {
+  name: string;
+  component: React.ComponentType<any>;
+}
+
+interface MockScreenProps extends ViewProps {
+  testID?: string;
+}
 
 // Mock navigation dependencies
 jest.mock('@react-navigation/native', () => {
   const actualNav = jest.requireActual('@react-navigation/native');
   return {
     ...actualNav,
-    NavigationContainer: ({ children }: { children: React.ReactNode }) => children,
+    NavigationContainer: ({ children }: NavigationContainerProps) => children,
   };
 });
 
 jest.mock('@react-navigation/stack', () => ({
   createStackNavigator: () => ({
-    Navigator: ({ children }: { children: React.ReactNode }) => children,
-    Screen: ({ name, component }: { name: string; component: React.ComponentType<any> }) => {
+    Navigator: ({ children }: NavigatorProps) => children,
+    Screen: ({ name, component }: ScreenProps) => {
       const Component = component;
       return <Component testID={`screen-${name}`} />;
     },
@@ -24,8 +43,8 @@ jest.mock('@react-navigation/stack', () => ({
 
 jest.mock('@react-navigation/bottom-tabs', () => ({
   createBottomTabNavigator: () => ({
-    Navigator: ({ children }: { children: React.ReactNode }) => children,
-    Screen: ({ name, component }: { name: string; component: React.ComponentType<any> }) => {
+    Navigator: ({ children }: NavigatorProps) => children,
+    Screen: ({ name, component }: ScreenProps) => {
       const Component = component;
       return <Component testID={`tab-${name}`} />;
     },
@@ -35,7 +54,7 @@ jest.mock('@react-navigation/bottom-tabs', () => ({
 // Mock screen components
 jest.mock('../../src/screens/HomeScreen', () => {
   const { View, Text } = require('react-native');
-  return function MockHomeScreen(props: any) {
+  return function MockHomeScreen(props: MockScreenProps) {
     return (
       <View {...props}>
         <Text>Home Screen</Text>
@@ -46,7 +65,7 @@ jest.mock('../../src/screens/HomeScreen', () => {
 
 jest.mock('../../src/screens/LibraryScreen', () => {
   const { View, Text } = require('react-native');
-  return function MockLibraryScreen(props: any) {
+  return function MockLibraryScreen(props: MockScreenProps) {
     return (
       <View {...props}>
         <Text>Library Screen</Text>
@@ -57,7 +76,7 @@ jest.mock('../../src/screens/LibraryScreen', () => {
 
 jest.mock('../../src/screens/SettingsScreen', () => {
   const { View, Text } = require('react-native');
-  return function MockSettingsScreen(props: any) {
+  return function MockSettingsScreen(props: MockScreenProps) {
     return (
       <View {...props}>
         <Text>Settings Screen</Text>
@@ -68,7 +87,7 @@ jest.mock('../../src/screens/SettingsScreen', () => {
 
 jest.mock('../../src/screens/BrowseScreen', () => {
   const { View, Text } = require('react-native');
-  return function MockBrowseScreen(props: any) {
+  return function MockBrowseScreen(props: MockScreenProps) {
     return (
       <View {...props}>
         <Text>Browse Screen</Text>
@@ -79,7 +98,7 @@ jest.mock('../../src/screens/BrowseScreen', () => {
 
 jest.mock('../../src/screens/AICoreScreen', () => {
   const { View, Text } = require('react-native');
-  return function MockAICoreScreen(props: any) {
+  return function MockAICoreScreen(props: MockScreenProps) {
     return (
       <View {...props}>
         <Text>AI Core Screen</Text>
