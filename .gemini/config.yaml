@@ -1,0 +1,27 @@
+# See https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github#custom-configuration
+have_fun: false
+code_review:
+  disable: false
+  comment_severity_threshold: MEDIUM
+  max_review_comments: -1
+  pull_request_opened:
+    help: false
+    summary: true
+    code_review: true
+ignore_patterns:
+  - "node_modules/**"
+  - "android/**"
+  - "ios/**"
+  - "**/*.apk"
+  - "**/*.aab"
+  - ".idea/**"
+  - "**/.gradle/**"
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  - "*.lock"
+  - "ISSUE-56-RESOLUTION-REPORT.md"
+  - "PHASE-2-OVERVIEW.md"
+  - "DEVELOPMENT.md"
+  - "SECURITY.md"
+  - "docs/**"
