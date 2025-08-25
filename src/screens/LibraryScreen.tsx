@@ -1,199 +1,96 @@
-          content = anime;
-          break;
-        case 'recommendations':
-          content = recommendations.map(rec => rec.item);
-          break;
-        default:
-          content = [...manga, ...anime];
-      }
-    }
-
-    // Apply filters
-    if (filters.genre.length > 0) {
-      content = content.filter(item =>
-        item.genres.some(genre => filters.genre.includes(genre))
-      );
-    }
-
-    if (filters.status.length > 0) {
-      content = content.filter(item => filters.status.includes(item.status));
-    }
 import React, { useEffect, useState } from 'react';
-    if (filters.rating > 0) {
-      content = content.filter(item => item.rating >= filters.rating);
-    }
-
-    return content;
-  };
-
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading your library...</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <SearchBar
-        value={searchQuery}
-        onChangeText={handleSearch}
-        onFilterPress={() => setShowFilters(!showFilters)}
-        placeholder="Search your library or use natural language..."
-      />
-
-      {showFilters && (
-        <FilterPanel
-          filters={filters}
-          onFiltersChange={(newFilters) => dispatch(setFilters(newFilters))}
-          availableGenres={[...new Set([...manga, ...anime].flatMap(item => item.genres))]}
-        />
-      )}
-
-      {renderStatsCard()}
-      {renderImportButtons()}
-      {renderTabBar()}
-
-      {error && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      )}
-
-      {isImporting && (
-        <View style={styles.importingContainer}>
-          <ActivityIndicator size="small" color="#007AFF" />
-          <Text style={styles.importingText}>Importing file...</Text>
-        </View>
-      )}
-
-      <ContentList
-        data={getFilteredContent()}
-        onItemPress={(item) => {
-          // Navigate to content viewer
-          console.log('Open content:', item.title);
-        }}
-        onItemLongPress={(item) => {
-          const type = 'chapters' in item ? 'manga' : 'anime';
-          handleDelete(item, type);
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={() => dispatch(loadLibrary())}
-          />
-        }
-      />
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import DocumentPicker from 'react-native-document-picker';
+import { AppDispatch, RootState } from '../store';
+import {
+  loadLibrary,
+  importManga,
+  importAnime,
+  deleteManga,
+  deleteAnime,
+  setFilters,
+  updateMangaProgress,
+  updateAnimeProgress,
+} from '../store/slices/librarySlice';
 import { Manga, Anime } from '../types';
+import SearchBar from '../components/SearchBar';
+import FilterPanel from '../components/FilterPanel';
+import Card from '../components/Card';
+import Button from '../components/Button';
+import { ContentList } from '../components/ContentList';
 
 export const LibraryScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
     manga,
     anime,
-    backgroundColor: '#f5f5f5',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
-  },
-  statsCard: {
-    margin: 16,
-    padding: 16,
-    recommendations,
-  statsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  statsRow: {
+    isLoading,
     isImporting,
-    justifyContent: 'space-around',
-  },
-  statItem: {
+    error,
+    stats,
+    recommendations,
+    filters,
     searchResults,
+  } = useSelector((state: RootState) => state.library);
 
-  statNumber: {
-  const { preferences } = useSelector((state: RootState) => state.user);
-
-    color: '#007AFF',
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
-  importContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginHorizontal: 16,
-    marginBottom: 16,
+  const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [activeTab, setActiveTab] = useState<'all' | 'manga' | 'anime' | 'recommendations'>('all');
-    flex: 1,
-    marginHorizontal: 8,
-    dispatch(loadLibrary());
-  tabBar: {
-    }
-    backgroundColor: 'white',
-    marginHorizontal: 16,
+  const [activeTab, setActiveTab] = useState<
+    'all' | 'manga' | 'anime' | 'recommendations'
+  >('all');
 
-    borderRadius: 8,
-    padding: 4,
+  useEffect(() => {
+    dispatch(loadLibrary());
+  }, [dispatch]);
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.trim()) {
-    paddingVertical: 8,
-    } else {
-    borderRadius: 6,
+  };
 
   const handleImport = async (type: 'manga' | 'anime') => {
-    backgroundColor: '#007AFF',
+    try {
       const result = await DocumentPicker.pick({
-        type: type === 'manga'
-    fontSize: 14,
-    color: '#666',
-  },
-  activeTabText: {
-    color: 'white',
-          : [DocumentPicker.types.video],
+        type:
+          type === 'manga'
+            ? [DocumentPicker.types.zip, 'application/vnd.comicbook+zip']
+            : [DocumentPicker.types.video],
         allowMultiSelection: false,
-  errorContainer: {
-    backgroundColor: '#ffebee',
-    margin: 16,
-    padding: 12,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#f44336',
-      if (result.length > 0) {
-  errorText: {
-    color: '#c62828',
-    fontSize: 14,
-          generateThumbnail: true,
-  importingContainer: {
-    flexDirection: 'row',
+      });
 
+      if (result.length > 0) {
+        const file = result[0];
         if (type === 'manga') {
-    backgroundColor: '#e3f2fd',
-    margin: 16,
-    padding: 12,
-    borderRadius: 8,
-    } catch (error) {
-  importingText: {
-    marginLeft: 8,
-    color: '#1976d2',
+          dispatch(importManga({ uri: file.uri, name: file.name || 'Unknown' }));
+        } else {
+          dispatch(importAnime({ uri: file.uri, name: file.name || 'Unknown', generateThumbnail: true }));
+        }
+      }
+    } catch (err) {
+      if (!DocumentPicker.isCancel(err)) {
+        Alert.alert('Import Error', 'Failed to import the selected file.');
+      }
+    }
+  };
+
+  const handleDelete = (item: Manga | Anime, type: 'manga' | 'anime') => {
     Alert.alert(
+      'Delete Item',
+      `Are you sure you want to delete "${item.title}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
             if (type === 'manga') {
               dispatch(deleteManga(item.id));
             } else {
@@ -250,7 +147,9 @@ export const LibraryScreen: React.FC = () => {
           style={[styles.tab, activeTab === tab && styles.activeTab]}
           onPress={() => setActiveTab(tab)}
         >
-          <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
+          <Text
+            style={[styles.tabText, activeTab === tab && styles.activeTabText]}
+          >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </Text>
         </TouchableOpacity>
@@ -269,37 +168,133 @@ export const LibraryScreen: React.FC = () => {
           content = manga;
           break;
         case 'anime':
+          content = anime;
+          break;
+        case 'recommendations':
+          content = recommendations.map((rec) => rec.item);
+          break;
+        default:
+          content = [...manga, ...anime];
+      }
+    }
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {isLoading ? (
-          <View style={styles.centerContent}>
-            <Text style={styles.loadingText}>Loading library...</Text>
-          </View>
-        ) : filteredItems.length === 0 ? (
-          <View style={styles.centerContent}>
-            <Text style={styles.emptyText}>
-              {library[activeTab].length === 0
-                ? `No ${activeTab} in your library yet`
-                : 'No results found'}
-            </Text>
-            <Text style={styles.emptySubtext}>
-              Import your local media files or browse online sources
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.grid}>
-            {filteredItems.map(item => (
+    if (filters.genre.length > 0) {
+      content = content.filter((item) =>
+        item.genres.some((genre) => filters.genre.includes(genre))
+      );
+    }
+
+    if (filters.status.length > 0) {
+      content = content.filter((item) => filters.status.includes(item.status));
+    }
+
+    if (filters.rating > 0) {
+      content = content.filter((item) => item.rating >= filters.rating);
+    }
+
+    return content;
+  };
+
+  if (isLoading && manga.length === 0 && anime.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading your library...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={handleSearch}
+        onFilterPress={() => setShowFilters(!showFilters)}
+        placeholder="Search your library..."
+      />
+
+      {showFilters && (
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={(newFilters) => dispatch(setFilters(newFilters))}
+          availableGenres={[
+            ...new Set([...manga, ...anime].flatMap((item) => item.genres)),
+          ]}
+        />
+      )}
+
+      {renderStatsCard()}
+      {renderImportButtons()}
+      {renderTabBar()}
+
+      {error && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      )}
+
+      {isImporting && (
+        <View style={styles.importingContainer}>
+          <ActivityIndicator size="small" color="#007AFF" />
+          <Text style={styles.importingText}>Importing file...</Text>
+        </View>
+      )}
+
+      <ContentList
+        data={getFilteredContent()}
+        onItemPress={(item) => {
+          console.log('Open content:', item.title);
+        }}
+        onItemLongPress={(item) => {
+          const type = 'chapters' in item ? 'manga' : 'anime';
+          handleDelete(item, type);
+        }}
+        renderItem={({ item }) => {
+          const isManga = 'chapters' in item;
+          const progress = isManga ? item.readingProgress : item.watchProgress;
+          return (
+            <View>
               <Card
-                key={item.id}
                 title={item.title}
                 imageUrl={item.coverImage}
-                tags={item.genres.slice(0, 3)}
-                onPress={() => console.log(`Open ${item.title}`)}
+                tags={item.genres}
+                progress={progress}
+                onPress={() => console.log('Open content:', item.title)}
               />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+              <View style={styles.progressButtons}>
+                <Button
+                  title="-1"
+                  onPress={() => {
+                    const newProgress = Math.max(0, (progress || 0) - PROGRESS_ADJUSTMENT_STEP);
+                    if (isManga) {
+                      dispatch(updateMangaProgress({ id: item.id, progress: newProgress }));
+                    } else {
+                      dispatch(updateAnimeProgress({ id: item.id, progress: newProgress }));
+                    }
+                  }}
+                />
+                <Button
+                  title="+1"
+                  onPress={() => {
+                    const newProgress = Math.min(1, (progress || 0) + PROGRESS_ADJUSTMENT);
+                    if (isManga) {
+                      dispatch(updateMangaProgress({ id: item.id, progress: newProgress }));
+                    } else {
+                      dispatch(updateAnimeProgress({ id: item.id, progress: newProgress }));
+                    }
+                  }}
+                />
+              </View>
+            </View>
+          );
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => dispatch(loadLibrary())}
+          />
+        }
+      />
     </View>
   );
 };
@@ -307,86 +302,112 @@ export const LibraryScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#f5f5f5',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#1a1a1a',
   },
-  title: {
-    fontSize: 24,
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  statsCard: {
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+  },
+  statsTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#007AFF',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+  importContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   importButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    flex: 1,
+    marginHorizontal: 8,
   },
-  searchContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  searchInput: {
-    backgroundColor: '#2c2c2c',
-    borderRadius: 8,
-    padding: 12,
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  tabContainer: {
+  tabBar: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    marginHorizontal: 16,
     marginBottom: 16,
+    borderRadius: 8,
+    padding: 4,
   },
   tab: {
     flex: 1,
-    paddingVertical: 12,
     alignItems: 'center',
-    backgroundColor: '#2c2c2c',
-    marginHorizontal: 4,
-    borderRadius: 8,
+    paddingVertical: 8,
+    borderRadius: 6,
   },
   activeTab: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#007AFF',
   },
   tabText: {
-    color: '#CCCCCC',
+    fontSize: 14,
+    color: '#666',
     fontWeight: '600',
   },
   activeTabText: {
-    color: '#FFFFFF',
+    color: 'white',
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
+  errorContainer: {
+    backgroundColor: '#ffebee',
+    margin: 16,
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#f44336',
   },
-  centerContent: {
-    flex: 1,
+  errorText: {
+    color: '#c62828',
+    fontSize: 14,
+  },
+  importingContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
+    backgroundColor: '#e3f2fd',
+    margin: 16,
+    padding: 12,
+    borderRadius: 8,
   },
-  loadingText: {
-    color: '#CCCCCC',
-    fontSize: 16,
-  },
-  emptyText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    color: '#CCCCCC',
+  importingText: {
+    marginLeft: 8,
+    color: '#1976d2',
     fontSize: 14,
-    textAlign: 'center',
   },
-  grid: {
-    paddingBottom: 20,
+  progressButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: -16,
+    paddingBottom: 8,
   },
 });
 
