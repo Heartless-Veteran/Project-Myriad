@@ -2,18 +2,22 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
+        buildToolsVersion = "35.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 34
-        targetSdkVersion = 34
-        ndkVersion = "25.1.8937393"
-        kotlinVersion = "2.2.10"
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        kotlinVersion = "1.9.22"
+        composeVersion = "2024.02.00"
+        hiltVersion = "2.48"
+        roomVersion = "2.6.1"
+        retrofitVersion = "2.9.0"
+        coilVersion = "2.5.0"
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0")
-        classpath("com.facebook.react:react-native-gradle-plugin:0.80.2")
+        classpath("com.android.tools.build:gradle:8.2.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
+        classpath("com.google.gms:google-services:4.4.0")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.9")
     }
 }
-
-apply plugin: "com.facebook.react.rootproject"
