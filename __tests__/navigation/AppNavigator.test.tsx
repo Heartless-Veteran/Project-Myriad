@@ -8,7 +8,7 @@ jest.mock('@react-navigation/native', () => {
   const actualNav = jest.requireActual('@react-navigation/native');
   return {
     ...actualNav,
-    NavigationContainer: ({ children }: any) => children,
+    NavigationContainer: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 
