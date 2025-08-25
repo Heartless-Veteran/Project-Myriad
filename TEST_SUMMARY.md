@@ -15,7 +15,7 @@ This document summarizes the unit tests created for the files changed in PR #100
 - Handles onPress events correctly
 - Renders without tags when not provided
 - Renders progress bar conditionally
-- Applies custom styles with proper style assertion testing
+- Applies custom styles with snapshot testing for reliable verification
 
 ### 2. `src/components/ContentList.tsx`
 **Test File:** `__tests__/components/ContentList.test.tsx` (Enhanced existing)
