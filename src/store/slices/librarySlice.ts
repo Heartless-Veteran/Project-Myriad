@@ -69,7 +69,7 @@ export const importManga = createAsyncThunk(
 
 export const importAnime = createAsyncThunk(
   'library/importAnime',
-  async ({ uri, name, generateThumbnail }: { uri: string; name: string, generateThumbnail: boolean }, { rejectWithValue }) => {
+  async ({ uri, name, generateThumbnail }: { uri: string; name: string; generateThumbnail: boolean }, { rejectWithValue }) => {
     try {
       const vaultService = VaultService.getInstance();
       const newAnime = await vaultService.importAnime(uri, name, generateThumbnail);
