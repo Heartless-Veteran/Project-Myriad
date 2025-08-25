@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({
   }
 
   return (
-    <TouchableOpacity style={[styles.card, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.card, style]} onPress={onPress} testID="card-pressable">
       <FastImage
         style={styles.image}
         source={{

@@ -15,6 +15,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { ContentList } from '../components/ContentList';
+import { ArtStyleMatch, Manga, Anime } from '../types';
 import { RootState } from '../store';
 import {
   analyzeArtStyle,
@@ -284,9 +285,8 @@ const AICoreScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <ContentList
-            data={artStyleMatches.map((match: any) => match.item)}
             data={artStyleMatches.map((match: ArtStyleMatch) => match.item)}
-            onItemPress={(item: ArtStyleItem) => console.log('Open similar content:', item.title)}
+            onItemPress={(item: Manga | Anime) => console.log('Open similar content:', item.title)}
             style={styles.matchesList}
           />
         </View>
