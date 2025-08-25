@@ -589,7 +589,8 @@ export class SmartCacheService {
    * Calculate data size
    */
   private calculateSize(data: any): number {
-    return new Blob([JSON.stringify(data)]).size;
+    // Estimate size as number of UTF-16 code units in JSON string
+    return JSON.stringify(data).length;
   }
 
   /**
