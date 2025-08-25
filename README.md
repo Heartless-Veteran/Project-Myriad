@@ -101,7 +101,9 @@ cd android
 ```bash
 # Run unit tests
 cd android
-./gradlew test
+# Run instrumented tests
+cd android
+./gradlew connectedAndroidTest
 
 # Run instrumented tests
 ./gradlew connectedAndroidTest
