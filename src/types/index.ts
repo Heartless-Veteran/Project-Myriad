@@ -336,7 +336,6 @@ export interface SearchResult {
   episodes?: number;
   year?: number;
 }
-  confidence: number;
 }
 
 export interface ArtStyleMatch {
