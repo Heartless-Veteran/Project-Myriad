@@ -82,7 +82,6 @@ jobs:
         # Security: Check for known vulnerable packages
         if command -v yarn &> /dev/null; then
           yarn audit --level high
-        fi
         
     - name: Run tests
       # Security: Run tests to ensure code quality
