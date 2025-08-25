@@ -110,7 +110,7 @@ export const mockContentList = () => ({
 // Mock SearchBar component
 export const mockSearchBar = () => {
   const { View, TextInput, TouchableOpacity, Text } = require('react-native');
-  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: MockSearchBarProps) {
+  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: { value?: string; onChangeText?: (text: string) => void; onFilterPress?: () => void; placeholder?: string; }) {
     return (
       <View testID="search-bar">
         <TextInput
