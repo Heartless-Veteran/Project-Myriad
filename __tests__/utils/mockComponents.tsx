@@ -1,5 +1,8 @@
 import React from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
+import { Manga, Anime } from '../../src/types';
+
+type ContentItem = Manga | Anime;
 
 // Type definitions for mock components based on actual component interfaces
 
