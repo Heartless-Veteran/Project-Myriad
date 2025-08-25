@@ -1,8 +1,7 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { fireEvent } from '@testing-library/react-native';
 import AICoreScreen from '../../src/screens/AICoreScreen';
+import { renderWithProvider, defaultMockState } from '../utils/testUtils';
 
 // Mock dependencies
 jest.mock('react-native-image-picker', () => ({
@@ -55,62 +54,6 @@ jest.mock('../../src/components/ContentList', () => ({
   },
 }));
 
-// Mock store slices
-const mockAiSlice = {
-  name: 'ai',
-  initialState: {
-    isInitialized: true,
-    isProcessing: false,
-    isOfflineMode: false,
-    error: null,
-    translations: [],
-    currentTranslation: null,
-    artStyleMatches: [],
-    metadata: null,
-    searchResults: [],
-  },
-  reducers: {},
-  extraReducers: () => {},
-};
-
-const mockLibrarySlice = {
-  name: 'library',
-  initialState: {
-    manga: [],
-    anime: [],
-  },
-  reducers: {},
-};
-
-const mockSettingsSlice = {
-  name: 'settings',
-  initialState: {
-    defaultTargetLanguage: 'en',
-  },
-  reducers: {},
-};
-
-// Create mock store
-const createMockStore = (initialState = {}) => {
-  return configureStore({
-    reducer: {
-      ai: (state = mockAiSlice.initialState) => state,
-      library: (state = mockLibrarySlice.initialState) => state,
-      settings: (state = mockSettingsSlice.initialState) => state,
-    },
-    preloadedState: initialState,
-  });
-};
-
-const renderWithProvider = (component: React.ReactElement, initialState = {}) => {
-  const store = createMockStore(initialState);
-  return render(
-    <Provider store={store}>
-      {component}
-    </Provider>
-  );
-};
-
 describe('AICoreScreen', () => {
   it('renders correctly when AI is initialized', () => {
     const { getByText } = renderWithProvider(<AICoreScreen />);
@@ -123,7 +66,7 @@ describe('AICoreScreen', () => {
   it('shows loading state when AI is not initialized', () => {
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         isInitialized: false,
         isProcessing: true,
       },
@@ -137,7 +80,7 @@ describe('AICoreScreen', () => {
   it('shows offline mode correctly', () => {
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         isOfflineMode: true,
       },
     };
@@ -151,7 +94,7 @@ describe('AICoreScreen', () => {
   it('displays error message when present', () => {
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         error: 'Test error message',
       },
     };
@@ -164,7 +107,7 @@ describe('AICoreScreen', () => {
   it('shows processing indicator when processing', () => {
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         isProcessing: true,
       },
     };
@@ -211,7 +154,7 @@ describe('AICoreScreen', () => {
 
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         currentTranslation: mockTranslation,
       },
     };
@@ -231,7 +174,7 @@ describe('AICoreScreen', () => {
 
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         artStyleMatches: mockMatches,
       },
     };
@@ -253,7 +196,7 @@ describe('AICoreScreen', () => {
 
     const initialState = {
       ai: {
-        ...mockAiSlice.initialState,
+        ...defaultMockState.ai,
         metadata: mockMetadata,
       },
     };
