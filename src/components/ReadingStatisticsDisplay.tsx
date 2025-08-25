@@ -165,7 +165,7 @@ const ReadingStatisticsDisplay: React.FC<ReadingStatisticsDisplayProps> = ({
                 ]} 
               />
               <Text style={styles.chartLabel}>
-                {new Date(day.date).toLocaleDateString('en', { weekday: 'short' })}
+                {new Date(day.date).toLocaleDateString(undefined, { weekday: 'short' })}
               </Text>
               <Text style={styles.chartValue}>
                 {day.minutes}m
