@@ -105,7 +105,9 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
     return () => {
       if (sessionId) {
         statisticsService.endReadingSession(
-          sessionId,
+      if (sessionIdRef.current) {
+        statisticsService.endReadingSession(
+          sessionIdRef.current,
           mangaChapter?.pages.length,
           false // We don't know if it was completed
         ).catch(error => console.warn('Failed to end reading session:', error));
