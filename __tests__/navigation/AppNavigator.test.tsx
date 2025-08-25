@@ -15,7 +15,7 @@ interface NavigatorProps {
 
 interface ScreenProps {
   name: string;
-  component: React.ComponentType<any>;
+  component: React.ComponentType<MockScreenProps>;
 }
 
 interface MockScreenProps extends ViewProps {
