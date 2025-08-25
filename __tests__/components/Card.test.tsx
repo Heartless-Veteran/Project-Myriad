@@ -152,15 +152,14 @@ describe('Card Component', () => {
     expect(getByTestId('progress-value')).toBeTruthy();
   });
 
-  it('applies custom style when provided', () => {
     const customStyle = { backgroundColor: 'red' };
-    const { getByText } = render(
+    const { toJSON } = render(
       <Card style={customStyle}>
         <Text>Custom Content</Text>
       </Card>
     );
 
-    // Get the text element and check its parent's style contains the custom style
+    expect(toJSON()).toMatchSnapshot();
     const textElement = getByText('Custom Content');
     const cardContainer = textElement.parent;
     expect(cardContainer.props.style).toEqual(
