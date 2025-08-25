@@ -117,7 +117,17 @@ jobs:
         # gitleaks detect --source . --no-git --report-path gitleaks-report.json --exit-code 1 || {
         #   echo "❌ Error: gitleaks detected potential secrets in the codebase"
         #   exit 1
-        # }
+        # Security: Run a specialized secret scanning tool (gitleaks) for improved accuracy.
+        echo "Running gitleaks for advanced secret scanning..."
+        if ! command -v gitleaks &> /dev/null; then
+          echo "Installing gitleaks..."
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
+          chmod +x /usr/local/bin/gitleaks
+        fi
+        gitleaks detect --source . --no-git --report-path gitleaks-report.json --exit-code 1 || {
+          echo "❌ Error: gitleaks detected potential secrets in the codebase"
+          exit 1
+        }
         
     - name: Build Android APK
       # Security: Build with proper environment isolation
