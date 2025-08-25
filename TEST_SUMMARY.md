@@ -99,6 +99,7 @@ This document summarizes the unit tests created for the files changed in PR #100
 
 ## Testing Approach
 
+- **Consistent Mock Behavior:** Card component mocks are consistent across test files, properly handling press events
 - **Behavioral Testing:** Tests focus on what the components do rather than how they do it
 - **Mock Management:** Comprehensive mocking of dependencies with proper lifecycle management
 - **Value-Focused:** Tests verify meaningful outcomes and user-facing behavior
