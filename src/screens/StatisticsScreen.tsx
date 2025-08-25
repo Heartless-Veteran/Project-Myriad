@@ -80,9 +80,9 @@ const StatisticsScreen: React.FC = () => {
             style={styles.goalInput}
             value={goalInput}
             onChangeText={setGoalInput}
-            placeholder="Enter minutes (e.g., 30)"
-            placeholderTextColor="#888"
-            keyboardType="numeric"
+            placeholder='Enter minutes (e.g., 30)'
+            placeholderTextColor='#888'
+            keyboardType='numeric'
           />
 
           <View style={styles.modalButtons}>
