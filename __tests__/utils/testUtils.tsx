@@ -46,7 +46,7 @@ const createDefaultMockState = () => ({
 });
 
 // Create mock store with customizable initial state
-export const createMockStore = (initialState: Partial<RootState> = {}) => {
+export const createMockStore = (initialState: Partial<typeof defaultMockState> = {}) => {
   const defaultState = createDefaultMockState();
   const mergedState = { ...defaultState, ...initialState };
 
@@ -72,7 +72,7 @@ export const createMockStore = (initialState: Partial<RootState> = {}) => {
 // Render component with Redux provider
 export const renderWithProvider = (
   component: React.ReactElement,
-  initialState: Partial<RootState> = {}
+  initialState: Partial<typeof defaultMockState> = {}
 ) => {
   const store = createMockStore(initialState);
   return render(
@@ -84,3 +84,4 @@ export const renderWithProvider = (
 
 // Export default mock state for reference
 export const defaultMockState = createDefaultMockState();
+
