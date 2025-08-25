@@ -25,87 +25,25 @@ jest.mock('react-native', () => {
   };
 });
 
-// Mock components
+// Use shared mock components
 jest.mock('../../src/components/SearchBar', () => {
-  const { View, TextInput, TouchableOpacity, Text } = require('react-native');
-  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: any) {
-    return (
-      <View testID="search-bar">
-        <TextInput
-          testID="search-input"
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-        />
-        <TouchableOpacity testID="filter-button" onPress={onFilterPress}>
-          <Text>Filter</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  return require('../utils/mockComponents').MockSearchBar;
 });
 
 jest.mock('../../src/components/FilterPanel', () => {
-  const { View, Text } = require('react-native');
-  return function MockFilterPanel({ filters, onFiltersChange, availableGenres }: any) {
-    return (
-      <View testID="filter-panel">
-        <Text>Filter Panel</Text>
-      </View>
-    );
-  };
+  return require('../utils/mockComponents').MockFilterPanel;
 });
 
 jest.mock('../../src/components/Card', () => {
-  const { TouchableOpacity, Text } = require('react-native');
-  return function MockCard({ title, imageUrl, tags, progress, onPress }: any) {
-    return (
-      <TouchableOpacity testID={`card-${title}`} onPress={onPress}>
-        <Text testID="card-title">{title}</Text>
-        {progress !== undefined && <Text testID="card-progress">{progress}</Text>}
-      </TouchableOpacity>
-    );
-  };
+  return require('../utils/mockComponents').MockCard;
 });
 
 jest.mock('../../src/components/Button', () => {
-  const { TouchableOpacity, Text } = require('react-native');
-  return function MockButton({ title, onPress, disabled }: any) {
-    return (
-      <TouchableOpacity
-        testID={`button-${title.toLowerCase().replace(/\s+/g, '-')}`}
-        onPress={onPress}
-        disabled={disabled}
-      >
-        <Text>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+  return require('../utils/mockComponents').MockButton;
 });
 
 jest.mock('../../src/components/ContentList', () => ({
-  ContentList: function MockContentList({ data, onItemPress, onItemLongPress, renderItem, refreshControl }: any) {
-    const { View, Text, TouchableOpacity, ScrollView } = require('react-native');
-    return (
-      <ScrollView testID="content-list" refreshControl={refreshControl}>
-        {data.map((item: any, index: number) => {
-          if (renderItem) {
-            return renderItem({ item });
-          }
-          return (
-            <TouchableOpacity
-              key={item.id}
-              testID={`content-item-${item.id}`}
-              onPress={() => onItemPress(item)}
-              onLongPress={() => onItemLongPress && onItemLongPress(item)}
-            >
-              <Text>{item.title}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-    );
-  },
+  ContentList: require('../utils/mockComponents').MockContentList,
 }));
 
 // Mock data
