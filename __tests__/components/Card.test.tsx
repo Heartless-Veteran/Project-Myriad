@@ -154,7 +154,7 @@ describe('Card Component', () => {
 
   it('applies custom style when provided', () => {
     const customStyle = { backgroundColor: 'red' };
-    const { getByTestId } = render(
+    const { getByText } = render(
       <Card style={customStyle}>
         <Text>Custom Content</Text>
       </Card>
