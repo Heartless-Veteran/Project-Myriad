@@ -14,8 +14,8 @@ jest.mock('@react-navigation/native', () => {
 
 jest.mock('@react-navigation/stack', () => ({
   createStackNavigator: () => ({
-    Navigator: ({ children }: any) => children,
-    Screen: ({ name, component }: any) => {
+    Navigator: ({ children }: { children: React.ReactNode }) => children,
+    Screen: ({ name, component }: { name: string; component: React.ComponentType<any> }) => {
       const Component = component;
       return <Component testID={`screen-${name}`} />;
     },
