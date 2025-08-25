@@ -1,10 +1,9 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { fireEvent } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import LibraryScreen from '../../src/screens/LibraryScreen';
 import { Manga, Anime } from '../../src/types';
+import { renderWithProvider } from '../utils/testUtils';
 
 // Mock dependencies
 jest.mock('react-native-document-picker', () => ({
@@ -145,59 +144,6 @@ const mockAnime: Anime[] = [
     watchProgress: 0.3,
   },
 ];
-
-// Mock store
-const createMockStore = (initialState = {}) => {
-  const defaultState = {
-    library: {
-      manga: [],
-      anime: [],
-      stats: {
-        totalManga: 0,
-        totalAnime: 0,
-        totalSize: 0,
-        lastUpdated: '',
-        recentlyAdded: [],
-      },
-      recommendations: [],
-      searchResults: [],
-      isLoading: false,
-      isImporting: false,
-      error: null,
-      filters: {
-        genre: [],
-        status: [],
-        rating: 0,
-      },
-      importTasks: [],
-    },
-  };
-
-  return configureStore({
-    reducer: {
-      library: (state = defaultState.library, action) => {
-        switch (action.type) {
-          case 'library/loadLibrary/pending':
-            return { ...state, isLoading: true };
-          case 'library/loadLibrary/fulfilled':
-            return { ...state, isLoading: false, ...action.payload };
-          default:
-            return state;
-        }
-      },
-    },
-    preloadedState: { ...defaultState, ...initialState },
-  });
-};
-
-const renderWithProvider = (component: React.ReactElement, initialState = {}) => {
-  const store = createMockStore(initialState);
-  return render(
-    <Provider store={store}>
-      {component}
-    </Provider>
-  );
-};
 
 describe('LibraryScreen', () => {
   beforeEach(() => {
