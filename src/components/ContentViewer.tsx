@@ -134,16 +134,16 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
   };
 
   const getPageDimensions = (mode: ReadingMode) => {
-    const resizeMode = 'contain'; // FastImage.resizeMode.contain equivalent
+    const RESIZE_MODE = FastImage.resizeMode.contain;
     switch (mode) {
       case 'fit-width':
-        return { width, height: undefined, resizeMode };
+        return { width, height: undefined, resizeMode: RESIZE_MODE };
       case 'fit-height':
-        return { width: undefined, height, resizeMode };
+        return { width: undefined, height, resizeMode: RESIZE_MODE };
       case 'double':
-        return { width: width / 2, height, resizeMode };
+        return { width: width / 2, height, resizeMode: RESIZE_MODE };
       default:
-        return { width, height, resizeMode };
+        return { width, height, resizeMode: RESIZE_MODE };
     }
   };
 
