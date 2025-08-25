@@ -36,7 +36,8 @@ abstract class ProjectMyriadDatabase : RoomDatabase() {
                     ProjectMyriadDatabase::class.java,
                     DATABASE_NAME
                 )
-                .fallbackToDestructiveMigration() // For development - remove in production
+                // TODO: Add proper migration(s) here before production
+                // .addMigrations(MIGRATION_1_2, MIGRATION_2_3, ...) // Example
                 .build()
                 INSTANCE = instance
                 instance
