@@ -106,9 +106,9 @@ class MangaRepositoryImpl @Inject constructor(
         status: List<String>,
         minRating: Float
     ): Flow<List<Manga>> {
-        // TODO: Implement complex filtering logic
-        // For now, use simple rating filter
-        return mangaDao.getMangaByMinRating(minRating).map { entities ->
+        // Use all filter parameters: genres, status, and minRating
+        // Assumes mangaDao.getMangaFiltered is implemented to handle these filters
+        return mangaDao.getMangaFiltered(genres, status, minRating).map { entities ->
             entities.map { it.toDomain() }
         }
     }
