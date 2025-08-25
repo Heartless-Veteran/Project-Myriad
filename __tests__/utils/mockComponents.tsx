@@ -1,10 +1,21 @@
 import React from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
-import { Manga, Anime } from '../../src/types';
-
-type ContentItem = Manga | Anime;
 
 // Type definitions for mock components based on actual component interfaces
+
+// Base content item interface for ContentList
+interface ContentItem {
+  id: string;
+  title: string;
+  [key: string]: unknown;
+}
+
+// Filter interface for FilterPanel
+interface FilterState {
+  genre: string[];
+  status: string[];
+  rating: number;
+}
 
 interface MockButtonProps {
   title: string;
@@ -25,10 +36,10 @@ interface MockCardProps {
 }
 
 interface MockContentListProps {
-  data: Array<{ id: string; title: string; [key: string]: any }>;
-  onItemPress: (item: any) => void;
-  onItemLongPress?: (item: any) => void;
-  renderItem?: (item: { item: any }) => React.ReactElement;
+  data: ContentItem[];
+  onItemPress: (item: ContentItem) => void;
+  onItemLongPress?: (item: ContentItem) => void;
+  renderItem?: (item: { item: ContentItem }) => React.ReactElement;
   refreshControl?: React.ReactElement;
 }
 
@@ -40,12 +51,8 @@ interface MockSearchBarProps {
 }
 
 interface MockFilterPanelProps {
-  filters: {
-    genre: string[];
-    status: string[];
-    rating: number;
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: FilterState;
+  onFiltersChange: (filters: Partial<FilterState>) => void;
   availableGenres: string[];
 }
 
@@ -90,7 +97,7 @@ export const mockContentList = () => ({
     const { View, Text, TouchableOpacity, ScrollView } = require('react-native');
     return (
       <ScrollView testID="content-list" refreshControl={refreshControl}>
-        {data.map((item: any, index: number) => {
+        {data.map((item: ContentItem, index: number) => {
           if (renderItem) {
             return renderItem({ item });
           }
@@ -113,7 +120,7 @@ export const mockContentList = () => ({
 // Mock SearchBar component
 export const mockSearchBar = () => {
   const { View, TextInput, TouchableOpacity, Text } = require('react-native');
-  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: { value?: string; onChangeText?: (text: string) => void; onFilterPress?: () => void; placeholder?: string; }) {
+  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: MockSearchBarProps) {
     return (
       <View testID="search-bar">
         <TextInput
