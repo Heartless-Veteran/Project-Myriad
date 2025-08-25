@@ -1,122 +1,87 @@
 # Project Myriad
-## The Definitive Manga and Anime Platform
+## The Definitive Manga and Anime Platform for Android
 
-**Project Myriad** is a comprehensive Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery.
+**Project Myriad** is a next-generation, open-source Android application for manga and anime enthusiasts. Built entirely with Kotlin and Jetpack Compose, it offers a clean, performant, and deeply engaging experience, featuring a powerful local media engine and a visionary AI core.
 
 ### 🚀 Features
 
 #### 🏠 The Vault - Local Media Engine
-- **Offline-first management** with smart caching
-- Support for `.cbz`, `.cbr` manga formats
-- Support for `.mp4`, `.mkv`, `.avi` anime formats
-- Metadata scraping and organization
-- Local library management
+- **Offline-First Library:** Manage and read your local manga (`.cbz`, `.cbr`) and watch anime (`.mp4`, `.mkv`).
+- **Seamless Imports:** Easily import your existing collection.
+- **Metadata Engine:** Automatically scrapes and organizes metadata for your library.
+- **Smart Synchronization:** Keep your reading progress and library in sync (future goal).
 
-#### 🧠 AI Core - Intelligent Features
-- **OCR Translation** for manga text
-- **Art Style Matching** using computer vision
-- **AI-powered Recommendations** based on user preferences
-- **Natural Language Search** for intuitive content discovery
-- **Metadata Extraction** from cover images
+#### 🧠 AI Core - "Yume" The AI Companion
+- **AI-Powered Recommendations:** Yume learns your tastes to suggest new manga and anime you'll love.
+- **Interactive Translation:** On-device OCR to translate manga text in real-time.
+- **Art Style Analysis:** Discover new series with similar art styles.
+- **Natural Language Search:** "Show me a fantasy manga with a strong female lead" just works.
+- **Sakuga Detection:** Yume can identify and bookmark sequences of high-quality animation in anime.
 
 #### 🌐 The Browser - Online Discovery Engine
-- Extensible source system for browsing online content
-- Integration with popular manga and anime platforms
-- Unified search across multiple sources
-- Source management and configuration
+- **Extensible Source System:** A plugin-style architecture to browse and integrate with various online manga and anime sources.
+- **Unified Search:** Search across all your enabled sources at once.
+- **Track & Sync:** Integrate with services like AniList and MyAnimeList to track your progress automatically.
 
-### 📱 Platform Support
-- **Android**: Primary target platform (API 21-34)
-- **Architecture**: ARM, ARM64, x86, x86_64 support
-- **Performance**: Hermes JavaScript engine enabled
-
-### 🛠️ Technology Stack
-- **React Native 0.80.2** with TypeScript
-- **React Navigation** for seamless navigation
-- **AsyncStorage** for local data persistence
-- **SQLite** for structured data storage
-- **Fast Image** for optimized image loading
-- **WebView** for online content integration
+### 📱 Platform & Technology
+- **100% Kotlin:** Leveraging the full power of the Kotlin language.
+- **Jetpack Compose:** Modern, declarative UI for a beautiful and responsive interface.
+- **Clean Architecture & MVVM:** A robust and scalable architecture for maintainability.
+- **Coroutines & Flow:** For efficient, structured concurrency.
+- **Hilt:** For robust dependency injection.
+- **Room:** For persistent, local database storage.
+- **Retrofit & Kotlinx Serialization:** For type-safe networking.
+- **Coil:** For fast and efficient image loading.
+- **Jetpack Navigation:** For navigating between screens.
 
 ### 🏗️ Project Structure
 ```
 src/
-├── components/          # Reusable UI components
-├── screens/            # Application screens
-├── navigation/         # Navigation configuration
-├── services/           # Core business logic
-│   ├── VaultService.ts    # Local media management
-│   ├── AIService.ts       # AI-powered features
-│   └── BrowserService.ts  # Online content discovery
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── stores/             # State management
+├── data/
+│   ├── local/          # Room DB, DAOs, local data sources
+│   ├── remote/         # Retrofit services, remote data sources
+│   └── repository/     # Repository implementations
+├── domain/
+│   ├── model/          # Core data models (Manga, Chapter, etc.)
+│   ├── repository/     # Repository interfaces
+│   └── usecase/        # Business logic, use cases
+├── ui/
+│   ├── components/     # Reusable Compose components
+│   ├── navigation/     # Navigation graph and routes
+│   ├── screens/        # Feature screens (library, reader, settings)
+│   └── theme/          # M3 Theme, colors, typography
+└──di/                 # Hilt dependency injection modules
 ```
 
 ### 🚀 Getting Started
 
 #### Prerequisites
-- Node.js (>= 18.0.0)
-- Android Studio with Android SDK
-- React Native CLI
-- Java Development Kit (JDK) 11 or higher
+- Android Studio (latest stable version)
+- JDK 17 or higher
 
-#### Installation
+#### Installation & Running
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/Project-Myriad.git
+git clone https://github.com/Heartless-Veteran/Project-Myriad.git
 cd Project-Myriad
 
-# Install dependencies
-npm install
+# Open the project in Android Studio
+# Let Gradle sync and download dependencies
 
-# Note: The project uses .npmrc with legacy-peer-deps=true to handle React 19 compatibility and @react-native/babel-preset
-
-# Start Metro bundler
-npm start
-
-# Run on Android device/emulator
-npm run android
-```
-
-#### Building for Release
-```bash
-# Build release APK
-npm run build:android
-
-# The APK will be generated in:
-# android/app/build/outputs/apk/release/app-release.apk
+# Run on an Android device/emulator
+# Select the 'app' run configuration and click 'Run'
 ```
 
 ### 🧪 Testing
+The project uses JUnit and Turbine for testing.
 ```bash
-# Run tests
-npm test
-
-# Run linting
-npm run lint
+# Run unit tests from Android Studio or via Gradle
+./gradlew test
 ```
-
-### 📦 Key Dependencies
-- **@react-navigation/native**: Navigation framework
-- **react-native-fs**: File system operations
-- **react-native-sqlite-storage**: Local database
-- **react-native-fast-image**: Optimized image loading
-- **react-native-webview**: Web content integration
-- **react-native-document-picker**: File picker functionality
-- **react-native-zip-archive**: Archive handling
-
-### 🔧 Configuration
-The project uses:
-- **TypeScript** for type safety
-- **ESLint** for code quality
-- **Prettier** for code formatting
-- **Jest** for testing
-- **Metro** for bundling
-- **Hermes** for JavaScript engine
 
 ### 📋 Documentation
 - [Development Guide](docs/DEVELOPMENT.md)
+- [Improvement Plan](docs/plan.md)
 - [Dependency Management](docs/dependency-management.md)
 
 ### 📄 License
