@@ -1,35 +1,74 @@
-   */
+/**
+ * Logging Service for Project Myriad
+ * Provides centralized logging with persistent storage
+ */
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-    this.storeLogs();
+
+// Define log levels
+export enum LogLevel {
   DEBUG = 0,
-// Define log entry structure
-  /**
-   * Load logs from storage
-   */
+  INFO = 1,
+  WARN = 2,
+  ERROR = 3,
 }
+
+// Define log entry structure
+export interface LogEntry {
+  timestamp: number;
+  level: LogLevel;
+  tag: string;
+  message: string;
+  data?: any;
+}
+
+// Define storage options
+interface LogStorageOptions {
+  enabled: boolean;
+  maxEntries: number;
+  persistenceKey: string;
+}
+
+/**
+ * Centralized logging service with persistence support
  */
-class LoggingService {
+export class LoggingService {
   private static instance: LoggingService;
   private currentLogLevel: LogLevel = __DEV__ ? LogLevel.DEBUG : LogLevel.INFO;
   private logs: LogEntry[] = [];
   private storageOptions: LogStorageOptions = {
-      console.error('Failed to load logs from storage:', error);
+    enabled: true,
     maxEntries: 1000,
     persistenceKey: '@ProjectMyriad:logs',
   };
+
+  // Private constructor for singleton pattern
+  private constructor() {
+    this.loadLogs();
+  }
+
   /**
-   * Store logs to persistent storage
+   * Get singleton instance
    */
-  private async storeLogs(): Promise<void> {
-    try {
-      await AsyncStorage.setItem(
-        this.storageOptions.persistenceKey,
-        JSON.stringify(this.logs)
-      );
-    } catch (error) {
-      console.error('Failed to store logs:', error);
+  public static getInstance(): LoggingService {
+    if (!LoggingService.instance) {
+      LoggingService.instance = new LoggingService();
     }
+    return LoggingService.instance;
+  }
+
+  /**
+   * Set the current log level
+   */
+  public setLogLevel(level: LogLevel): void {
+    this.currentLogLevel = level;
+  }
+
+  /**
+   * Get the current log level
+   */
+  public getLogLevel(): LogLevel {
+    return this.currentLogLevel;
   }
 
   /**
@@ -40,16 +79,21 @@ class LoggingService {
   }
 
   /**
-   * Export logs as JSON string
+   * Log a debug message
    */
-  // Private constructor for singleton pattern
-    return JSON.stringify(this.logs, null, 2);
+  public debug(tag: string, message: string, data?: any): void {
+    this.log(LogLevel.DEBUG, tag, message, data);
+  }
 
   /**
-   * Get the current log level
-  public getLogLevel(): LogLevel {
-   * Log a warning message
+   * Log an info message
+   */
+  public info(tag: string, message: string, data?: any): void {
+    this.log(LogLevel.INFO, tag, message, data);
+  }
 
+  /**
+   * Log a warning message
    */
   public warn(tag: string, message: string, data?: any): void {
     this.log(LogLevel.WARN, tag, message, data);
@@ -122,88 +166,46 @@ class LoggingService {
 
   /**
    * Clear all logs
+   */
   public clearLogs(): void {
     this.logs = [];
     if (this.storageOptions.enabled) {
-      this.saveLogs();
+      this.storeLogs();
     }
   }
 
-  // Save logs to persistent storage
-  private async saveLogs(): Promise<void> {
-    if (!this.storageOptions.enabled) {
-      return;
-    }
-
+  /**
+   * Store logs to persistent storage
+   */
+  private async storeLogs(): Promise<void> {
     try {
-      // Only store the most recent logs up to maxEntries
-      const logsToStore = this.logs.slice(-this.storageOptions.maxEntries);
       await AsyncStorage.setItem(
         this.storageOptions.persistenceKey,
-        JSON.stringify(logsToStore)
+        JSON.stringify(this.logs)
       );
     } catch (error) {
-      console.error('Failed to save logs:', error);
+      console.error('Failed to store logs:', error);
     }
   }
 
-  // Load logs from persistent storage
+  /**
+   * Load logs from storage
+   */
   private async loadLogs(): Promise<void> {
-    if (!this.storageOptions.enabled) {
-      return;
-    }
-
     try {
       const storedLogs = await AsyncStorage.getItem(this.storageOptions.persistenceKey);
       if (storedLogs) {
         this.logs = JSON.parse(storedLogs);
       }
     } catch (error) {
-      console.error('Failed to load logs:', error);
+      console.error('Failed to load logs from storage:', error);
     }
   }
 
-  // Export logs as a string (for sharing or debugging)
+  /**
+   * Export logs as JSON string
+   */
   public exportLogs(): string {
-    return this.logs
-      .map(entry => {
-        const timestamp = new Date(entry.timestamp).toISOString();
-        const level = LogLevel[entry.level];
-        const data = entry.data ? ` | ${JSON.stringify(entry.data)}` : '';
-        return `[${timestamp}][${level}][${entry.tag}] ${entry.message}${data}`;
-      })
-      .join('\n');
-  }
-
-  // Get device info for logging context
-  public getDeviceInfo(): Record<string, any> {
-    return {
-      platform: Platform.OS,
-      version: Platform.Version,
-      isEmulator: Platform.OS === 'android' ? Platform.isTV : false, // Approximation
-      // Add more device info as needed
-    };
+    return JSON.stringify(this.logs, null, 2);
   }
 }
-
-// Export singleton instance
-export const loggingService = LoggingService.getInstance();
-
-// Export convenience methods
-export const debug = (tag: string, message: string, data?: any): void => {
-  loggingService.debug(tag, message, data);
-};
-
-export const info = (tag: string, message: string, data?: any): void => {
-  loggingService.info(tag, message, data);
-};
-
-export const warn = (tag: string, message: string, data?: any): void => {
-  loggingService.warn(tag, message, data);
-};
-
-export const error = (tag: string, message: string, data?: any): void => {
-  loggingService.error(tag, message, data);
-};
-
-export default loggingService;
