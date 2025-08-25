@@ -10,35 +10,13 @@ jest.mock('@react-navigation/native', () => ({
   }),
 }));
 
-// Mock components
+// Use shared mock components
 jest.mock('../../src/components/Button', () => {
-  const { TouchableOpacity, Text } = require('react-native');
-  return function MockButton({ title, onPress, style }: any) {
-    return (
-      <TouchableOpacity
-        testID={`button-${title.toLowerCase().replace(/\s+/g, '-')}`}
-        onPress={onPress}
-        style={style}
-      >
-        <Text>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+  return require('../utils/mockComponents').MockButton;
 });
 
 jest.mock('../../src/components/Card', () => {
-  const { TouchableOpacity, Text } = require('react-native');
-  return function MockCard({ title, imageUrl, tags, onPress }: any) {
-    return (
-      <TouchableOpacity testID={`card-${title}`} onPress={onPress}>
-        <Text testID="card-title">{title}</Text>
-        <Text testID="card-image">{imageUrl}</Text>
-        {tags && tags.map((tag: string) => (
-          <Text key={tag} testID={`card-tag-${tag}`}>{tag}</Text>
-        ))}
-      </TouchableOpacity>
-    );
-  };
+  return require('../utils/mockComponents').MockCard;
 });
 
 describe('HomeScreen', () => {
