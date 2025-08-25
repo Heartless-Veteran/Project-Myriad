@@ -18,5 +18,8 @@ module.exports = {
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|react-native-gesture-handler|react-native-reanimated|react-native-screens|react-native-safe-area-context)/)',
+  ],
   verbose: true,
 };

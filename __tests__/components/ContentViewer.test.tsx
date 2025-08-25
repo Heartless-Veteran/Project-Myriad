@@ -146,7 +146,7 @@ describe('ContentViewer Component', () => {
       );
 
       expect(getByText('Test Content')).toBeTruthy();
-      expect(getByText('Video Player Placeholder')).toBeTruthy();
+      expect(getByText(/Video Player Placeholder/)).toBeTruthy();
     });
 
     it('shows correct watch progress', () => {

@@ -13,3 +13,24 @@ jest.mock('react-native-tesseract-ocr', () => ({
   LANG_JAPANESE: 'jpn',
   LANG_CHINESE_SIMPLIFIED: 'chi_sim',
 }));
+
+// Mock react-native-fast-image
+jest.mock('react-native-fast-image', () => {
+  const { Image } = require('react-native');
+  const FastImageMock = (props) => <Image {...props} />;
+  
+  FastImageMock.priority = {
+    low: 'low',
+    normal: 'normal',
+    high: 'high',
+  };
+  
+  FastImageMock.resizeMode = {
+    contain: 'contain',
+    cover: 'cover',
+    stretch: 'stretch',
+    center: 'center',
+  };
+  
+  return FastImageMock;
+});
