@@ -1,7 +1,10 @@
-merge_protections:
-  - name: Do not merge outdated PRs
-    description: Make sure PRs are almost up to date before merging
-    if:
-      - base = main
-    success_conditions:
-      - "#commits-behind <= 5"
+pull_request_rules:
+  - name: Label conflicting pull requests
+    description: Add a label to a pull request with conflict to spot it easily
+    conditions:
+      - conflict
+      - -closed
+    actions:
+      label:
+        toggle:
+          - conflict
