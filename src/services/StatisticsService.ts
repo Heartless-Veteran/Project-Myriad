@@ -31,7 +31,7 @@ export class StatisticsService {
   ): Promise<string> {
     try {
       const session: ReadingSession = {
-        id: `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         contentId,
         contentType,
         chapterId,
