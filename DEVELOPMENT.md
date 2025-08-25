@@ -1,348 +1,339 @@
 # Project Myriad Development Guidelines
 
-This document provides essential information for developers working on Project Myriad, a native Android application built with Kotlin and Jetpack Compose for manga and anime content. Following these guidelines ensures consistency, maintainability, and quality across the codebase.
+This document provides essential information for developers working on Project Myriad, a React Native application for manga and anime content. Following these guidelines ensures consistency, maintainability, and quality across the codebase.
 
 ## Build and Configuration Instructions
 
 ### Prerequisites
 
-- Android Studio (latest stable version)
-- JDK 17 or higher
-- Kotlin 1.9+
-- Android SDK (API 21-34)
+- Node.js (v18 or higher)
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+- JDK 11
 
 ### Setting Up the Development Environment
 
 1. Clone the repository
-2. Open the project in Android Studio
-3. Let Gradle sync and download dependencies
-4. Connect an Android device or start an emulator
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
 ### Running the Application
 
-#### Debug Build
+#### Android
 
 ```bash
-# From Android Studio: Click the 'Run' button or use Shift+F10
-# From command line:
-./gradlew assembleDebug
-./gradlew installDebug
+# Start the Metro bundler
+npm start
+
+# In a separate terminal, run the Android app
+npm run android
 ```
 
-#### Release Build
+#### Building a Release APK
 
 ```bash
-# Generate a release build
-./gradlew assembleRelease
+# Generate a release build for Android
+npm run build:android
 ```
 
-The APK will be generated at `app/build/outputs/apk/release/app-release.apk`.
+The APK will be generated at `android/app/build/outputs/apk/release/app-release.apk`.
 
 ### Configuration Files
 
-- **build.gradle (Project)**: Project-level build configuration and dependencies.
-- **build.gradle (Module: app)**: App-level build configuration, dependencies, and Android settings.
-- **gradle.properties**: Gradle configuration and build optimization settings.
-- **proguard-rules.pro**: Code obfuscation and optimization rules for release builds.
+- **React Native Config**: `react-native.config.js` contains project-specific configuration.
+- **Metro Config**: `metro.config.js` configures the Metro bundler.
+- **Babel Config**: `babel.config.js` contains JavaScript transpilation settings.
+- **TypeScript Config**: `tsconfig.json` defines TypeScript compilation options.
 
 ## Testing Information
 
 ### Test Framework
 
-Project Myriad uses JUnit 5, AndroidX Test, and Turbine for testing. The test configuration is defined in:
-- `app/build.gradle`: Test dependencies and configuration
-- Test source sets: `src/test/` (unit tests) and `src/androidTest/` (instrumented tests)
+Project Myriad uses Jest and React Native Testing Library for testing. The test configuration is defined in:
+- `jest.config.js`: Main Jest configuration
+- `jest.setup.js`: Test setup and mocks
 
 ### Running Tests
 
 ```bash
-# Run unit tests
-./gradlew test
+# Run all tests
+npm test
 
-# Run instrumented tests (requires connected device/emulator)
-./gradlew connectedAndroidTest
-
-# Run a specific test class
-./gradlew test --tests="com.projectmyriad.domain.usecase.GetMangaUseCaseTest"
+# Run a specific test file
+npm test -- path/to/test.ts
 
 # Run tests with coverage report
-./gradlew testDebugUnitTestCoverage
+npm test -- --coverage
 ```
 
 ### Writing Tests
 
-Tests should be placed in appropriate directories:
-- Unit tests: `src/test/java/`
-- Instrumented tests: `src/androidTest/java/`
+Tests should be placed in the `__tests__` directory or named with `.test.ts` or `.spec.ts` suffix.
 
-#### ViewModel Test Example
+#### Component Test Example
 
-```kotlin
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import org.junit.Assert.*
+```typescript
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react-native';
+import MyComponent from '../src/components/MyComponent';
 
-@ExperimentalCoroutinesApi
-class LibraryViewModelTest {
-    
-    @Test
-    fun `when loadManga is called, then manga list is updated`() = runTest {
-        // Given
-        val repository = FakeMangaRepository()
-        val viewModel = LibraryViewModel(repository)
-        
-        // When
-        viewModel.loadManga()
-        
-        // Then
-        assertTrue(viewModel.uiState.value.manga.isNotEmpty())
-    }
-}
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    const { getByText } = render(<MyComponent title="Test" />);
+    expect(getByText('Test')).toBeTruthy();
+  });
+
+  it('handles press events', () => {
+    const onPressMock = jest.fn();
+    const { getByText } = render(<MyComponent title="Press Me" onPress={onPressMock} />);
+    fireEvent.press(getByText('Press Me'));
+    expect(onPressMock).toHaveBeenCalled();
+  });
+});
 ```
 
-#### UseCase Test Example
+#### Utility Function Test Example
 
-```kotlin
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import org.junit.Assert.*
+```typescript
+import { formatFileSize, truncateText } from '../src/utils/helpers';
 
-class GetMangaUseCaseTest {
-    
-    @Test
-    fun `when execute is called, then returns manga from repository`() = runTest {
-        // Given
-        val repository = FakeMangaRepository()
-        val useCase = GetMangaUseCase(repository)
-        
-        // When
-        val result = useCase.execute()
-        
-        // Then
-        assertTrue(result.isSuccess)
-        assertNotNull(result.getOrNull())
-    }
-}
+describe('Helper Functions', () => {
+  describe('formatFileSize', () => {
+    it('should format bytes correctly', () => {
+      expect(formatFileSize(0)).toBe('0 Bytes');
+      expect(formatFileSize(1024)).toBe('1 KB');
+      expect(formatFileSize(1048576)).toBe('1 MB');
+    });
+  });
+
+  describe('truncateText', () => {
+    it('should truncate text when it exceeds maxLength', () => {
+      const longText = 'This is a very long text that needs to be truncated';
+      expect(truncateText(longText, 20)).toBe('This is a very lon...');
+    });
+  });
+});
 ```
 
 ### Mocking Dependencies
 
-For testing with dependencies, use MockK or create fake implementations:
+For components that use external dependencies, create mocks in the test file:
 
-```kotlin
-// Mock a repository using MockK
-@Test
-fun `test with mocked repository`() {
-    // Given
-    val mockRepository = mockk<MangaRepository>()
-    every { mockRepository.getManga() } returns flowOf(listOf(testManga))
-    
-    // When
-    val useCase = GetMangaUseCase(mockRepository)
-    val result = useCase.execute()
-    
-    // Then
-    verify { mockRepository.getManga() }
-}
+```typescript
+// Mock a service
+jest.mock('../src/services/ApiService', () => ({
+  fetchData: jest.fn().mockResolvedValue({ data: 'mocked data' }),
+}));
 
-// Fake implementation for testing
-class FakeMangaRepository : MangaRepository {
-    private val manga = mutableListOf<Manga>()
-    
-    override fun getManga(): Flow<List<Manga>> = flowOf(manga.toList())
-    override suspend fun addManga(manga: Manga) {
-        this.manga.add(manga)
-    }
-}
+// Mock a hook
+jest.mock('../src/hooks/useAuth', () => ({
+  __esModule: true,
+  default: () => ({
+    user: { id: '123', name: 'Test User' },
+    isAuthenticated: true,
+    login: jest.fn(),
+    logout: jest.fn(),
+  }),
+}));
 ```
 
-## Kotlin Guidelines
+## TypeScript Guidelines
 
-### Data Classes and Types
+### Types and Interfaces
 
-- Use data classes for simple data containers
-- Use sealed classes for representing restricted hierarchies
-- Use interfaces for defining contracts
-- Place shared models in the `domain/model` package
+- Use TypeScript interfaces for defining object shapes
+- Prefer interfaces over type aliases for object definitions
+- Use type aliases for union types and complex types
+- Export all types and interfaces that are used across multiple files
+- Place shared types in the `src/types` directory
 
-```kotlin
+```typescript
 // Good
-data class UserProfile(
-    val id: String,
-    val username: String,
-    val preferences: UserPreferences
-)
-
-// Good
-sealed class ContentFormat {
-    object Manga : ContentFormat()
-    object Anime : ContentFormat()
+interface UserProfile {
+  id: string;
+  username: string;
+  preferences: UserPreferences;
 }
+
+// Good
+type ContentFormat = 'manga' | 'anime';
 ```
 
 ### Type Safety
 
-- Leverage Kotlin's null safety features
-- Use generics for reusable classes and functions
-- Add explicit return types to public functions
-- Prefer immutable data structures when possible
+- Avoid using `any` type whenever possible
+- Use generics for reusable components and functions
+- Add explicit return types to functions
+- Use union types instead of optional parameters when appropriate
 
-```kotlin
+```typescript
 // Good
-suspend fun <T : ContentItem> fetchContent(id: String): Result<T> {
-    // Implementation
+function fetchContent<T extends ContentItem>(id: string): Promise<T> {
+  // Implementation
 }
 
 // Avoid
-fun processData(data: Any?): Any? {
-    // Implementation
+function processData(data: any): any {
+  // Implementation
 }
 ```
 
-## Android Architecture Guidelines
+## React Native Guidelines
 
 ### Component Structure
 
-- Use ViewModels for UI-related data and business logic
-- Keep Activities/Fragments lightweight - delegate to ViewModels
-- Organize files with the following structure:
-  1. Package declaration and imports
-  2. Constants
-  3. Class definition
-  4. Public methods
-  5. Private methods
-- Keep classes focused on a single responsibility
-- Extract reusable logic into use cases
+- Use functional components with hooks
+- Organize component files with the following structure:
+  1. Imports
+  2. Types/Interfaces
+  3. Constants
+  4. Component definition
+  5. Styles
+- Keep components focused on a single responsibility
+- Extract reusable logic into custom hooks
 
-```kotlin
-class LibraryViewModel @Inject constructor(
-    private val getMangaUseCase: GetMangaUseCase
-) : ViewModel() {
+```typescript
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-    private val _uiState = MutableStateFlow(LibraryUiState())
-    val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
-
-    fun loadManga() {
-        viewModelScope.launch {
-            getMangaUseCase.execute()
-                .collect { manga ->
-                    _uiState.update { it.copy(manga = manga) }
-                }
-        }
-    }
+interface CardProps {
+  title: string;
+  content: string;
 }
+
+const Card: React.FC<CardProps> = ({ title, content }) => {
+  // Component logic
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.content}>{content}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    // Styles
+  },
+  title: {
+    // Styles
+  },
+  content: {
+    // Styles
+  },
+});
+
+export default Card;
 ```
 
 ### State Management
 
-- Use StateFlow and SharedFlow for reactive programming
-- Keep ViewModels lifecycle-aware and avoid memory leaks
-- Use Hilt for dependency injection
-- Follow MVVM pattern with clear separation of concerns:
-  - `View`: Compose UI components
-  - `ViewModel`: UI state and business logic coordination
-  - `Model`: Data layer (repositories, use cases)
+- Use React Context for global state when appropriate
+- Implement Redux or MobX for complex state management
+- Keep component state minimal and focused
+- Use the appropriate hooks for different state needs:
+  - `useState` for simple state
+  - `useReducer` for complex state logic
+  - `useContext` for accessing shared state
 
 ### Performance Optimization
 
-- Use LazyColumn/LazyRow for lists with many items
-- Leverage Compose's built-in optimizations (remember, derivedStateOf)
-- Use Coil for efficient image loading and caching
-- Implement proper database indexing for Room queries
-- Use Flow for reactive data streams
+- Memoize expensive calculations with `useMemo`
+- Optimize callback functions with `useCallback`
+- Use `React.memo` for components that render often but with the same props
+- Implement virtualized lists for long scrollable content
+- Use image optimization techniques for faster loading
 
 ## File Organization
 
 ### Directory Structure
 
-- Organize files by layer and feature rather than by file type
+- Organize files by feature or domain rather than by file type
 - Keep related files close to each other
 - Use consistent naming conventions
 
 ```
-src/main/java/com/projectmyriad/
-├── data/
-│   ├── local/          # Room database, DAOs, local data sources
-│   ├── remote/         # Retrofit services, API interfaces
-│   └── repository/     # Repository implementations
-├── domain/
-│   ├── model/          # Data models and entities
-│   ├── repository/     # Repository interfaces
-│   └── usecase/        # Business logic use cases
-├── ui/
-│   ├── components/     # Reusable Compose components
-│   ├── navigation/     # Navigation graphs and destinations
-│   ├── screens/        # Feature screens (library, reader, settings)
-│   └── theme/          # Material 3 theme, colors, typography
-└── di/                # Hilt dependency injection modules
+src/
+  components/     # Shared components
+  screens/        # Screen components
+  navigation/     # Navigation configuration
+  services/       # API and service integrations
+  utils/          # Utility functions
+  hooks/          # Custom hooks
+  types/          # TypeScript types and interfaces
+  assets/         # Images, fonts, etc.
+  constants/      # App constants
 ```
 
 ### Naming Conventions
 
-- Use PascalCase for class names and interfaces
-- Use camelCase for functions, variables, and package names
-- Use SCREAMING_SNAKE_CASE for constants
+- Use PascalCase for component files and component names
+- Use camelCase for utility functions, hooks, and non-component files
+- Use kebab-case for asset files
 - Add descriptive suffixes to files:
-  - `ViewModel` for ViewModels
-  - `Repository` for repositories
-  - `UseCase` for use cases
-  - `Dao` for data access objects
+  - `.component.tsx` for components
+  - `.hook.ts` for custom hooks
+  - `.service.ts` for services
+  - `.util.ts` for utilities
 
 ## Code Style
 
 ### Formatting
 
-- Use consistent indentation (4 spaces)
-- Limit line length to 120 characters
-- Follow Kotlin coding conventions
-- Use ktlint for automatic code formatting
-- Import organization: Android -> Third party -> Project
+- Use consistent indentation (2 spaces)
+- Limit line length to 100 characters
+- Use semicolons at the end of statements
+- Use single quotes for strings
+- Add trailing commas in multi-line object and array literals
 
 ### Comments and Documentation
 
-- Write self-documenting code with clear class and function names
-- Add KDoc comments for public APIs and complex functions
+- Write self-documenting code with clear variable and function names
+- Add JSDoc comments for public APIs and complex functions
 - Include comments for non-obvious code sections
-- Document data classes and interfaces with descriptive comments
+- Document component props with descriptive comments
 
-```kotlin
+```typescript
 /**
  * Fetches content from the specified source and applies filters
- * @param source The content source identifier
- * @param filters Optional filters to apply to the results
- * @return A flow of content items matching the criteria
+ * @param source - The content source identifier
+ * @param filters - Optional filters to apply to the results
+ * @returns A promise that resolves to an array of content items
  */
-suspend fun fetchContentFromSource(
-    source: String, 
-    filters: ContentFilters? = null
-): Flow<List<ContentItem>> {
-    // Implementation
+async function fetchContentFromSource(
+  source: string, 
+  filters?: ContentFilters
+): Promise<ContentItem[]> {
+  // Implementation
 }
 ```
 
 ## Testing Guidelines
 
-- Write unit tests for ViewModels, use cases, and repositories
-- Write UI tests for Compose screens and components
+- Write unit tests for utility functions and hooks
+- Write component tests for UI behavior
 - Use integration tests for critical user flows
-- Mock external dependencies using MockK or fakes
-- Aim for high test coverage of domain layer
+- Mock external dependencies in tests
+- Aim for high test coverage of core functionality
 
 ## Accessibility Guidelines
 
-- Use semantic Compose components with proper semantics
-- Add contentDescription for images and icons
-- Ensure sufficient color contrast (4.5:1 minimum)
-- Support TalkBack screen reader
-- Test with Android accessibility scanner
+- Use semantic components (`Button` instead of `TouchableOpacity` with a text)
+- Add appropriate accessibility labels
+- Ensure sufficient color contrast
+- Support screen readers
+- Test with accessibility tools
 
 ## Performance Guidelines
 
-- Use LazyColumn/LazyRow for large lists
-- Optimize Compose recomposition with remember and key
-- Minimize database queries with proper caching
-- Use Coil for efficient image loading
+- Minimize render cycles
+- Optimize image loading and caching
+- Reduce bundle size by code splitting
+- Implement efficient list rendering
 - Profile and optimize slow operations
 
 By following these guidelines, we ensure that Project Myriad maintains a high standard of code quality, performance, and user experience.
