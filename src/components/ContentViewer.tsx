@@ -193,7 +193,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
             onPress={toggleControls}
           >
             <FastImage
-              source={{ uri: pageUri, priority: 'normal' }}
+              source={{ uri: pageUri, priority: FastImage.priority.normal }}
               style={styles.doublePageImage}
               resizeMode="contain"
             />
