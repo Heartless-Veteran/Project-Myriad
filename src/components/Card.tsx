@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import ProgressBar from './ProgressBar';
 
 interface CardProps {
-  // For legacy usage
   title?: string;
   imageUrl?: string;
   onPress?: () => void;
   tags?: string[];
+  progress?: number; // Add progress prop
   
-  // For container usage
   children?: React.ReactNode;
   style?: ViewStyle;
 }
@@ -19,10 +19,10 @@ const Card: React.FC<CardProps> = ({
   imageUrl, 
   onPress, 
   tags, 
+  progress,
   children, 
   style 
 }) => {
-  // If children are provided, use as container component
   if (children) {
     return (
       <View style={[styles.containerCard, style]}>
@@ -31,7 +31,6 @@ const Card: React.FC<CardProps> = ({
     );
   }
 
-  // Legacy usage with specific props
   if (!title || !imageUrl || !onPress) {
     return (
       <View style={[styles.containerCard, style]}>
@@ -60,6 +59,9 @@ const Card: React.FC<CardProps> = ({
               </View>
             ))}
           </View>
+        )}
+        {progress !== undefined && (
+          <ProgressBar progress={progress} showPercentage style={styles.progressBar} />
         )}
       </View>
     </TouchableOpacity>
@@ -104,6 +106,7 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginBottom: 8,
   },
   tag: {
     backgroundColor: '#444',
@@ -116,6 +119,9 @@ const styles = StyleSheet.create({
   tagText: {
     color: '#FFFFFF',
     fontSize: 12,
+  },
+  progressBar: {
+    marginTop: 8,
   },
 });
 

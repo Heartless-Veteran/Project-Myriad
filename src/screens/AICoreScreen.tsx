@@ -1,10 +1,101 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+  TextInput,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { launchImageLibrary } from 'react-native-image-picker';
+import Button from '../components/Button';
+import Card from '../components/Card';
+import { ContentList } from '../components/ContentList';
+import { RootState } from '../store';
+import {
+  analyzeArtStyle,
+  clearArtStyleMatches,
+  clearTranslations,
+  extractMetadata,
+  performNaturalLanguageSearch,
+  setOfflineMode,
+  translateText,
+} from '../store/slices/aiSlice';
+
+const AICoreScreen: React.FC = () => {
+  const dispatch = useDispatch();
+  const {
+    isInitialized,
+    isProcessing,
+    isOfflineMode,
+    error,
+    translations,
+    currentTranslation,
+    artStyleMatches,
+    metadata,
+    searchResults: aiSearchResults,
+  } = useSelector((state: RootState) => state.ai);
+  const { manga, anime } = useSelector((state: RootState) => state.library);
+  const settings = useSelector((state: RootState) => state.settings);
+
+  const [activeFeature, setActiveFeature] = useState<
+    'ocr' | 'artStyle' | 'metadata' | 'search'
+  >('ocr');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (aiSearchResults) {
+      setSearchResults(aiSearchResults);
+    }
+  }, [aiSearchResults]);
+
+  const handleImagePicker = () => {
+    launchImageLibrary(
+      { mediaType: 'photo', includeBase64: true },
+      (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorMessage) {
+          console.log('ImagePicker Error: ', response.errorMessage);
+          Alert.alert('Error', 'Could not select image.');
+        } else if (response.assets && response.assets[0].base64) {
+          setSelectedImage(response.assets[0].base64);
+        }
+      }
+    );
+  };
+
+  const handleOCRTranslation = () => {
+    if (!selectedImage) {
+      Alert.alert('No Image', 'Please select an image first');
+      return;
+    }
+
+    const options = {
+      targetLanguage: settings.defaultTargetLanguage,
+      confidence: 0.8,
+    };
+
+    dispatch(translateText({ imageBase64: selectedImage, options }));
+  };
+
+  const handleArtStyleAnalysis = () => {
+    if (!selectedImage) {
+      Alert.alert('No Image', 'Please select an image first');
+      return;
     }
 
     const library = [...manga, ...anime];
     dispatch(analyzeArtStyle({ imageBase64: selectedImage, library }));
   };
 
-  const handleMetadataExtraction = async () => {
+  const handleMetadataExtraction = () => {
     if (!selectedImage) {
       Alert.alert('No Image', 'Please select an image first');
       return;
@@ -13,22 +104,59 @@
     dispatch(extractMetadata(selectedImage));
   };
 
-import React, { useState, useEffect } from 'react';
+  const handleNaturalLanguageSearch = async () => {
     if (!searchQuery.trim()) {
       Alert.alert('No Query', 'Please enter a search query');
       return;
     }
 
     const library = [...manga, ...anime];
-    const result = await dispatch(performNaturalLanguageSearch({ query: searchQuery, library }));
+    const result = await dispatch(
+      performNaturalLanguageSearch({ query: searchQuery, library })
+    );
     if (result.payload) {
       setSearchResults(result.payload.results);
     }
-  ScrollView,
-  TouchableOpacity,
+  };
+
+  const renderStatusCard = () => (
+    <Card style={styles.statusCard}>
+      <View style={styles.statusRow}>
+        <Text style={styles.statusLabel}>AI Status:</Text>
+        <Text
+          style={[
+            styles.statusValue,
+            { color: isInitialized ? '#4caf50' : '#f44336' },
+          ]}
+        >
+          {isInitialized ? 'Ready' : 'Initializing...'}
+        </Text>
+      </View>
+      <View style={styles.statusRow}>
+        <Text style={styles.statusLabel}>Mode:</Text>
+        <Text
+          style={[
+            styles.statusValue,
+            { color: isOfflineMode ? '#ff9800' : '#2196f3' },
+          ]}
+        >
+          {isOfflineMode ? 'Offline' : 'Online'}
+        </Text>
+      </View>
+      <TouchableOpacity
+        style={styles.toggleButton}
+        onPress={() => dispatch(setOfflineMode(!isOfflineMode))}
+      >
+        <Text style={styles.toggleButtonText}>
+          Switch to {isOfflineMode ? 'Online' : 'Offline'}
+        </Text>
+      </TouchableOpacity>
+    </Card>
+  );
+
   const renderFeatureButtons = () => (
     <View style={styles.featureButtons}>
-      {([
+      {[
         { key: 'ocr', title: 'OCR Translation', icon: '🔤' },
         { key: 'artStyle', title: 'Art Style', icon: '🎨' },
         { key: 'metadata', title: 'Metadata', icon: '📊' },
@@ -43,48 +171,19 @@ import React, { useState, useEffect } from 'react';
           onPress={() => setActiveFeature(key)}
         >
           <Text style={styles.featureIcon}>{icon}</Text>
-          <Text style={[
-            styles.featureButtonText,
-            activeFeature === key && styles.activeFeatureButtonText,
-          ]}>
+          <Text
+            style={[
+              styles.featureButtonText,
+              activeFeature === key && styles.activeFeatureButtonText,
+            ]}
+          >
             {title}
           </Text>
         </TouchableOpacity>
       ))}
     </View>
   );
-import { useDispatch, useSelector } from 'react-redux';
-  const renderStatusCard = () => (
-    <Card style={styles.statusCard}>
-      <View style={styles.statusRow}>
-        <Text style={styles.statusLabel}>AI Status:</Text>
-        <Text style={[
-          styles.statusValue,
-          { color: isInitialized ? '#4caf50' : '#f44336' }
-        ]}>
-          {isInitialized ? 'Ready' : 'Initializing...'}
-        </Text>
-      </View>
-      <View style={styles.statusRow}>
-        <Text style={styles.statusLabel}>Mode:</Text>
-        <Text style={[
-          styles.statusValue,
-          { color: isOfflineMode ? '#ff9800' : '#2196f3' }
-        ]}>
-          {isOfflineMode ? 'Offline' : 'Online'}
-        </Text>
-      </View>
-      <TouchableOpacity
-        style={styles.toggleButton}
-        onPress={() => dispatch(setOfflineMode(!isOfflineMode))}
-      >
-        <Text style={styles.toggleButtonText}>
-          Switch to {isOfflineMode ? 'Online' : 'Offline'}
-        </Text>
-      </TouchableOpacity>
-    </Card>
-  );
-import { ContentList } from '../components/ContentList';
+
   const renderOCRFeature = () => (
     <View style={styles.featureContainer}>
       <Text style={styles.featureTitle}>OCR Translation</Text>
@@ -146,7 +245,7 @@ import { ContentList } from '../components/ContentList';
       )}
     </View>
   );
-  const { manga, anime } = useSelector((state: RootState) => state.library);
+
   const renderArtStyleFeature = () => (
     <View style={styles.featureContainer}>
       <Text style={styles.featureTitle}>Art Style Analysis</Text>
@@ -185,24 +284,57 @@ import { ContentList } from '../components/ContentList';
             </TouchableOpacity>
           </View>
           <ContentList
-            data={artStyleMatches.map(match => match.item)}
-            onItemPress={(item) => console.log('Open similar content:', item.title)}
+            data={artStyleMatches.map((match: any) => match.item)}
+            onItemPress={(item: any) => console.log('Open similar content:', item.title)}
             style={styles.matchesList}
-            renderItem={({ item: match }) => (
-              <Card style={styles.matchItem}>
-                <Text style={styles.matchTitle}>{match.item.title}</Text>
-                <Text style={styles.matchSimilarity}>
-                  Similarity: {(match.similarity * 100).toFixed(1)}%
-                </Text>
-                <Text style={styles.matchStyle}>Style: {match.artStyle}</Text>
-              </Card>
-            )}
           />
-      title: 'Select Image',
+        </View>
       )}
     </View>
   );
-      storageOptions: {
+
+  const renderMetadataFeature = () => (
+    <View style={styles.featureContainer}>
+      <Text style={styles.featureTitle}>Metadata Extraction</Text>
+      <Text style={styles.featureDescription}>
+        Extract metadata from a cover image
+      </Text>
+
+      <Button
+        title="Select Image"
+        onPress={handleImagePicker}
+        style={styles.actionButton}
+      />
+
+      {selectedImage && (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: `data:image/jpeg;base64,${selectedImage}` }}
+            style={styles.selectedImage}
+            resizeMode="contain"
+          />
+          <Button
+            title="Extract Metadata"
+            onPress={handleMetadataExtraction}
+            disabled={isProcessing}
+            style={styles.actionButton}
+          />
+        </View>
+      )}
+
+      {metadata && (
+        <Card style={styles.translationCard}>
+          <Text style={styles.translationLabel}>Title:</Text>
+          <Text style={styles.translationText}>{metadata.title}</Text>
+          <Text style={styles.translationLabel}>Author:</Text>
+          <Text style={styles.translationText}>{metadata.author}</Text>
+          <Text style={styles.translationLabel}>Tags:</Text>
+          <Text style={styles.translationText}>{metadata.tags.join(', ')}</Text>
+        </Card>
+      )}
+    </View>
+  );
+
   const renderSearchFeature = () => (
     <View style={styles.featureContainer}>
       <Text style={styles.featureTitle}>Natural Language Search</Text>
@@ -232,7 +364,7 @@ import { ContentList } from '../components/ContentList';
             data={searchResults}
             onItemPress={(item) => console.log('Open search result:', item.title)}
             style={styles.searchResultsList}
-
+          />
         </View>
       )}
     </View>
@@ -245,7 +377,7 @@ import { ContentList } from '../components/ContentList';
       case 'artStyle':
         return renderArtStyleFeature();
       case 'metadata':
-        return renderOCRFeature(); // Metadata extraction uses similar UI
+        return renderMetadataFeature();
       case 'search':
         return renderSearchFeature();
       default:
@@ -264,13 +396,14 @@ import { ContentList } from '../components/ContentList';
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.title}>AI Core</Text>
       {renderStatusCard()}
       {renderFeatureButtons()}
 
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
-
+        </View>
       )}
 
       {isProcessing && (
@@ -282,24 +415,32 @@ import { ContentList } from '../components/ContentList';
 
       {renderActiveFeature()}
     </ScrollView>
-      targetLanguage: settings.defaultTargetLanguage,
-      confidence: 0.8,
-    };
+  );
+};
 
-    dispatch(translateText({ imageBase64: selectedImage, options }));
-  };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
     backgroundColor: '#f5f5f5',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  const handleArtStyleAnalysis = async () => {
+  },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
     color: '#666',
-      return;
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
   statusCard: {
     margin: 16,
     padding: 16,
@@ -307,8 +448,8 @@ import { ContentList } from '../components/ContentList';
   statusRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    setNlLoading(false);
-  };
+    marginBottom: 8,
+  },
   statusLabel: {
     fontSize: 16,
     color: '#666',
@@ -316,7 +457,7 @@ import { ContentList } from '../components/ContentList';
   statusValue: {
     fontSize: 16,
     fontWeight: '600',
-        <Text style={styles.title}>AI Core</Text>
+  },
   toggleButton: {
     backgroundColor: '#007AFF',
     padding: 12,
@@ -332,8 +473,8 @@ import { ContentList } from '../components/ContentList';
   featureButtons: {
     flexDirection: 'row',
     marginHorizontal: 16,
-          <Text style={styles.featureTitle}>OCR Translation</Text>
-          <Text style={styles.featureDescription}>Translate manga text in real-time using AI</Text>
+    marginBottom: 16,
+  },
   featureButton: {
     flex: 1,
     backgroundColor: 'white',
@@ -341,9 +482,12 @@ import { ContentList } from '../components/ContentList';
     margin: 2,
     borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   activeFeatureButton: {
     backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
   },
   featureIcon: {
     fontSize: 20,
@@ -384,14 +528,15 @@ import { ContentList } from '../components/ContentList';
     fontSize: 14,
   },
   featureContainer: {
-    margin: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
-          {ocrImage && <Image source={{ uri: ocrImage }} style={{ width: 100, height: 140, marginTop: 8 }} />}
-          {ocrLoading && <ActivityIndicator color="#fff" style={{ marginTop: 8 }} />}
-          {ocrResult && (
+  featureTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 8,
-              <Text style={{ color: '#fff' }}>Translated: {ocrResult.translatedText}</Text>
-              <Text style={{ color: '#aaa' }}>Confidence: {Math.round(ocrResult.confidence * 100)}%</Text>
+  },
+  featureDescription: {
     fontSize: 14,
     color: '#666',
     marginBottom: 16,
@@ -465,24 +610,6 @@ import { ContentList } from '../components/ContentList';
   matchesList: {
     maxHeight: 300,
   },
-  matchItem: {
-    padding: 12,
-    marginBottom: 8,
-  },
-  matchTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  matchSimilarity: {
-    fontSize: 14,
-    color: '#4caf50',
-    marginBottom: 2,
-  },
-  matchStyle: {
-    fontSize: 12,
-    color: '#666',
-  },
   searchInput: {
     backgroundColor: 'white',
     padding: 16,
@@ -491,106 +618,14 @@ import { ContentList } from '../components/ContentList';
     marginBottom: 16,
     minHeight: 60,
     textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   searchResultsContainer: {
     marginTop: 16,
   },
   searchResultsList: {
     maxHeight: 400,
-        </TouchableOpacity>
-
-          <Text style={styles.featureTitle}>Art Style Matching</Text>
-          <Text style={styles.featureDescription}>Find similar manga/anime by art style</Text>
-          {artImage && <Image source={{ uri: artImage }} style={{ width: 100, height: 140, marginTop: 8 }} />}
-          {artLoading && <ActivityIndicator color="#fff" style={{ marginTop: 8 }} />}
-          {artResult && artResult.length > 0 && (
-            <View style={{ marginTop: 8 }}>
-              <Text style={{ color: '#fff' }}>Matches:</Text>
-              {artResult.map((item: any, idx: number) => (
-                <Text key={idx} style={{ color: '#fff' }}>{item.title}</Text>
-              ))}
-            </View>
-          )}
-        </TouchableOpacity>
-
-        {/* Smart Recommendations */}
-        <View style={styles.featureCard}>
-          <Text style={styles.featureTitle}>Smart Recommendations</Text>
-          <Text style={styles.featureDescription}>Discover new content based on your preferences</Text>
-          <TouchableOpacity onPress={handleGetRecommendations} style={{ marginTop: 8, backgroundColor: '#333', padding: 8, borderRadius: 6 }}>
-            <Text style={{ color: '#fff' }}>Get Recommendations</Text>
-          </TouchableOpacity>
-          {recLoading && <ActivityIndicator color="#fff" style={{ marginTop: 8 }} />}
-          {recResult && (
-            <View style={{ marginTop: 8 }}>
-              <Text style={{ color: '#fff' }}>Manga: {recResult.manga.length}</Text>
-              <Text style={{ color: '#fff' }}>Anime: {recResult.anime.length}</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Natural Language Search */}
-        <View style={styles.featureCard}>
-          <Text style={styles.featureTitle}>Natural Language Search</Text>
-          <Text style={styles.featureDescription}>Search for manga/anime using natural language</Text>
-          <TextInput
-            style={{ backgroundColor: '#222', color: '#fff', marginTop: 8, borderRadius: 6, padding: 8 }}
-            placeholder="e.g. Find action manga with strong female protagonists"
-            placeholderTextColor="#888"
-            value={nlQuery}
-            onChangeText={setNlQuery}
-          />
-          <TouchableOpacity onPress={handleNaturalLanguageSearch} style={{ marginTop: 8, backgroundColor: '#333', padding: 8, borderRadius: 6 }}>
-            <Text style={{ color: '#fff' }}>Search</Text>
-          </TouchableOpacity>
-          {nlLoading && <ActivityIndicator color="#fff" style={{ marginTop: 8 }} />}
-          {nlResult && nlResult.length > 0 && (
-            <View style={{ marginTop: 8 }}>
-              {nlResult.map((item: any, idx: number) => (
-                <Text key={idx} style={{ color: '#fff' }}>{item.title}</Text>
-              ))}
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
-  content: {
-    padding: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#aaa',
-    marginBottom: 24,
-  },
-  featureCard: {
-    backgroundColor: '#232323',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
-  },
-  featureTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  featureDescription: {
-    fontSize: 15,
-    color: '#bbb',
   },
 });
 

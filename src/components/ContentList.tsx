@@ -14,27 +14,27 @@ import Card from './Card';
 export type ContentItem = Manga | Anime;
 
 interface ContentListProps {
-  title?: string;
-  items: ContentItem[];
+  data: ContentItem[];
   onItemPress: (item: ContentItem) => void;
+  onItemLongPress?: (item: ContentItem) => void;
+  renderItem?: (item: { item: ContentItem }) => React.ReactElement;
   isLoading?: boolean;
   emptyMessage?: string;
   style?: ViewStyle;
   displayMode?: 'grid' | 'list';
-  showStatus?: boolean;
-  showRating?: boolean;
+  refreshControl?: React.ReactElement;
 }
 
 const ContentList: React.FC<ContentListProps> = ({
-  title,
-  items,
+  data,
   onItemPress,
+  onItemLongPress,
+  renderItem: customRenderItem,
   isLoading = false,
   emptyMessage = 'No items found',
   style,
   displayMode = 'grid',
-  showStatus = true,
-  showRating = true,
+  refreshControl,
 }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(displayMode);
 
@@ -42,119 +42,27 @@ const ContentList: React.FC<ContentListProps> = ({
     setViewMode(viewMode === 'grid' ? 'list' : 'grid');
   };
 
-  const renderItem = ({ item }: { item: ContentItem }) => {
-    // Determine if the item is manga or anime based on presence of chapters or episodes
+  const defaultRenderItem = ({ item }: { item: ContentItem }) => {
     const isManga = 'chapters' in item;
-    
-    // Get progress information
-    const progressInfo = isManga
-      ? `${item.chapters.filter(ch => ch.isRead).length}/${item.chapters.length} chapters`
-      : `${item.episodes.filter(ep => ep.isWatched).length}/${item.episodes.length} episodes`;
-
-    const progressPercentage = isManga
-      ? (item.chapters.filter(ch => ch.isRead).length / item.chapters.length) * 100
-      : (item.episodes.filter(ep => ep.isWatched).length / item.episodes.length) * 100;
+    const progress = isManga ? item.readingProgress : item.watchProgress;
 
     return (
       <TouchableOpacity
         style={[
           styles.itemContainer,
-          viewMode === 'list' && styles.listItemContainer
+          viewMode === 'list' && styles.listItemContainer,
         ]}
         onPress={() => onItemPress(item)}
+        onLongPress={() => onItemLongPress && onItemLongPress(item)}
         activeOpacity={0.7}
       >
-        <Card style={[
-          styles.itemCard,
-          viewMode === 'list' && styles.listItemCard
-        ]}>
-          {/* Cover Image Placeholder */}
-          <View style={[
-            styles.coverImage,
-            viewMode === 'list' && styles.listCoverImage
-          ]}>
-            <Text style={styles.coverPlaceholder}>
-              {isManga ? '📖' : '🎬'}
-            </Text>
-          </View>
-
-          <View style={[
-            styles.itemDetails,
-            viewMode === 'list' && styles.listItemDetails
-          ]}>
-            <Text style={styles.itemTitle} numberOfLines={2}>
-              {item.title}
-            </Text>
-
-            {isManga && item.author && (
-              <Text style={styles.itemAuthor} numberOfLines={1}>
-                by {item.author}
-              </Text>
-            )}
-
-            {!isManga && item.studio && (
-              <Text style={styles.itemStudio} numberOfLines={1}>
-                {item.studio}
-              </Text>
-            )}
-
-            <Text style={styles.itemProgress}>
-              {progressInfo}
-            </Text>
-
-            {showStatus && (
-              <View style={styles.statusContainer}>
-                <View style={[
-                  styles.statusBadge,
-                  { backgroundColor: getStatusColor(item.status) }
-                ]}>
-                  <Text style={styles.statusText}>
-                    {item.status.toUpperCase()}
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {showRating && item.rating > 0 && (
-              <View style={styles.ratingContainer}>
-                <Text style={styles.ratingText}>
-                  ⭐ {item.rating.toFixed(1)}
-                </Text>
-              </View>
-            )}
-
-            {/* Progress Bar */}
-            <View style={styles.progressBarContainer}>
-              <View style={styles.progressBarBackground}>
-                <View
-                  style={[
-                    styles.progressBarFill,
-                    { width: `${progressPercentage}%` }
-                  ]}
-                />
-              </View>
-              <Text style={styles.progressPercentage}>
-                {progressPercentage.toFixed(0)}%
-              </Text>
-            </View>
-
-            {/* Genres */}
-            {item.genres.length > 0 && (
-              <View style={styles.genresContainer}>
-                {item.genres.slice(0, 3).map((genre, index) => (
-                  <View key={index} style={styles.genreTag}>
-                    <Text style={styles.genreText}>{genre}</Text>
-                  </View>
-                ))}
-                {item.genres.length > 3 && (
-                  <Text style={styles.moreGenres}>
-                    +{item.genres.length - 3}
-                  </Text>
-                )}
-              </View>
-            )}
-          </View>
-        </Card>
+        <Card
+          title={item.title}
+          imageUrl={item.coverImage}
+          tags={item.genres}
+          progress={progress}
+          onPress={() => onItemPress(item)}
+        />
       </TouchableOpacity>
     );
   };
@@ -174,24 +82,6 @@ const ContentList: React.FC<ContentListProps> = ({
     }
   };
 
-  const renderHeader = () => {
-    if (!title) return null;
-
-    return (
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{title}</Text>
-        <TouchableOpacity
-          style={styles.viewModeButton}
-          onPress={toggleViewMode}
-        >
-          <Text style={styles.viewModeButtonText}>
-            {viewMode === 'grid' ? '☰' : '⊞'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>{emptyMessage}</Text>
@@ -201,7 +91,6 @@ const ContentList: React.FC<ContentListProps> = ({
   if (isLoading) {
     return (
       <View style={[styles.container, style]}>
-        {renderHeader()}
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
           <Text style={styles.loadingText}>Loading content...</Text>
@@ -212,16 +101,16 @@ const ContentList: React.FC<ContentListProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      {renderHeader()}
       <FlatList
-        data={items}
-        renderItem={renderItem}
+        data={data}
+        renderItem={customRenderItem || defaultRenderItem}
         keyExtractor={(item) => item.id}
         numColumns={viewMode === 'grid' ? 2 : 1}
         key={viewMode} // Force re-render when view mode changes
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={renderEmpty}
+        refreshControl={refreshControl}
       />
     </View>
   );
