@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import type { RootState } from '../../src/store';
 
 // Default mock state structure
 const createDefaultMockState = () => ({
@@ -44,7 +45,7 @@ const createDefaultMockState = () => ({
 });
 
 // Create mock store with customizable initial state
-export const createMockStore = (initialState = {}) => {
+export const createMockStore = (initialState: Partial<RootState> = {}) => {
   const defaultState = createDefaultMockState();
   const mergedState = { ...defaultState, ...initialState };
 
@@ -70,7 +71,7 @@ export const createMockStore = (initialState = {}) => {
 // Render component with Redux provider
 export const renderWithProvider = (
   component: React.ReactElement,
-  initialState = {}
+  initialState: Partial<RootState> = {}
 ) => {
   const store = createMockStore(initialState);
   return render(
