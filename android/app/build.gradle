@@ -105,7 +105,21 @@ android {
                 storeFile file(MYAPP_RELEASE_STORE_FILE)
                 storePassword System.getenv('MYAPP_RELEASE_STORE_PASSWORD') ?: '__MISSING_MYAPP_RELEASE_STORE_PASSWORD__'
                 keyAlias System.getenv('MYAPP_RELEASE_KEY_ALIAS') ?: '__MISSING_MYAPP_RELEASE_KEY_ALIAS__'
-                keyPassword System.getenv('MYAPP_RELEASE_KEY_PASSWORD') ?: '__MISSING_MYAPP_RELEASE_KEY_PASSWORD__'
+                def storePassword = System.getenv('MYAPP_RELEASE_STORE_PASSWORD')
+                def keyAlias = System.getenv('MYAPP_RELEASE_KEY_ALIAS')
+                def keyPassword = System.getenv('MYAPP_RELEASE_KEY_PASSWORD')
+                if (!storePassword) {
+                    throw new GradleException("Missing required environment variable: MYAPP_RELEASE_STORE_PASSWORD")
+                }
+                if (!keyAlias) {
+                    throw new GradleException("Missing required environment variable: MYAPP_RELEASE_KEY_ALIAS")
+                }
+                if (!keyPassword) {
+                    throw new GradleException("Missing required environment variable: MYAPP_RELEASE_KEY_PASSWORD")
+                }
+                storePassword storePassword
+                keyAlias keyAlias
+                keyPassword keyPassword
             }
         }
     }
