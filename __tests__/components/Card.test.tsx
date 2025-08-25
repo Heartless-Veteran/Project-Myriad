@@ -107,7 +107,7 @@ describe('Card Component', () => {
       />
     );
 
-    fireEvent.press(getByTestId('fast-image').parent);
+    fireEvent.press(getByTestId('card-pressable'));
     expect(mockOnPress).toHaveBeenCalledTimes(1);
   });
 
