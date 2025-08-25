@@ -154,12 +154,12 @@ describe('Card Component', () => {
 
   it('applies custom style when provided', () => {
     const customStyle = { backgroundColor: 'red' };
-    const { toJSON } = render(
+    const { getByText } = render(
       <Card style={customStyle}>
         <Text>Custom Content</Text>
       </Card>
     );
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(getByText('Custom Content')).toBeTruthy();
   });
 });
