@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../../src/store';
 
 // Default mock state structure
@@ -52,7 +53,7 @@ export const createMockStore = (initialState: Partial<RootState> = {}) => {
   return configureStore({
     reducer: {
       ai: (state = mergedState.ai) => state,
-      library: (state = mergedState.library, action) => {
+      library: (state = mergedState.library, action: PayloadAction<any>) => {
         switch (action.type) {
           case 'library/loadLibrary/pending':
             return { ...state, isLoading: true };
