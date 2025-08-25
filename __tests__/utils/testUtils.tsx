@@ -45,6 +45,9 @@ const createDefaultMockState = () => ({
   },
 });
 
+// Export default mock state for reference
+export const defaultMockState = createDefaultMockState();
+
 // Create mock store with customizable initial state
 export const createMockStore = (initialState: Partial<typeof defaultMockState> = {}) => {
   const defaultState = createDefaultMockState();
@@ -82,6 +85,4 @@ export const renderWithProvider = (
   );
 };
 
-// Export default mock state for reference
-export const defaultMockState = createDefaultMockState();
 
