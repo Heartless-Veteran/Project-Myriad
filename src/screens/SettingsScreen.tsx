@@ -120,6 +120,29 @@ const SettingsScreen: React.FC = () => {
               ))}
             </View>
           </View>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Reading Mode</Text>
+            <View style={styles.readingModeOptions}>
+              {(['single', 'double', 'continuous', 'webtoon', 'fit-width', 'fit-height'] as const).map(mode => (
+                <TouchableOpacity
+                  key={mode}
+                  style={[
+                    styles.readingModeOption,
+                    preferences.readingMode === mode && styles.activeReadingModeOption,
+                  ]}
+                  onPress={() => updatePreference('readingMode', mode)}>
+                  <Text
+                    style={[
+                      styles.readingModeOptionText,
+                      preferences.readingMode === mode && styles.activeReadingModeOptionText,
+                    ]}>
+                    {mode.charAt(0).toUpperCase() + mode.slice(1).replace('-', ' ')}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -279,6 +302,33 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeThemeOptionText: {
+    color: '#FFFFFF',
+  },
+  readingModeOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    maxWidth: 200,
+    justifyContent: 'flex-end',
+  },
+  readingModeOption: {
+    backgroundColor: '#2c2c2c',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    margin: 2,
+    minWidth: 60,
+    alignItems: 'center',
+  },
+  activeReadingModeOption: {
+    backgroundColor: '#007BFF',
+  },
+  readingModeOptionText: {
+    color: '#CCCCCC',
+    fontSize: 11,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  activeReadingModeOptionText: {
     color: '#FFFFFF',
   },
   actionButton: {
