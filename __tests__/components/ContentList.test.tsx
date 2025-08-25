@@ -83,6 +83,7 @@ const mockAnimeItems: Anime[] = [
 // Mock the Card component since we're only testing ContentList
 jest.mock('../../src/components/Card', () => {
   const { View, Text, TouchableOpacity } = require('react-native');
+  // Mock Card as a TouchableOpacity to simulate the real Card's pressable behavior
   return function MockCard({ title, imageUrl, tags, progress, onPress, children, style }: any) {
     return (
       <TouchableOpacity testID="mock-card" style={style} onPress={onPress}>
@@ -189,7 +190,7 @@ describe('ContentList Component', () => {
     );
 
     const cards = getAllByTestId('mock-card');
-    // Press the card directly since our mock Card is a TouchableOpacity with onPress
+    // Press the first card - our mock Card is a TouchableOpacity that handles onPress
     fireEvent.press(cards[0]);
     
     expect(mockOnItemPress).toHaveBeenCalledTimes(1);
