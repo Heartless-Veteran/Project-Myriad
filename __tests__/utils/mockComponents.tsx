@@ -1,14 +1,18 @@
 import React from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
-import { ContentItem } from '../../src/components/ContentList';
+import { Manga, Anime } from '../../src/types';
 
 // Type definitions for mock components based on actual component interfaces
 
-type FilterState = {
+// Union type for content items
+type ContentItem = Manga | Anime;
+
+// Filter state type
+interface FilterState {
   genre: string[];
   status: string[];
   rating: number;
-};
+}
 
 interface MockButtonProps {
   title: string;
@@ -45,7 +49,7 @@ interface MockSearchBarProps {
 
 interface MockFilterPanelProps {
   filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+  onFiltersChange: (filters: Partial<FilterState>) => void;
   availableGenres: string[];
 }
 
