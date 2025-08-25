@@ -6,23 +6,21 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 34
         targetSdkVersion = 34
-        kotlinVersion = "1.9.24"
-        composeVersion = "2024.10.00"
-        composeCompilerVersion = "1.5.14"
-        hiltVersion = "2.51.1"
-        roomVersion = "2.6.1"
+        kotlinVersion = "1.8.22"
+        composeVersion = "2023.06.01"
+        composeCompilerVersion = "1.4.8"
+        hiltVersion = "2.47"
+        roomVersion = "2.5.2"
         retrofitVersion = "2.9.0"
     }
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:8.5.2"
+        classpath "com.android.tools.build:gradle:8.1.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.24-1.0.20"
     }
 }
 
