@@ -6,7 +6,7 @@ import Card from '../../src/components/Card';
 // Mock FastImage
 jest.mock('react-native-fast-image', () => {
   const { Image } = require('react-native');
-  const FastImageMock = (props: any) => <Image {...props} testID="fast-image" />;
+  const FastImageMock = (props: import('react-native').ImageProps) => <Image {...props} testID="fast-image" />;
   
   FastImageMock.priority = {
     low: 'low',
@@ -27,7 +27,11 @@ jest.mock('react-native-fast-image', () => {
 // Mock ProgressBar component
 jest.mock('../../src/components/ProgressBar', () => {
   const { View, Text } = require('react-native');
-  return function MockProgressBar({ progress, showPercentage }: any) {
+  interface MockProgressBarProps {
+    progress: number;
+    showPercentage?: boolean;
+  }
+  return function MockProgressBar({ progress, showPercentage }: MockProgressBarProps) {
     return (
       <View testID="progress-bar">
         <Text testID="progress-value">{progress}</Text>
