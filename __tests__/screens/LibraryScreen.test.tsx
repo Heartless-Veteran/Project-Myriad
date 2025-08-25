@@ -108,10 +108,6 @@ jest.mock('../../src/components/ContentList', () => ({
   },
 }));
 
-// Define constants used in LibraryScreen
-const PROGRESS_ADJUSTMENT_STEP = 0.1;
-const PROGRESS_ADJUSTMENT = 0.1;
-
 // Mock data
 const mockManga: Manga[] = [
   {
