@@ -1,9 +1,55 @@
-// Shared mock components used across multiple test files
+import React from 'react';
+import { ViewStyle, TextStyle } from 'react-native';
+
+// Type definitions for mock components based on actual component interfaces
+
+interface MockButtonProps {
+  title: string;
+  onPress: () => void;
+  disabled?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
+}
+
+interface MockCardProps {
+  title?: string;
+  imageUrl?: string;
+  tags?: string[];
+  progress?: number;
+  onPress?: () => void;
+  children?: React.ReactNode;
+  style?: ViewStyle;
+}
+
+interface MockContentListProps {
+  data: Array<{ id: string; title: string; [key: string]: any }>;
+  onItemPress: (item: any) => void;
+  onItemLongPress?: (item: any) => void;
+  renderItem?: (item: { item: any }) => React.ReactElement;
+  refreshControl?: React.ReactElement;
+}
+
+interface MockSearchBarProps {
+  value?: string;
+  onChangeText?: (text: string) => void;
+  onFilterPress?: () => void;
+  placeholder?: string;
+}
+
+interface MockFilterPanelProps {
+  filters: {
+    genre: string[];
+    status: string[];
+    rating: number;
+  };
+  onFiltersChange: (filters: any) => void;
+  availableGenres: string[];
+}
 
 // Mock Button component
 export const mockButton = () => {
   const { TouchableOpacity, Text } = require('react-native');
-  return function MockButton({ title, onPress, disabled, style }: any) {
+  return function MockButton({ title, onPress, disabled, style }: MockButtonProps) {
     return (
       <TouchableOpacity
         testID={`button-${title.toLowerCase().replace(/\s+/g, '-')}`}
@@ -20,7 +66,7 @@ export const mockButton = () => {
 // Mock Card component
 export const mockCard = () => {
   const { TouchableOpacity, Text, View } = require('react-native');
-  return function MockCard({ title, imageUrl, tags, progress, onPress, children, style }: any) {
+  return function MockCard({ title, imageUrl, tags, progress, onPress, children, style }: MockCardProps) {
     return (
       <TouchableOpacity testID={`card-${title || 'card'}`} style={style} onPress={onPress}>
         {children}
@@ -37,7 +83,7 @@ export const mockCard = () => {
 
 // Mock ContentList component
 export const mockContentList = () => ({
-  ContentList: function MockContentList({ data, onItemPress, onItemLongPress, renderItem, refreshControl }: any) {
+  ContentList: function MockContentList({ data, onItemPress, onItemLongPress, renderItem, refreshControl }: MockContentListProps) {
     const { View, Text, TouchableOpacity, ScrollView } = require('react-native');
     return (
       <ScrollView testID="content-list" refreshControl={refreshControl}>
@@ -64,7 +110,7 @@ export const mockContentList = () => ({
 // Mock SearchBar component
 export const mockSearchBar = () => {
   const { View, TextInput, TouchableOpacity, Text } = require('react-native');
-  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: any) {
+  return function MockSearchBar({ value, onChangeText, onFilterPress, placeholder }: MockSearchBarProps) {
     return (
       <View testID="search-bar">
         <TextInput
@@ -84,7 +130,7 @@ export const mockSearchBar = () => {
 // Mock FilterPanel component
 export const mockFilterPanel = () => {
   const { View, Text } = require('react-native');
-  return function MockFilterPanel({ filters, onFiltersChange, availableGenres }: any) {
+  return function MockFilterPanel({ filters, onFiltersChange, availableGenres }: MockFilterPanelProps) {
     return (
       <View testID="filter-panel">
         <Text>Filter Panel</Text>
