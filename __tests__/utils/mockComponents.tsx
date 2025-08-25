@@ -1,5 +1,6 @@
 import React from 'react';
 import { ViewStyle, TextStyle } from 'react-native';
+import { ContentItem } from '../../src/components/ContentList';
 
 // Type definitions for mock components based on actual component interfaces
 
@@ -28,10 +29,10 @@ interface MockCardProps {
 }
 
 interface MockContentListProps {
-  data: Array<{ id: string; title: string; [key: string]: any }>;
-  onItemPress: (item: any) => void;
-  onItemLongPress?: (item: any) => void;
-  renderItem?: (item: { item: any }) => React.ReactElement;
+  data: ContentItem[];
+  onItemPress: (item: ContentItem) => void;
+  onItemLongPress?: (item: ContentItem) => void;
+  renderItem?: (item: { item: ContentItem }) => React.ReactElement;
   refreshControl?: React.ReactElement;
 }
 
@@ -89,7 +90,7 @@ export const mockContentList = () => ({
     const { View, Text, TouchableOpacity, ScrollView } = require('react-native');
     return (
       <ScrollView testID="content-list" refreshControl={refreshControl}>
-        {data.map((item: any, index: number) => {
+        {data.map((item: ContentItem, index: number) => {
           if (renderItem) {
             return renderItem({ item });
           }
