@@ -207,6 +207,7 @@ describe('ContentList Component', () => {
     );
 
     const cards = getAllByTestId('mock-card');
+    // Test long press on the first card
     fireEvent(cards[0], 'longPress');
     
     expect(mockOnItemLongPress).toHaveBeenCalledTimes(1);
