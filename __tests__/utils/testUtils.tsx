@@ -56,7 +56,7 @@ export const createMockStore = (initialState: Partial<typeof defaultMockState> =
   return configureStore({
     reducer: {
       ai: (state = mergedState.ai) => state,
-      library: (state = mergedState.library, action: PayloadAction<any>) => {
+      library: (state = mergedState.library, action) => {
         switch (action.type) {
           case 'library/loadLibrary/pending':
             return { ...state, isLoading: true };
@@ -84,5 +84,3 @@ export const renderWithProvider = (
     </Provider>
   );
 };
-
-
