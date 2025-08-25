@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
+import { Text } from 'react-native';
 import Card from '../../src/components/Card';
 
 // Mock FastImage
