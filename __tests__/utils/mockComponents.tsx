@@ -39,12 +39,6 @@ interface MockContentListProps {
   refreshControl?: React.ReactElement;
 }
 
-interface MockSearchBarProps {
-  value?: string;
-  onChangeText?: (text: string) => void;
-  onFilterPress?: () => void;
-  placeholder?: string;
-}
 
 interface MockFilterPanelProps {
   filters: FilterState;
