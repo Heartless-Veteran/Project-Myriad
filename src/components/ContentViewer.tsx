@@ -197,7 +197,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
             <FastImage
               source={{ uri: pageUri, priority: FastImage.priority.normal }}
               style={styles.doublePageImage}
-              resizeMode="contain"
+              resizeMode={FastImage.resizeMode.contain}
             />
           </TouchableOpacity>
         ))}
