@@ -285,9 +285,8 @@ const AICoreScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <ContentList
-            data={artStyleMatches.map((match: any) => match.item)}
             data={artStyleMatches.map((match: ArtStyleMatch) => match.item)}
-            onItemPress={(item: ArtStyleItem) => console.log('Open similar content:', item.title)}
+            onItemPress={(item: Manga | Anime) => console.log('Open similar content:', item.title)}
             style={styles.matchesList}
           />
         </View>
