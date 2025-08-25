@@ -1,46 +1,53 @@
-# Review Response: Type Safety Improvements - Updated
+# Review Response: Type Safety Improvements
 
 ## Issues Addressed
 
-### 1. Type Safety in Mock Components (Line 6)
-**Review Comment:** The props for `MockButton` are typed as `any`, which violates the style guide. Please provide a specific type.
+### 1. Mock Store Duplication
+**Review Comment:** The mock store creation is duplicated across multiple test files (AICoreScreen, LibraryScreen). Consider extracting this into a shared test utility to reduce duplication and improve maintainability.
 
-**Suggested Fix:** 
-```typescript
-return function MockButton({ title, onPress, disabled, style }: { title: string; onPress: () => void; disabled?: boolean; style?: any; }) {
-```
+### 2. Type Safety in Mock Components
+**Review Comment:** The props for mock components are typed as `any`, which violates the style guide (line 30: "Avoid `any` whenever possible"). You can improve type safety by defining a local type for the props based on the actual component's props.
+
+### 3. MockFilterPanel Type Safety Issue
+**Review Comment:** The props for `MockFilterPanel` are typed as `any`, which violates the style guide. Please provide a specific type.
 
 ## Changes Made
 
-### 1. Improved Type Safety in Mock Components
-**File:** `__tests__/utils/mockComponents.tsx`
+### 1. Created Shared Test Utilities
+**File:** `__tests__/utils/testUtils.tsx`
 
-**Before:** Mock components had several `any` types that violated the style guide:
+- **`createMockStore(initialState)`**: Centralized mock store creation with configurable initial state
+- **`renderWithProvider(component, initialState)`**: Shared function for rendering Redux-connected components
+- **`defaultMockState`**: Default mock state structure for consistent testing across components
+- Supports all Redux slices: `ai`, `library`, and `settings`
+- Handles library slice actions for proper async thunk testing
+
+### 2. Updated Test Files
+
+#### AICoreScreen.test.tsx
+- Removed duplicated `createMockStore` and `renderWithProvider` functions
+- Replaced `mockAiSlice.initialState` references with `defaultMockState.ai`
+- Imported shared utilities from `../utils/testUtils`
+- Reduced file size by ~60 lines of duplicated code
+
+#### LibraryScreen.test.tsx
+- Removed duplicated `createMockStore` and `renderWithProvider` functions
+- Now uses shared utilities from `../utils/testUtils`
+- Maintained all existing test functionality
+- Reduced file size by ~50 lines of duplicated code
+
+### 3. Improved Type Safety in Mock Components
+**Files:** `__tests__/utils/mockComponents.tsx`, `__tests__/components/Card.test.tsx`
+
+**Before:** All mock components used `any` type for props
 ```typescript
-// Line 25: data: Array<{ id: string; title: string; [key: string]: any }>;
-// Line 26: onItemPress: (item: any) => void;
-// Line 27: onItemLongPress?: (item: any) => void;
-// Line 28: renderItem?: (item: { item: any }) => React.ReactElement;
-// Line 45: onFiltersChange: (filters: any) => void;
-// Line 90: {data.map((item: any, index: number) => {
+return function MockButton({ title, onPress, disabled, style }: any) {
 ```
 
-**After:** Proper TypeScript interfaces with specific types:
+**After:** Proper TypeScript interfaces based on actual component props
 ```typescript
-// Import actual types from the project
-import { Manga, Anime } from '../../src/types';
+type FilterState = { genre: string[]; status: string[]; rating: number; };
 
-// Union type for content items
-type ContentItem = Manga | Anime;
-
-// Filter state type
-interface FilterState {
-  genre: string[];
-  status: string[];
-  rating: number;
-}
-
-// Updated interfaces with specific types
 interface MockButtonProps {
   title: string;
   onPress: () => void;
@@ -49,49 +56,53 @@ interface MockButtonProps {
   textStyle?: TextStyle;
 }
 
-interface MockContentListProps {
-  data: ContentItem[];
-  onItemPress: (item: ContentItem) => void;
-  onItemLongPress?: (item: ContentItem) => void;
-  renderItem?: (item: { item: ContentItem }) => React.ReactElement;
-  refreshControl?: React.ReactElement;
-}
-
 interface MockFilterPanelProps {
   filters: FilterState;
-  onFiltersChange: (filters: Partial<FilterState>) => void;
+  onFiltersChange: (filters: FilterState) => void;
   availableGenres: string[];
 }
+
+return function MockButton({ title, onPress, disabled, style }: MockButtonProps) {
 ```
 
 **Type Definitions Added:**
-- **`ContentItem`**: Union type of `Manga | Anime` for type-safe content handling
-- **`FilterState`**: Specific interface for filter state instead of `any`
-- **`MockButtonProps`**: Proper interface with `ViewStyle` and `TextStyle` types
-- **`MockCardProps`**: Complete interface matching actual Card component props
-- **`MockContentListProps`**: Type-safe interface using `ContentItem` union type
-- **`MockSearchBarProps`**: Specific interface for search bar props
-- **`MockFilterPanelProps`**: Type-safe filter panel interface with `Partial<FilterState>`
+- **`MockButtonProps`**: Based on actual Button component interface
+- **`MockCardProps`**: Based on actual Card component interface  
+- **`MockContentListProps`**: Based on actual ContentList component interface
+- **`MockSearchBarProps`**: Based on actual SearchBar component interface
+- **`MockFilterPanelProps`**: Based on actual FilterPanel component interface
+- **`FilterState`**: Reusable type for filter state structure
 
 **Benefits of Type Safety Improvements:**
 - ✅ **Eliminates `any` usage** - Complies with style guide requirements
-- ✅ **Uses actual project types** - `Manga` and `Anime` types imported from `src/types`
-- ✅ **Better IDE support** - Full autocomplete and IntelliSense for all props
-- ✅ **Compile-time error detection** - TypeScript catches prop mismatches at build time
-- ✅ **Self-documenting code** - Clear interfaces show exactly what props are expected
-- ✅ **Refactoring safety** - Changes to actual types will surface errors in mock components
-- ✅ **Consistency** - Mock components now perfectly match actual component interfaces
-- ✅ **Type-safe content handling** - `ContentItem` union type ensures proper Manga/Anime handling
+- ✅ **Better IDE support** - Autocomplete and IntelliSense for mock component props
+- ✅ **Compile-time error detection** - TypeScript will catch prop mismatches
+- ✅ **Self-documenting code** - Clear interfaces show expected props
+- ✅ **Refactoring safety** - Changes to actual components will surface type errors in tests
+- ✅ **Consistency** - Mock components now match the actual component interfaces
+
+### 4. Fixed Test File Syntax Error
+**File:** `__tests__/components/Card.test.tsx`
+
+- Fixed malformed test function that was causing syntax errors
+- Simplified the custom style test to focus on behavior rather than implementation details
+- Ensured all test functions are properly structured and complete
+
+### 5. Updated Documentation
+- Updated `TEST_SUMMARY.md` to document the new test utilities
+- Added section explaining shared test utilities and mock components
+- Updated test running script to mention the new utilities
 
 ## Benefits
 
-1. **Complete Type Safety**: Eliminated all `any` types from mock components
-2. **Style Guide Compliance**: Now fully complies with the project's TypeScript style guide
-3. **Enhanced Developer Experience**: Full IDE support with autocomplete and error detection
-4. **Better Maintainability**: Changes to actual types automatically propagate to mock components
-5. **Improved Test Reliability**: Type checking prevents runtime errors in tests
-6. **Self-Documenting Code**: Clear interfaces make mock component usage obvious
-7. **Future-Proof**: Adding new properties to actual types will require updating mock types
+1. **Reduced Duplication**: Eliminated ~110 lines of duplicated mock store code
+2. **Improved Maintainability**: Single source of truth for mock store configuration
+3. **Enhanced Type Safety**: Replaced all `any` types with proper TypeScript interfaces
+4. **Better Developer Experience**: IDE support with autocomplete and error detection
+5. **Consistency**: All Redux-connected tests now use the same mock store structure
+6. **Extensibility**: Easy to add new slices or modify mock behavior in one place
+7. **Reusability**: Mock components can be reused across multiple test files
+8. **Better Test Organization**: Clear separation between test logic and test utilities
 
 ## Testing
-All existing tests continue to pass with the improved type safety. The mock components behave identically to the previous implementation, but now provide full TypeScript type checking and comply with the project's style guide that prohibits the use of `any` types.
+All existing tests continue to pass with the new shared utilities and improved type safety. The behavior is identical to the previous implementation, but with better code organization, maintainability, and type safety compliance with the project's style guide.
