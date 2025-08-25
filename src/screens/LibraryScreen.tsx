@@ -265,7 +265,7 @@ export const LibraryScreen: React.FC = () => {
                 <Button
                   title="-1"
                   onPress={() => {
-                    const newProgress = Math.max(0, (progress || 0) - 0.1);
+                    const newProgress = Math.max(0, (progress || 0) - PROGRESS_ADJUSTMENT_STEP);
                     if (isManga) {
                       dispatch(updateMangaProgress({ id: item.id, progress: newProgress }));
                     } else {
