@@ -1,88 +1,90 @@
 # Project Myriad
-## The Definitive Manga and Anime Platform
+## The Definitive Manga and Anime Platform - Kotlin Android Edition
 
-**Project Myriad** is a comprehensive Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery.
+**Project Myriad** is a comprehensive Kotlin Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery built with modern Android architecture.
 
 ### 🚀 Features
 
-#### 🏠 The Vault - Local Media Engine
-- **Offline-first management** with smart caching
-- Support for `.cbz`, `.cbr` manga formats
-- Support for `.mp4`, `.mkv`, `.avi` anime formats
-- Metadata scraping and organization
-- Local library management
+#### Core Functionality
+- **The Vault**: Local media management with support for .cbz/.cbr manga and .mp4/.mkv/.avi anime files
+- **AI Core**: OCR translation, art style matching, and AI-powered recommendations
+- **The Browser**: Online content discovery with extensible source system
+- **Clean Architecture**: MVVM pattern with Repository pattern, sealed Result classes
+- **Modern UI**: Jetpack Compose with Material 3 design system
 
-#### 🧠 AI Core - Intelligent Features
-- **OCR Translation** for manga text
-- **Art Style Matching** using computer vision
-- **AI-powered Recommendations** based on user preferences
-- **Natural Language Search** for intuitive content discovery
-- **Metadata Extraction** from cover images
-
-#### 🌐 The Browser - Online Discovery Engine
-- Extensible source system for browsing online content
-- Integration with popular manga and anime platforms
-- Unified search across multiple sources
-- Source management and configuration
-
-### 📱 Platform Support
-- **Android**: Primary target platform (API 21-34)
-- **Architecture**: ARM, ARM64, x86, x86_64 support
-- **Performance**: Hermes JavaScript engine enabled
+#### AI-Powered Features (In Development)
+- **Scene Recommender**: AI-driven scene and chapter recommendations
+- **AR Cosplay**: Augmented reality cosplay assistance and matching
+- **AI Voice Reader**: Text-to-speech for manga with AI voice generation
+- **Theme Matcher**: Intelligent theme and mood detection
+- **Art Style Generator**: Generate artwork in similar styles
+- **Waifu/Husbando Matcher**: Character personality and preference matching
+- **Quote Bot**: Memorable quote extraction and sharing
+- **Trivia System**: Interactive trivia based on consumed content
+- **Relationship Maps**: Character relationship visualization
+- **Episode Companion**: Context-aware episode information
+- **Mood Tracker**: Reading/watching mood analysis and recommendations
 
 ### 🛠️ Technology Stack
-- **React Native 0.80.2** with TypeScript
-- **React Navigation** for seamless navigation
-- **AsyncStorage** for local data persistence
-- **SQLite** for structured data storage
-- **Fast Image** for optimized image loading
-- **WebView** for online content integration
 
-### 🏗️ Project Structure
+- **Kotlin** - Primary programming language
+- **Jetpack Compose** - Modern Android UI toolkit
+- **Material 3** - Latest Material Design system
+- **MVVM + Clean Architecture** - Separation of concerns
+- **Room Database** - Local data persistence
+- **Hilt** - Dependency injection
+- **Retrofit** - Network operations
+- **Coil** - Image loading
+- **StateFlow/SharedFlow** - Reactive data streams
+- **Navigation Compose** - Type-safe navigation
+- **Firebase** - Authentication, cloud sync, analytics
+- **Coroutines** - Asynchronous programming
+
+### 🏗️ Architecture
+
 ```
-src/
-├── components/          # Reusable UI components
-├── screens/            # Application screens
-├── navigation/         # Navigation configuration
-├── services/           # Core business logic
-│   ├── VaultService.ts    # Local media management
-│   ├── AIService.ts       # AI-powered features
-│   └── BrowserService.ts  # Online content discovery
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── stores/             # State management
+app/
+├── data/                   # Data layer
+│   ├── database/          # Room database
+│   ├── repository/        # Repository implementations
+│   └── network/          # API services
+├── domain/               # Business logic layer
+│   ├── entities/         # Core entities
+│   ├── repository/       # Repository interfaces
+│   ├── usecases/        # Business use cases
+│   └── models/          # Domain models (Result, etc.)
+├── ui/                  # Presentation layer
+│   ├── screens/         # Compose screens
+│   ├── components/      # Reusable UI components
+│   ├── navigation/      # Navigation setup
+│   ├── theme/          # Material 3 theming
+│   └── viewmodel/      # MVVM ViewModels
+├── di/                 # Dependency injection modules
+└── utils/             # Utility functions
 ```
 
 ### 🚀 Getting Started
 
 #### Prerequisites
-- Node.js (>= 18.0.0)
-- Android Studio with Android SDK
-- React Native CLI
-- Java Development Kit (JDK) 11 or higher
+- Android Studio Hedgehog | 2023.1.1 or newer
+- JDK 11 or higher
+- Android SDK API 21-35
+- Kotlin 1.9.22
 
 #### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/Project-Myriad.git
+git clone https://github.com/Heartless-Veteran/Project-Myriad.git
 cd Project-Myriad
 
-# Install dependencies
-npm install
-
-# Note: The project uses .npmrc with legacy-peer-deps=true to handle React 19 compatibility and @react-native/babel-preset
-
-# Start Metro bundler
-npm start
-
-# Run on Android device/emulator
-npm run android
+# Open in Android Studio and sync project
+# Build and run on Android device/emulator
 ```
 
 #### Building for Release
 ```bash
 # Build release APK
-npm run build:android
+cd android && ./gradlew assembleRelease
 
 # The APK will be generated in:
 # android/app/build/outputs/apk/release/app-release.apk
@@ -90,48 +92,85 @@ npm run build:android
 
 ### 🧪 Testing
 ```bash
-# Run tests
-npm test
+# Run unit tests
+./gradlew testDebugUnitTest
 
-# Run linting
-npm run lint
+# Run instrumented tests
+./gradlew connectedDebugAndroidTest
 ```
 
 ### 📦 Key Dependencies
-- **@react-navigation/native**: Navigation framework
-- **react-native-fs**: File system operations
-- **react-native-sqlite-storage**: Local database
-- **react-native-fast-image**: Optimized image loading
-- **react-native-webview**: Web content integration
-- **react-native-document-picker**: File picker functionality
-- **react-native-zip-archive**: Archive handling
+
+#### Core Android
+- `androidx.core:core-ktx` - Kotlin extensions
+- `androidx.lifecycle:lifecycle-*` - Lifecycle components
+- `androidx.activity:activity-compose` - Compose activity integration
+
+#### UI & Design
+- `androidx.compose:compose-bom` - Compose Bill of Materials
+- `androidx.compose.material3:material3` - Material 3 components
+- `androidx.navigation:navigation-compose` - Navigation component
+
+#### Architecture
+- `androidx.room:room-*` - Local database
+- `com.google.dagger:hilt-android` - Dependency injection
+- `com.squareup.retrofit2:retrofit` - Network client
+- `io.coil-kt:coil-compose` - Image loading
+
+#### Firebase & Cloud
+- `com.google.firebase:firebase-bom` - Firebase services
+- `com.google.firebase:firebase-auth-ktx` - Authentication
+- `com.google.firebase:firebase-firestore-ktx` - Cloud database
+
+#### AI & ML
+- `com.google.mlkit:text-recognition` - OCR capabilities
+- `com.google.mlkit:translate` - Translation services
+- `io.github.sceneview:arsceneview` - AR functionality
 
 ### 🔧 Configuration
-The project uses:
-- **TypeScript** for type safety
-- **ESLint** for code quality
-- **Prettier** for code formatting
-- **Jest** for testing
-- **Metro** for bundling
-- **Hermes** for JavaScript engine
 
-### 📋 Documentation
-- [Development Guide](docs/DEVELOPMENT.md)
-- [Dependency Management](docs/dependency-management.md)
+#### Firebase Setup
+1. Create a Firebase project at https://console.firebase.google.com
+2. Add Android app with package `com.projectmyriad`
+3. Download `google-services.json` to `app/` directory
+4. Enable Authentication, Firestore, and Storage
+
+#### Local Development
+- The app works offline-first with local Room database
+- AI features gracefully degrade when services unavailable
+- Firebase integration is optional for basic functionality
+
+### 📋 Development Status
+
+- [x] Core architecture implementation (Clean Architecture + MVVM)
+- [x] Jetpack Compose UI with Material 3
+- [x] Room database with sealed Result classes
+- [x] Hilt dependency injection setup
+- [x] Basic navigation and screens
+- [ ] File import and management system
+- [ ] AI feature implementations
+- [ ] Firebase integration
+- [ ] Online content sources
+- [ ] Advanced UI features
 
 ### 📄 License
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ### 🤝 Contributing
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Follow Kotlin coding conventions and architecture patterns
+4. Add tests for new functionality
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
 ### 📞 Support
+
 For support and questions, please open an issue on GitHub.
 
 ---
 
-**Project Myriad** - Bringing manga and anime content together with the power of AI and modern mobile technology.
+**Project Myriad** - Bringing manga and anime content together with the power of AI and modern Kotlin Android development.
