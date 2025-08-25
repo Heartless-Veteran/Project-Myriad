@@ -15,6 +15,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import { ContentList } from '../components/ContentList';
+import { ArtStyleMatch, Manga, Anime } from '../types';
 import { RootState } from '../store';
 import {
   analyzeArtStyle,
