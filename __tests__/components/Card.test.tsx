@@ -160,7 +160,11 @@ describe('Card Component', () => {
       </Card>
     );
 
-    // The component should render without errors with custom style
-    expect(getByTestId).toBeDefined();
+    // Get the text element and check its parent's style contains the custom style
+    const textElement = getByText('Custom Content');
+    const cardContainer = textElement.parent;
+    expect(cardContainer.props.style).toEqual(
+      expect.arrayContaining([customStyle])
+    );
   });
 });
