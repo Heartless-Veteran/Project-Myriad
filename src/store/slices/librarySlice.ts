@@ -125,7 +125,15 @@ const librarySlice = createSlice({
     updateAnimeProgress: (state, action: PayloadAction<{ id: string; progress: number }>) => {
       const anime = state.anime.find((a) => a.id === action.payload.id);
       if (anime) {
-        anime.watchProgress = action.payload.progress;
+        const clampedProgress = Math.max(0, Math.min(1, action.payload.progress));
+        manga.readingProgress = clampedProgress;
+      }
+    },
+    updateAnimeProgress: (state, action: PayloadAction<{ id: string; progress: number }>) => {
+      const anime = state.anime.find((a) => a.id === action.payload.id);
+      if (anime) {
+        const clampedProgress = Math.max(0, Math.min(1, action.payload.progress));
+        anime.watchProgress = clampedProgress;
       }
     },
     clearError: (state) => {
