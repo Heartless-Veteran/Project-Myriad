@@ -76,6 +76,9 @@ kotlin/
 git clone https://github.com/Heartless-Veteran/Project-Myriad.git
 cd Project-Myriad
 
+# Install dependencies
+npm install
+
 # Build Android project
 cd android
 ./gradlew assembleDebug
