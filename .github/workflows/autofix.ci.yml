@@ -2,8 +2,10 @@ name: Auto-fix - Code Formatting
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, labeled]
   workflow_dispatch:
+  issues:
+    types: [labeled]
 
 permissions:
   contents: write # Needed to commit changes to the PR branch
@@ -13,8 +15,11 @@ jobs:
   autofix:
     name: Auto-format Code
     runs-on: ubuntu-latest
-    # Only run on PRs from forks or if manually triggered
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    # Run on PRs from forks, manual triggers, or when 'autofix.ci' label is added
+    if: |
+      github.event_name == 'workflow_dispatch' || 
+      github.event.pull_request.head.repo.full_name == github.repository ||
+      (github.event.action == 'labeled' && github.event.label.name == 'autofix.ci')
     
     steps:
       - name: Checkout PR branch
