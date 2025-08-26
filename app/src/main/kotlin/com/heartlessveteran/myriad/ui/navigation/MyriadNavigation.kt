@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.heartlessveteran.myriad.ui.screens.*
+import com.heartlessveteran.myriad.navigation.SettingsSection
 
 /**
  * Main navigation routes for the app
@@ -121,7 +122,7 @@ fun MyriadNavigation(navController: NavHostController) {
             
             composable(Screen.Settings.route) {
                 SettingsScreen(
-                    initialSection = SettingsSection.General, // or appropriate default section
+                    initialSection = SettingsSection.GENERAL, // or appropriate default section
                     onBackClick = { navController.popBackStack() },
                     onSectionChange = { /* handle section change if needed */ }
                 )
