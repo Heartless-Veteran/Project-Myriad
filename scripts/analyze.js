@@ -73,9 +73,9 @@ if (hasPackageJson) {
   
   // Run ESLint if available
   try {
-    const eslintOutput = safeExec('npx eslint "**/*.js" --ignore-pattern node_modules/** --ignore-pattern build/** --format compact');
+    const eslintOutput = safeExec('npx eslint . --ignore-pattern node_modules --ignore-pattern build --format compact');
     console.log('ESLint Analysis:');
-    console.log(eslintOutput);
+    console.log(eslintOutput || 'No linting issues found');
   } catch (error) {
     console.log('ESLint Analysis (with findings):');
     console.log(error.stdout || 'ESLint not configured or no issues found');
