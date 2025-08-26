@@ -117,6 +117,7 @@ function matchesPattern(filePath, patterns) {
   return patterns.some(pattern => {
     // Convert glob patterns to regex more carefully
     let regex_pattern = pattern
+      .replace(/\\/g, '\\\\')              // Escape backslashes
       .replace(/\*\*/g, '___DOUBLESTAR___')  // Temporarily replace ** 
       .replace(/\*/g, '[^/]*')              // Replace single * with [^/]*
       .replace(/___DOUBLESTAR___/g, '.*')   // Replace ** with .* (any characters including /)
