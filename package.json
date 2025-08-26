@@ -5,7 +5,7 @@
   "scripts": {
     "analyze": "node ./scripts/analyze.js",
     "test": "echo 'No tests defined for Node.js environment' && exit 0",
-    "lint": "npx eslint . --format compact || true"
+    "lint": "npx eslint . --format compact"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
