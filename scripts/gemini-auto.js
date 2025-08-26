@@ -15,12 +15,38 @@ const { execSync } = require('child_process');
 console.log('🤖 Gemini Auto - AI Code Fixer');
 console.log('===============================\n');
 
-// Configuration
+// Load configuration
+function loadConfiguration() {
+  const defaultConfig = {
+    kotlin: { enabled: true, rules: { 'null-safety': true, 'coroutine-context': true } },
+    javascript: { enabled: true, rules: { 'modern-syntax': true, 'unused-imports': true } },
+    shell: { enabled: true, rules: { 'shellcheck': true, 'best-practices': true } },
+    fixCategories: { security: true, performance: true, style: true },
+    severityThreshold: 'medium',
+    includePatterns: ['app/src/main/**/*.kt', 'src/**/*.js', 'src/**/*.ts', 'scripts/**/*.js'],
+    excludePatterns: ['**/test/**', '**/build/**', '**/node_modules/**'],
+    modelSelection: { defaultModel: 'gemini-1.5-flash', complexTaskModel: 'gemini-1.5-pro' }
+  };
+
+  try {
+    if (fs.existsSync('.gemini-rules.json')) {
+      const customConfig = JSON.parse(fs.readFileSync('.gemini-rules.json', 'utf8'));
+      return { ...defaultConfig, ...customConfig };
+    }
+  } catch (error) {
+    console.log('⚠️ Error loading .gemini-rules.json, using defaults:', error.message);
+  }
+  
+  return defaultConfig;
+}
+
+const config = loadConfiguration();
+
+// Configuration constants
 const MAX_FILES_TO_ANALYZE = 20;
 const MIN_CONTENT_LENGTH_FOR_FIX = 50;
 const MAX_API_CALLS_PER_RUN = 15;
 const MAX_FILE_SIZE = 100000; // 100KB limit for security
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 // Check API key
 const apiKey = process.env.GEMINI_API_KEY;
@@ -87,35 +113,92 @@ function validateApiResponse(response) {
   return response;
 }
 
+function matchesPattern(filePath, patterns) {
+  return patterns.some(pattern => {
+    // Convert glob patterns to regex more carefully
+    let regexPattern = pattern
+      .replace(/\\/g, '\\\\')              // Escape backslashes
+      .replace(/\*\*/g, '___DOUBLESTAR___')  // Temporarily replace ** 
+      .replace(/\*/g, '[^/]*')              // Replace single * with [^/]*
+      .replace(/___DOUBLESTAR___/g, '.*')   // Replace ** with .* (any characters including /)
+      .replace(/\./g, '\\.')               // Escape dots
+      .replace(/\//g, '\\/');              // Escape forward slashes
+    
+    const regex = new RegExp('^' + regex_pattern + '$');
+    return regex.test(filePath);
+  });
+}
+
 function findFilesToAnalyze() {
   const files = [];
 
-  // Find JavaScript/TypeScript files
-  if (fs.existsSync('src')) {
-    const jsFiles = safeExec('find src -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx"');
-    if (jsFiles) {
-      files.push(...jsFiles.trim().split('\n').filter(f => f));
+  // Enhanced file discovery with pattern matching
+  const findCommands = [];
+  
+  if (config.kotlin.enabled && fs.existsSync('app/src')) {
+    findCommands.push('find app/src -name "*.kt"');
+  }
+  
+  if (config.javascript.enabled && fs.existsSync('src')) {
+    findCommands.push('find src -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx"');
+  }
+  
+  if (config.shell.enabled) {
+    findCommands.push('find scripts -name "*.sh" 2>/dev/null || true');
+  }
+
+  // Execute find commands
+  for (const cmd of findCommands) {
+    const result = safeExec(cmd);
+    if (result) {
+      files.push(...result.trim().split('\n').filter(f => f && f.trim()));
     }
   }
 
-  // Find Kotlin files
-  if (fs.existsSync('app/src')) {
-    const ktFiles = safeExec('find app/src -name "*.kt"');
-    if (ktFiles) {
-      files.push(...ktFiles.trim().split('\n').filter(f => f));
-    }
-  }
-
-  // Add package.json and build files
+  // Add config files
   const configFiles = ['package.json', 'build.gradle.kts', 'app/build.gradle.kts'].filter(f => fs.existsSync(f));
   files.push(...configFiles);
 
-  return files.slice(0, MAX_FILES_TO_ANALYZE);
+  // Apply include/exclude patterns
+  let filteredFiles = files.filter(file => {
+    if (config.excludePatterns.some(p => matchesPattern(file, [p]))) return false;
+    return config.includePatterns.length === 0 || config.includePatterns.some(p => matchesPattern(file, [p]));
+  });
+  
+  console.log(`📋 After filtering: ${filteredFiles.length} files`);
+
+  return filteredFiles.slice(0, MAX_FILES_TO_ANALYZE);
 }
 
-async function callGeminiAPI(prompt) {
+// Enhanced model selection based on task complexity
+function selectGeminiModel(filePath, content, issueCount = 0) {
+  const { modelSelection } = config;
+  const thresholds = modelSelection.complexityThresholds || {};
+  
+  // Check complexity indicators
+  const isLargeFile = content.length > (thresholds.fileSize || 50000);
+  const hasManyIssues = issueCount > (thresholds.issueCount || 10);
+  const isKotlinClass = filePath.endsWith('.kt') && /class\s+\w+/.test(content) && thresholds.kotlinClass !== false;
+  
+  if (isLargeFile || hasManyIssues || isKotlinClass) {
+    console.log(`🧠 Using advanced model for complex task: ${path.basename(filePath)}`);
+    return modelSelection.complexTaskModel || 'gemini-1.5-pro';
+  }
+  
+  return modelSelection.defaultModel || 'gemini-1.5-flash';
+}
+
+function getGeminiApiUrl(model) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
+
+async function callGeminiAPI(prompt, filePath, content, issueCount = 0) {
   // Security: Sanitize input before sending to API
   const sanitizedPrompt = sanitizeInput(prompt);
+  
+  // Select appropriate model based on complexity
+  const model = selectGeminiModel(filePath, content, issueCount);
+  const apiUrl = getGeminiApiUrl(model);
   
   const payload = {
     contents: [{
@@ -133,7 +216,7 @@ async function callGeminiAPI(prompt) {
   };
 
   try {
-    const response = await fetch(GEMINI_API_URL, {
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -206,11 +289,83 @@ function analyzeCodeWithLinters() {
 
 function detectBasicCodeIssues(filePath, content) {
   const issues = [];
+  const lines = content.split('\n');
   
-  if (filePath.endsWith('.js') || filePath.endsWith('.ts')) {
-    // Basic JavaScript/TypeScript issue detection
-    const lines = content.split('\n');
+  if (filePath.endsWith('.kt')) {
+    // Enhanced Kotlin-specific issue detection
+    if (config.kotlin.rules['null-safety']) {
+      // Detect potential null pointer exceptions
+      lines.forEach((line, index) => {
+        if (/(?<!\?)\.[a-zA-Z]/.test(line) && !/^\s*import/.test(line)) {
+        // 1. Ignore lines using safe call operator (?.)
+        if (line.includes('?.')) return;
+        // 2. Ignore lines using scope functions (let, also, run, apply, with)
+        if (/\b(let|also|run|apply|with)\b/.test(line)) return;
+        // 3. Match chained access like: object.property.method
+        //    This regex matches a dot, followed by an identifier, followed by another dot
+        const chainedAccessPattern = /\.[a-zA-Z_$][a-zA-Z0-9_$]*\./;
+        if (chainedAccessPattern.test(line)) {
+          issues.push({
+            line: index + 1,
+            message: 'Potential null pointer exception - consider using safe call operator',
+            severity: 'warning',
+            category: 'security',
+            ruleId: 'null-safety'
+          });
+        }
+      });
+    }
     
+    if (config.kotlin.rules['coroutine-context']) {
+      // Detect improper coroutine context usage
+      const content_lower = content.toLowerCase();
+      if (content_lower.includes('launch') || content_lower.includes('async')) {
+        if (!content_lower.includes('dispatchers')) {
+          issues.push({
+            line: 1,
+            message: 'Coroutine launched without explicit dispatcher context',
+            severity: 'warning',
+            category: 'performance',
+            ruleId: 'coroutine-context'
+          });
+        }
+      }
+    }
+            line: lines.findIndex(l => l.includes('data class')) + 1 || 1,
+    if (config.kotlin.rules['data-class-conventions']) {
+      // Check for data class best practices
+      if (content.includes('data class')) {
+        const hasEquals = content.includes('override fun equals');
+        const hasHashCode = content.includes('override fun hashCode');
+        if (hasEquals !== hasHashCode) {
+          issues.push({
+            line: 1,
+            message: 'Data class should override both equals() and hashCode() or neither',
+            severity: 'warning',
+            category: 'style',
+            ruleId: 'data-class-conventions'
+          });
+        }
+      }
+    }
+  } else if (filePath.endsWith('.js') || filePath.endsWith('.ts')) {
+    // Enhanced JavaScript/TypeScript issue detection
+    if (config.javascript.rules['modern-syntax']) {
+      // Detect var usage
+      lines.forEach((line, index) => {
+        if (/\bvar\s+/.test(line) && !line.trim().startsWith('//')) {
+          issues.push({
+            line: index + 1,
+            message: 'Use const or let instead of var',
+            severity: 'warning',
+            category: 'style',
+            ruleId: 'no-var'
+          });
+        }
+      });
+    }
+    
+    // Keep existing basic checks
     lines.forEach((line, index) => {
       // Detect unused variables (basic pattern)
       if (line.match(/^\s*(var|let|const)\s+\w+.*=.*;\s*$/)) {
@@ -219,6 +374,8 @@ function detectBasicCodeIssues(filePath, content) {
           issues.push({
             line: index + 1,
             message: `'${varName}' is assigned a value but never used`,
+            severity: 'warning',
+            category: 'style',
             ruleId: 'no-unused-vars'
           });
         }
@@ -230,6 +387,8 @@ function detectBasicCodeIssues(filePath, content) {
         issues.push({
           line: index + 1,
           message: 'Missing semicolon',
+          severity: 'error',
+          category: 'style',
           ruleId: 'semi'
         });
       }
@@ -239,10 +398,53 @@ function detectBasicCodeIssues(filePath, content) {
         issues.push({
           line: index + 1,
           message: 'Missing space before opening paren',
+          severity: 'warning',
+          category: 'style',
           ruleId: 'space-before-function-paren'
         });
       }
     });
+  } else if (filePath.endsWith('.sh')) {
+    // Shell script analysis
+    if (config.shell.rules['best-practices']) {
+      if (!content.startsWith('#!/')) {
+        issues.push({
+          line: 1,
+          message: 'Shell script should start with shebang line',
+          severity: 'warning',
+          category: 'style',
+          ruleId: 'shebang-required'
+        });
+      }
+      
+      // Check for unquoted variables
+      // Detect unquoted shell variables (explicit approach)
+      // This checks for $VAR or ${VAR} outside of double/single quotes and not in comments.
+      lines.forEach((line, index) => {
+        if (!line.trim().startsWith('#')) {
+          // Find all $VAR and ${VAR} occurrences
+          const variablePattern = /\$(\{?[a-zA-Z_][a-zA-Z0-9_]*\}?)/g;
+          let match;
+          while ((match = variablePattern.exec(line)) !== null) {
+            // Check if the variable is inside double or single quotes
+            const varIndex = match.index;
+            const before = line.slice(0, varIndex);
+            const doubleQuotes = (before.match(/"/g) || []).length;
+            const singleQuotes = (before.match(/'/g) || []).length;
+            // If not inside quotes (odd number of quotes before), flag it
+            if (doubleQuotes % 2 === 0 && singleQuotes % 2 === 0) {
+              issues.push({
+                line: index + 1,
+                message: 'Variable should be quoted to prevent word splitting',
+                severity: 'warning',
+                category: 'security',
+                ruleId: 'quote-variables'
+              });
+            }
+          }
+        }
+      });
+    }
   }
   
   return issues;
@@ -287,33 +489,97 @@ function hasActualIssuesToFix() {
 }
 
 function createFixPrompt(fileContent, fileName, lintIssues = []) {
-  let prompt = `You are an expert code fixer. Please analyze the following code and provide ONLY the fixed code with improvements for:
-
-1. Fix all linting/syntax errors
-2. Optimize performance where possible
-3. Apply security best practices
-4. Improve code formatting and style
-5. Add missing error handling
-
-File: ${fileName}
-
-`;
+  const fileExt = path.extname(fileName).toLowerCase();
+  const enabledCategories = Object.keys(config.fixCategories).filter(cat => config.fixCategories[cat]);
+  
+  let prompt = `You are an expert ${getLanguageName(fileExt)} code fixer. Please analyze the following code and provide ONLY the fixed code with improvements.\n\n`;
+  
+  prompt += `ENABLED FIX CATEGORIES (only apply fixes from these categories):\n`;
+  if (enabledCategories.includes('security')) prompt += `- SECURITY: Fix potential vulnerabilities and apply security best practices\n`;
+  if (enabledCategories.includes('performance')) prompt += `- PERFORMANCE: Optimize code for better performance and efficiency\n`;
+  if (enabledCategories.includes('style')) prompt += `- STYLE: Improve code formatting, naming conventions, and readability\n`;
+  if (enabledCategories.includes('architecture')) prompt += `- ARCHITECTURE: Ensure proper design patterns and architectural compliance\n`;
+  if (enabledCategories.includes('testing')) prompt += `- TESTING: Add or improve test coverage and testing practices\n`;
+  
+  // Add language-specific guidance
+  if (fileExt === '.kt') {
+    prompt += `\nKOTLIN-SPECIFIC RULES:\n`;
+    if (config.kotlin.rules['null-safety']) prompt += `- Apply null-safety best practices and safe call operators\n`;
+    if (config.kotlin.rules['coroutine-context']) prompt += `- Ensure proper coroutine context and dispatcher usage\n`;
+    if (config.kotlin.rules['compose-performance']) prompt += `- Optimize Jetpack Compose performance and avoid unnecessary recompositions\n`;
+    if (config.kotlin.rules['hilt-injection']) prompt += `- Follow proper dependency injection patterns with Hilt\n`;
+  } else if (fileExt === '.js' || fileExt === '.ts') {
+    prompt += `\nJAVASCRIPT/TYPESCRIPT RULES:\n`;
+    if (config.javascript.rules['modern-syntax']) prompt += `- Use modern JavaScript/TypeScript syntax (const/let, arrow functions, async/await)\n`;
+    if (config.javascript.rules['unused-imports']) prompt += `- Remove unused imports and variables\n`;
+    if (config.javascript.rules['async-await']) prompt += `- Prefer async/await over Promise chains\n`;
+  }
+  
+  prompt += `\nFile: ${fileName}\nSeverity Threshold: ${config.severityThreshold}\n\n`;
 
   if (lintIssues.length > 0) {
-    prompt += `Linting issues to fix:
-${lintIssues.map(issue => `- Line ${issue.line}: ${issue.message} (${issue.ruleId})`).join('\n')}
-
-`;
+    // Categorize issues
+    const categorizedIssues = categorizeIssues(lintIssues);
+    
+    prompt += `DETECTED ISSUES TO FIX:\n`;
+    Object.entries(categorizedIssues).forEach(([category, issues]) => {
+      if (issues.length > 0 && enabledCategories.includes(category.toLowerCase())) {
+        prompt += `\n${category.toUpperCase()} ISSUES:\n`;
+        issues.forEach(issue => {
+          prompt += `- Line ${issue.line}: ${issue.message}${issue.ruleId ? ` (${issue.ruleId})` : ''}\n`;
+        });
+      }
+    });
+    prompt += '\n';
   }
 
   prompt += `Original code:
-\`\`\`
+\`\`\`${getLanguageName(fileExt).toLowerCase()}
 ${fileContent}
 \`\`\`
 
-Please provide ONLY the fixed code without explanations. The response should be the complete corrected file content that can directly replace the original file.`;
+IMPORTANT: 
+- Provide ONLY the fixed code without explanations or markdown formatting
+- The response should be the complete corrected file content 
+- Only apply fixes from the enabled categories listed above
+- Maintain the original file structure and functionality
+- Add educational comments for significant changes when appropriate`;
 
   return prompt;
+}
+
+function getLanguageName(extension) {
+  switch (extension) {
+    case '.kt': return 'Kotlin';
+    case '.js': return 'JavaScript';
+    case '.ts': return 'TypeScript';
+    case '.jsx': return 'JSX';
+    case '.tsx': return 'TSX';
+    case '.sh': return 'Shell';
+    default: return 'Code';
+  }
+}
+
+function categorizeIssues(issues) {
+  const categories = {
+    Security: [],
+    Performance: [],
+    Style: [],
+    Architecture: [],
+    Testing: []
+  };
+  
+  issues.forEach(issue => {
+    const category = issue.category || 'Style'; // Default to Style if no category
+    const categoryKey = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+    if (categories[categoryKey]) {
+      categories[categoryKey].push(issue);
+    } else {
+      categories.Style.push(issue); // Fallback to Style
+    }
+  });
+  
+  return categories;
 }
 
 async function fixFile(filePath) {
@@ -340,8 +606,13 @@ async function fixFile(filePath) {
   // Removed redundant per-file lint issue check (handled by pre-check)
 
   try {
-    const prompt = createFixPrompt(originalContent, filePath, lintIssues.messages || []);
-    const fixedContent = await callGeminiAPI(prompt);
+    // Combine linting issues and basic issues for comprehensive analysis
+    const allIssues = [...(lintIssues?.messages || [])];
+    const basicIssues = detectBasicCodeIssues(filePath, originalContent);
+    allIssues.push(...basicIssues);
+    
+    const prompt = createFixPrompt(originalContent, filePath, allIssues);
+    const fixedContent = await callGeminiAPI(prompt, filePath, originalContent, allIssues.length);
 
     // Extract code from response if it's wrapped in code blocks
     let cleanedContent = fixedContent;
@@ -391,8 +662,27 @@ async function fixFile(filePath) {
 
     // Apply fix if all validations pass
     fs.writeFileSync(filePath, cleanedContent);
-    console.log(`✅ Fixed: ${filePath}`);
-    return true;
+    
+    // Create categorized fix report
+    const fixReport = {
+      file: filePath,
+      originalSize: originalContent.length,
+      fixedSize: cleanedContent.length,
+      issuesFixed: allIssues.length,
+      categories: categorizeIssues(allIssues)
+    };
+    
+    console.log(`✅ Fixed: ${path.basename(filePath)}`);
+    console.log(`   📊 Issues resolved: ${allIssues.length}`);
+    
+    // Log category breakdown
+    Object.entries(fixReport.categories).forEach(([category, issues]) => {
+      if (issues.length > 0) {
+        console.log(`   🔧 ${category}: ${issues.length} issues`);
+      }
+    });
+    
+    return fixReport;
     
   } catch (error) {
     console.log(`❌ Error fixing ${filePath}:`, error.message);
@@ -425,7 +715,7 @@ async function runAutoFix() {
 
   console.log('🤖 Issues detected - proceeding with AI analysis...\n');
   
-  let totalFixed = 0;
+  let fixReports = [];
   let apiCallCount = 0;
 
   for (const file of files) {
@@ -436,9 +726,9 @@ async function runAutoFix() {
     }
     
     try {
-      const fixed = await fixFile(file);
-      if (fixed) { 
-        totalFixed++; 
+      const result = await fixFile(file);
+      if (result && typeof result === 'object') { 
+        fixReports.push(result);
         apiCallCount++;
       }
     } catch (error) {
@@ -447,9 +737,48 @@ async function runAutoFix() {
     }
   }
 
-  console.log(`\n📊 Summary: ${totalFixed}/${files.length} files fixed (${apiCallCount} API calls used)`);
+  // Generate comprehensive report
+  console.log('\n' + '='.repeat(50));
+  console.log('📊 GEMINI AUTO FIX REPORT');
+  console.log('='.repeat(50));
+  
+  if (fixReports.length > 0) {
+    const totalIssues = fixReports.reduce((sum, report) => sum + report.issuesFixed, 0);
+    const categoryStats = {};
+    
+    fixReports.forEach(report => {
+      Object.entries(report.categories).forEach(([category, issues]) => {
+        categoryStats[category] = (categoryStats[category] || 0) + issues.length;
+      });
+    });
+    
+    console.log(`🔧 Files processed: ${fixReports.length}/${files.length}`);
+    console.log(`📋 Total issues fixed: ${totalIssues}`);
+    console.log(`🔌 API calls used: ${apiCallCount}/${MAX_API_CALLS_PER_RUN}`);
+    
+    console.log('\n📈 Fix Categories:');
+    Object.entries(categoryStats)
+      .sort(([,a], [,b]) => b - a)
+      .forEach(([category, count]) => {
+        if (count > 0) {
+          const icon = getCategoryIcon(category);
+          console.log(`   ${icon} ${category}: ${count} issues`);
+        }
+      });
+    
+    console.log('\n📁 Files Modified:');
+    fixReports.forEach(report => {
+      console.log(`   ✅ ${path.basename(report.file)}`);
+      console.log(`      └─ ${report.issuesFixed} issues resolved`);
+    });
+    
+  } else {
+    console.log('ℹ️ No fixes applied');
+  }
+  
+  console.log('='.repeat(50));
 
-  if (totalFixed > 0) {
+  if (fixReports.length > 0) {
     // Run final linter check only if fixes were applied
     console.log('\n🔍 Running final lint check...');
     const finalLintResult = safeExec('npx eslint . --fix --quiet');
@@ -458,7 +787,18 @@ async function runAutoFix() {
     }
   }
 
-  return totalFixed > 0;
+  return fixReports.length > 0;
+}
+
+function getCategoryIcon(category) {
+  const icons = {
+    'Security': '🔒',
+    'Performance': '⚡',
+    'Style': '📏',
+    'Architecture': '🏗️',
+    'Testing': '🧪'
+  };
+  return icons[category] || '🔧';
 }
 
 // Add fetch polyfill for Node.js
