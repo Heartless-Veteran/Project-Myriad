@@ -112,7 +112,7 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     
     // Image Loading
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
     
     // Firebase - Optional features (commented out for core build)
     // implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
