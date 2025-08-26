@@ -18,7 +18,7 @@ jobs:
     
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # We need to fetch the branch history to push changes back to it
           ref: ${{ github.head_ref }}
