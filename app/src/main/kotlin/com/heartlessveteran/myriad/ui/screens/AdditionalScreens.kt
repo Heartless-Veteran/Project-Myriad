@@ -483,7 +483,7 @@ fun AICoreScreen() {
         // Mood Tracker Feature
         item {
             AIFeatureCard(
-                icon = Icons.Default.Mood,
+                icon = Icons.Default.SentimentSatisfied,
                 title = "Mood Tracker",
                 description = "Track your emotional responses to different series",
                 status = "Experimental",
