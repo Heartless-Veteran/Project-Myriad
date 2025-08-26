@@ -184,7 +184,7 @@ async function fixFile(filePath) {
     }
 
     // Only apply fix if content actually changed and is valid
-    if (cleanedContent.trim() !== originalContent.trim() && cleanedContent.length > 10) {
+    if (cleanedContent.trim() !== originalContent.trim() && cleanedContent.length > MIN_CONTENT_LENGTH_FOR_FIX) {
       // Basic validation - ensure we haven't broken the file structure
       if (filePath.endsWith('.json')) {
         try {
