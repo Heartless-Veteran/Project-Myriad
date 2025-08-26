@@ -159,11 +159,11 @@ function findFilesToAnalyze() {
   const configFiles = ['package.json', 'build.gradle.kts', 'app/build.gradle.kts'].filter(f => fs.existsSync(f));
   files.push(...configFiles);
 
-  // Apply include/exclude patterns - simplified for now
-  let filteredFiles = files;
-  
-  // Simple exclusion: remove test files
-  filteredFiles = filteredFiles.filter(file => !file.includes('/test/'));
+  // Apply include/exclude patterns
+  let filteredFiles = files.filter(file => {
+    if (config.excludePatterns.some(p => matchesPattern(file, [p]))) return false;
+    return config.includePatterns.length === 0 || config.includePatterns.some(p => matchesPattern(file, [p]));
+  });
   
   console.log(`📋 After filtering: ${filteredFiles.length} files`);
 
