@@ -1,2 +1,27 @@
-- name: Add To GitHub projects
-  uses: actions/add-to-project@244f685bbc3b7adfa8466e08b698b5577571133e # v1.0.2
+name: Project Management - Add to GitHub Projects
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  add-to-project:
+    name: Add to Project Board
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Add To GitHub Projects
+        uses: actions/add-to-project@v1.0.2
+        with:
+          # You can get this from the project URL: https://github.com/users/USERNAME/projects/PROJECT_NUMBER
+          # or https://github.com/orgs/ORGNAME/projects/PROJECT_NUMBER  
+          project-url: https://github.com/users/Heartless-Veteran/projects/1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
