@@ -106,7 +106,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     
     // Permissions
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
     
     // File handling
     implementation("androidx.documentfile:documentfile:1.0.1")
@@ -125,7 +125,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.2.1")
     
     // AR for cosplay features
-    implementation("io.github.sceneview:arsceneview:0.10.0")
+    implementation("io.github.sceneview:arsceneview:0.10.2")
     
     // JSON parsing
     implementation("com.google.code.gson:gson:2.13.1")
