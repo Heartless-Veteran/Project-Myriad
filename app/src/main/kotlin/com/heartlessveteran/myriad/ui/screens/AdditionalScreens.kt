@@ -97,7 +97,7 @@ fun AICoreScreen() {
             title = { 
                 Text(
                     text = "AI Core",
-                    color = com.projectmyriad.ui.theme.AIAccent,
+                    color = com.heartlessveteran.myriad.ui.theme.AIAccent,
                     fontWeight = FontWeight.Bold
                 )
             }

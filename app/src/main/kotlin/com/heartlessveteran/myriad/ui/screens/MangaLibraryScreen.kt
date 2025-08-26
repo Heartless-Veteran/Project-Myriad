@@ -2,6 +2,7 @@ package com.heartlessveteran.myriad.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -88,7 +89,7 @@ fun MangaLibraryScreen(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(MangaFilter.values()) { filter ->
+            items(MangaFilter.values().toList()) { filter ->
                 FilterChip(
                     onClick = { viewModel.applyFilter(filter) },
                     label = { Text(getFilterDisplayName(filter)) },
@@ -125,7 +126,7 @@ fun MangaLibraryScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = uiState.errorMessage,
+                                text = uiState.errorMessage ?: "Unknown error",
                                 color = MaterialTheme.colorScheme.error
                             )
                             Button(onClick = { viewModel.refresh() }) {
