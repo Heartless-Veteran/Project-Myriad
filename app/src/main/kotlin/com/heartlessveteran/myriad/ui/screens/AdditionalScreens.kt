@@ -781,9 +781,9 @@ fun WatchingScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    initialSection: com.heartlessveteran.myriad.navigation.SettingsSection = com.heartlessveteran.myriad.navigation.SettingsSection.GENERAL,
+    initialSection: SettingsSection = SettingsSection.GENERAL,
     onBackClick: () -> Unit = {},
-    onSectionChange: (com.heartlessveteran.myriad.navigation.SettingsSection) -> Unit = {}
+    onSectionChange: (SettingsSection) -> Unit = {}
 ) {
     var currentSection by remember { mutableStateOf(initialSection) }
     
