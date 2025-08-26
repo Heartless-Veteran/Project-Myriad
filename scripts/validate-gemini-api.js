@@ -34,7 +34,6 @@ if (!apiKey) {
 console.log('🔍 Validating API key format...');
 if (apiKey.length < 30) {
   console.log('⚠️  **Warning**: API key appears to be too short. Expected length is typically 40+ characters.');
-  console.log('   Current length:', apiKey.length);
   console.log('   Please verify your API key from Google AI Studio.\n');
 }
 
