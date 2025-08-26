@@ -21,14 +21,19 @@ private val json = Json {
 /**
  * Convert MangaEntity (database) to Manga (domain)
  */
-fun MangaEntity.toDomain(): Manga {
+/**
+ * Convert MangaEntity (database) to Manga (domain)
+ * @param chapters List of chapters for this manga. Must be provided by the caller.
+ * If chapters are not available, pass emptyList().
+ */
+fun MangaEntity.toDomain(chapters: List<Chapter> = emptyList()): Manga {
     return Manga(
         id = id,
         title = title,
         author = author,
         description = description,
         coverImage = coverImage,
-        chapters = emptyList(), // TODO: Load chapters separately
+        chapters = chapters,
         genres = parseStringList(genres),
         status = MangaStatus.valueOf(status),
         rating = rating,
