@@ -8,7 +8,7 @@ const MAX_KOTLIN_FILES_ANALYZED = 10; // Limit to avoid timeout during analysis
 
 console.log('--- GitAuto-AI Analysis Report ---');
 console.log(`Report generated on: ${new Date().toISOString()}`);
-console.log("-------------------------------------\n");
+console.log('-------------------------------------\n');
 
 // Helper function to safely execute commands
 function safeExec(command, options = {}) {
@@ -70,7 +70,7 @@ console.log();
 if (hasPackageJson) {
   console.log('Node.js/JavaScript Analysis:');
   console.log('=============================');
-  
+
   // Run ESLint if available
   try {
     const eslintOutput = safeExec(
@@ -88,7 +88,7 @@ if (hasPackageJson) {
 if (hasGradleBuild) {
   console.log('Android/Kotlin Analysis:');
   console.log('========================');
-  
+
   // Analyze Gradle build files
   console.log('Gradle Build File Analysis:');
   if (fs.existsSync('build.gradle.kts')) {
@@ -98,31 +98,31 @@ if (hasGradleBuild) {
       console.log('- Kotlin plugin detected');
     }
   }
-  
+
   if (fs.existsSync('app/build.gradle.kts')) {
     const appBuildContent = fs.readFileSync('app/build.gradle.kts', 'utf8');
     console.log('- App build.gradle.kts found');
-    
+
     // Extract key information without running Gradle
     const targetSdk = appBuildContent.match(/targetSdk = (\d+)/)?.[1];
     const minSdk = appBuildContent.match(/minSdk = (\d+)/)?.[1];
     const versionName = appBuildContent.match(/versionName = "([^"]+)"/)?.[1];
-    
-    if (targetSdk) console.log(`- Target SDK: ${targetSdk}`);
-    if (minSdk) console.log(`- Min SDK: ${minSdk}`);
-    if (versionName) console.log(`- Version: ${versionName}`);
+
+    if (targetSdk) {console.log(`- Target SDK: ${targetSdk}`);}
+    if (minSdk) {console.log(`- Min SDK: ${minSdk}`);}
+    if (versionName) {console.log(`- Version: ${versionName}`);}
   }
-  
+
   // Analyze Kotlin source structure
   console.log('\nKotlin Source Analysis:');
   const kotlinFiles = findKotlinFiles('app/src');
   console.log(`- Found ${kotlinFiles.length} Kotlin source files`);
-  
+
   // Basic static analysis of Kotlin files
   let totalLines = 0;
   let classCount = 0;
   let functionCount = 0;
-  
+
   kotlinFiles.slice(0, MAX_KOTLIN_FILES_ANALYZED).forEach(file => { // Analyze first N files to avoid timeout
     try {
       const content = fs.readFileSync(file, 'utf8');
@@ -133,7 +133,7 @@ if (hasGradleBuild) {
       // Skip files that can't be read
     }
   });
-  
+
   console.log(`- Sample analysis (first ${MAX_KOTLIN_FILES_ANALYZED} files):`);
   console.log(`  - Total lines: ${totalLines}`);
   console.log(`  - Classes found: ${classCount}`);
