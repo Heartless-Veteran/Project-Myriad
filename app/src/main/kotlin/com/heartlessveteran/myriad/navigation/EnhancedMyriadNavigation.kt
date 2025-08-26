@@ -45,6 +45,18 @@ val bottomNavItems = listOf(
  * Enhanced navigation component with type-safe navigation
  */
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Hosts the app's navigation graph with a scaffolded layout and a type-safe bottom navigation.
+ *
+ * Sets up a NavHost (start destination HOME) containing main screens (Home, Manga Library, Anime Library,
+ * Browse, AI Core), detail flows (Manga/Anime detail), reading/watching flows (with argument validation),
+ * Search and Settings screens. The bottom navigation bar is shown only for the primary destinations listed
+ * in `bottomNavItems`; tapping an item navigates via `navigationService` with state-preserving nav options.
+ *
+ * Side effects:
+ * - Initializes the provided NavigationService with the given NavHostController.
+ * - Observes navigation events from the NavigationService.
+ */
 @Composable
 fun EnhancedMyriadNavigation(
     navController: NavHostController,
@@ -409,7 +421,14 @@ fun EnhancedMyriadNavigation(
 }
 
 /**
- * Get route pattern for destination
+ * Returns the top-level navigation route string corresponding to the given Destination.
+ *
+ * Maps specific top-level Destination variants (Home, MangaLibrary, AnimeLibrary, Browse, AICore)
+ * to their NavigationRoutes constants. For destinations that do not correspond to a top-level
+ * bottom-navigation route, an empty string is returned.
+ *
+ * @param destination The destination to map to a route pattern.
+ * @return The route string for the given destination, or an empty string if none.
  */
 private fun getRoutePattern(destination: Destination): String {
     return when (destination) {

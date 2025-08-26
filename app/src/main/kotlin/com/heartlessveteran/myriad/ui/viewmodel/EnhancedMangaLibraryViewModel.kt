@@ -86,7 +86,16 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Initialize library data
+     * Starts collection of repository flows to load and keep the library state up to date.
+     *
+     * Combines the repository's `getAllManga()` and `getLibraryManga()` flows, builds a normalized
+     * map of all manga and a set of library IDs, then updates the ViewModel UI state with:
+     * - the normalized `allManga` map,
+     * - the current `libraryMangaIds`,
+     * - the `filteredMangaIds` computed by applying the current search, filter, and sort,
+     * - and recalculated library `statistics`.
+     *
+     * Errors emitted by the combined flow are delegated to `handleError`.
      */
     private fun initializeLibrary() {
         launchWithErrorHandling {
@@ -124,7 +133,13 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Search manga with debouncing
+     * Update the current search query and recompute the filtered manga IDs.
+     *
+     * Recomputes filteredMangaIds by applying the text search to the current
+     * allManga and libraryMangaIds using the active selectedFilter and sortOrder,
+     * then updates the UI state with the new query and resulting IDs.
+     *
+     * @param query The search text to apply (case-insensitive matching performed by the filter logic).
      */
     fun searchManga(query: String) {
         updateUiState { currentState ->
@@ -144,7 +159,12 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Apply filter to manga list
+     * Sets the active library filter and recomputes the set of visible manga IDs.
+     *
+     * Updates the ViewModel UI state by changing `selectedFilter` and recalculating
+     * `filteredMangaIds` using the current library, search query, and sort order.
+     *
+     * @param filter The MangaFilter to apply (e.g., ALL, FAVORITES, READING).
      */
     fun applyFilter(filter: MangaFilter) {
         updateUiState { currentState ->
@@ -164,7 +184,13 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Change sort order
+     * Update the current sort order and recompute the visible library list.
+     *
+     * Replaces the state's `sortOrder` with the provided value and recomputes
+     * `filteredMangaIds` using the existing search query and selected filter so the
+     * UI reflects the new ordering immediately.
+     *
+     * @param sortOrder The new sort order to apply.
      */
     fun changeSortOrder(sortOrder: SortOrder) {
         updateUiState { currentState ->
@@ -184,7 +210,13 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Toggle favorite status with optimistic updates
+     * Toggle the favorite flag for a manga with an optimistic UI update.
+     *
+     * Performs an immediate local flip of the manga's `isFavorite` state to provide a responsive UI,
+     * then calls the repository to persist the change. If the repository call fails, the local change
+     * is reverted and the error is delegated to the view model's error handler.
+     *
+     * @param mangaId The ID of the manga to toggle favorite for.
      */
     fun toggleFavorite(mangaId: String) {
         launchWithErrorHandling(showLoading = false) {
@@ -218,7 +250,12 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Remove manga from library with confirmation
+     * Remove a manga from the user's library.
+     *
+     * Attempts to remove the manga with the given ID via the repository. This runs asynchronously and does not show a loading indicator.
+     * On error the ViewModel's error handler is invoked; on success the UI state is refreshed through the repository flows.
+     *
+     * @param mangaId The ID of the manga to remove from the library.
      */
     fun removeFromLibrary(mangaId: String) {
         launchWithErrorHandling(showLoading = false) {
@@ -230,7 +267,11 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Refresh library data
+     * Refreshes the library by reloading data from the repository.
+     *
+     * Marks the UI as refreshing while the operation runs, re-initializes the library data,
+     * and updates `lastSyncTime` on completion. Any errors are handled by the ViewModel's
+     * error-handling mechanism.
      */
     fun refresh() {
         updateUiState { it.copy(isRefreshing = true) }
@@ -242,7 +283,12 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Get filtered manga list for UI
+     * Returns the list of Manga objects currently visible in the UI after applying search, filters, and sorting.
+     *
+     * The order of the returned list follows the ordering of `filteredMangaIds` from the UI state.
+     * Any IDs present in `filteredMangaIds` that are missing from `allManga` are skipped.
+     *
+     * @return A list of Manga corresponding to the current filtered and sorted IDs.
      */
     fun getFilteredManga(): List<Manga> {
         val currentState = currentUiState
@@ -252,14 +298,29 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Get manga by ID
+     * Retrieve a Manga from the normalized UI state by its unique ID.
+     *
+     * @param id The manga's unique identifier.
+     * @return The corresponding [Manga] if present in the library state, or `null` if not found.
      */
     fun getMangaById(id: String): Manga? {
         return currentUiState.allManga[id]
     }
     
     /**
-     * Apply filters and sorting with normalized state
+     * Filter and sort library manga returning the ordered set of manga IDs.
+     *
+     * Applies a case-insensitive text search (matches title, author, or description), a category filter
+     * (based on the provided MangaFilter), and the requested SortOrder. Manga IDs that are not present
+     * in the provided allManga map are ignored. Progress-based sorting treats items with non-positive
+     * totalChapters as progress = 0.
+     *
+     * @param allManga Map of all known Manga keyed by ID.
+     * @param libraryIds IDs that represent the current library subset to consider.
+     * @param searchQuery Text query to filter by title, author, or description; empty/blank means no text filtering.
+     * @param filter Category filter to apply (e.g., FAVORITES, READING, COMPLETED, etc.).
+     * @param sortOrder Sort order to apply to the filtered results.
+     * @return A Set of manga IDs in the order determined by the applied sorting (iteration order reflects the sort).
      */
     private fun applyFiltersAndSort(
         allManga: Map<String, Manga>,
@@ -321,7 +382,15 @@ class EnhancedMangaLibraryViewModel @Inject constructor(
     }
     
     /**
-     * Calculate library statistics
+     * Compute aggregated library statistics for the provided set of manga IDs.
+     *
+     * Builds the subset of Manga from `libraryIds` using `allManga` and returns counts used for analytics:
+     * total manga, favorites, currently reading (in-progress), completed, on hold, and dropped.
+     *
+     * @param allManga Map of manga ID to Manga objects used to resolve the library entries.
+     * @param libraryIds Set of manga IDs representing the current library subset to analyze.
+     * @return LibraryStatistics containing counts for totalManga, favoritesCount, readingCount,
+     * completedCount, onHoldCount, and droppedCount.
      */
     private fun calculateStatistics(
         allManga: Map<String, Manga>,
