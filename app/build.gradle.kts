@@ -208,7 +208,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 // JaCoCo Test Coverage Configuration
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = "0.8.13"
 }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
