@@ -52,10 +52,25 @@ jobs:
           fi
           echo "Analysis report size: $(wc -c < analysis-report.txt) bytes"
       
-      # Step 7: Send the analysis report to the Gemini API
-      - name: Get Gemini suggestions
+      # Step 7: Validate API key and send the analysis report to the Gemini API
+      - name: Validate API key and get Gemini suggestions
         id: ai_suggestions
         run: |
+          # Check if API key is set
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "GEMINI_API_KEY secret is not configured" >&2
+            echo '{"error": {"message": "GEMINI_API_KEY secret is not configured. Please add it in repository Settings > Secrets and variables > Actions"}}' > ai-response.json
+            exit 0
+          fi
+          
+          # Validate API key format (should be a long string starting with expected pattern)
+          API_KEY="${{ secrets.GEMINI_API_KEY }}"
+          if [ ${#API_KEY} -lt 30 ]; then
+            echo "GEMINI_API_KEY appears to be too short or invalid" >&2
+            echo '{"error": {"message": "GEMINI_API_KEY appears to be invalid (too short). Please verify your API key from Google AI Studio"}}' > ai-response.json
+            exit 0
+          fi
+          
           # Read the analysis report content from the file.
           REPORT_CONTENT=$(cat analysis-report.txt)
           
@@ -69,22 +84,61 @@ jobs:
               }]
             }')
 
-          # Make the API call using curl and save the response.
+          # Test API connectivity first with a minimal request
+          echo "Testing Gemini API connectivity..."
+          TEST_PAYLOAD='{"contents": [{"parts": [{"text": "test"}]}]}'
+          
+          # Make a test API call to validate authentication
           if ! curl -s -w "%{http_code}" "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
             -H "Content-Type: application/json" \
-            -H "x-api-key: ${{ secrets.GEMINI_API_KEY }}" \
+            -H "x-api-key: $API_KEY" \
+            -d "$TEST_PAYLOAD" \
+            -o test-response.json > test_http_code.txt; then
+            echo "Failed to connect to Gemini API" >&2
+            echo '{"error": {"message": "Network error: Failed to connect to Gemini API. Check your internet connection and API endpoint availability"}}' > ai-response.json
+            exit 0
+          fi
+          
+          TEST_HTTP_CODE=$(cat test_http_code.txt)
+          echo "Test API call HTTP response code: $TEST_HTTP_CODE"
+          
+          if [ "$TEST_HTTP_CODE" -eq 403 ]; then
+            echo "Authentication failed - HTTP 403" >&2
+            echo '{"error": {"message": "Authentication failed (HTTP 403). Your GEMINI_API_KEY is invalid, expired, or lacks required permissions. Please regenerate your API key at https://makersuite.google.com/app/apikey"}}' > ai-response.json
+            exit 0
+          elif [ "$TEST_HTTP_CODE" -eq 429 ]; then
+            echo "API quota exceeded - HTTP 429" >&2
+            echo '{"error": {"message": "API quota exceeded (HTTP 429). You have reached your Gemini API usage limits. Please check your quota at Google AI Studio or try again later"}}' > ai-response.json
+            exit 0
+          elif [ "$TEST_HTTP_CODE" -ne 200 ]; then
+            TEST_RESPONSE=$(cat test-response.json 2>/dev/null || echo "No response body")
+            echo "API test failed with HTTP $TEST_HTTP_CODE" >&2
+            echo "{\"error\": {\"message\": \"API test failed with HTTP $TEST_HTTP_CODE. Response: $TEST_RESPONSE\"}}" > ai-response.json
+            exit 0
+          fi
+          
+          echo "API key validation successful, proceeding with full analysis..."
+
+          # Make the main API call using curl and save the response.
+          if ! curl -s -w "%{http_code}" "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: $API_KEY" \
             -d "$JSON_PAYLOAD" \
             -o ai-response.json > http_code.txt; then
-            echo "API call failed" >&2
-            echo '{"error": {"message": "Failed to connect to Gemini API"}}' > ai-response.json
+            echo "Main API call failed" >&2
+            echo '{"error": {"message": "Network error during main API call to Gemini API"}}' > ai-response.json
           else
             HTTP_CODE=$(cat http_code.txt)
-            echo "Gemini API HTTP response code: $HTTP_CODE"
+            echo "Main Gemini API HTTP response code: $HTTP_CODE"
             if [ "$HTTP_CODE" -ne 200 ]; then
-              echo "API returned non-200 status code: $HTTP_CODE" >&2
-              echo "{\"error\": {\"message\": \"API returned HTTP $HTTP_CODE\"}}" > ai-response.json
+              RESPONSE_BODY=$(cat ai-response.json 2>/dev/null || echo "No response body")
+              echo "Main API call failed with HTTP $HTTP_CODE" >&2
+              echo "{\"error\": {\"message\": \"Main API call failed with HTTP $HTTP_CODE\", \"response\": \"$RESPONSE_BODY\"}}" > ai-response.json
             fi
           fi
+          
+          # Clean up temporary files
+          rm -f test-response.json test_http_code.txt
 
       # Step 8: Post the Gemini suggestions as a comment on the pull request
       - name: Post Gemini suggestions to PR
@@ -101,7 +155,7 @@ jobs:
               aiResponse = fs.readFileSync('ai-response.json', 'utf8');
               responseJson = JSON.parse(aiResponse);
             } catch (error) {
-              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Failed to parse AI response. The Gemini API may be unavailable or the API key may be invalid.\n\n**Technical Details**: " + error.message + "\n\nPlease check:\n1. GEMINI_API_KEY is correctly configured\n2. API quota limits are not exceeded\n3. Gemini API service is available";
+              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Failed to parse AI response.\n\n**Technical Details**: " + error.message + "\n\n🔧 **Possible Causes**:\n- The Gemini API may be unavailable or experiencing issues\n- Network connectivity problems during API call\n- Malformed response from the API\n\n**Troubleshooting Steps**:\n1. **Wait and Retry**: Try triggering the workflow again in a few minutes\n2. **Check API Status**: Visit [Google Cloud Status](https://status.cloud.google.com/)\n3. **Verify API Key**: Ensure GEMINI_API_KEY is correctly configured in GitHub Secrets\n4. **API Key Setup**: If not configured, see [setup instructions](../README.md#ai-code-review-setup)\n\n---\n*This is typically a temporary issue. Please try again later.*";
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -114,11 +168,73 @@ jobs:
             // Check if the response has the expected structure
             if (!responseJson.candidates || responseJson.candidates.length === 0) {
               let errorDetails = "Invalid API response structure";
+              let troubleshootingSteps = [];
+              
               if (responseJson.error) {
                 errorDetails = "API Error: " + (responseJson.error.message || 'Unknown error');
+                
+                // Provide specific troubleshooting based on error message
+                if (responseJson.error.message.includes("GEMINI_API_KEY secret is not configured")) {
+                  troubleshootingSteps = [
+                    "🔑 **Configure GEMINI_API_KEY Secret**:",
+                    "   1. Go to repository **Settings > Secrets and variables > Actions**",
+                    "   2. Click **New repository secret**", 
+                    "   3. Name: `GEMINI_API_KEY`",
+                    "   4. Value: Your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)",
+                    "",
+                    "📚 **How to get a Gemini API Key**:",
+                    "   1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)",
+                    "   2. Sign in with your Google account",
+                    "   3. Click **Create API Key**",
+                    "   4. Copy the generated key and add it as a GitHub secret"
+                  ];
+                } else if (responseJson.error.message.includes("invalid") || responseJson.error.message.includes("403")) {
+                  troubleshootingSteps = [
+                    "🔑 **API Key Issues**:",
+                    "   - Your API key may be expired, invalid, or lack permissions",
+                    "   - **Regenerate your API key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)",
+                    "   - **Update the secret**: Go to Settings > Secrets and variables > Actions",
+                    "",
+                    "🔍 **Verification Steps**:",
+                    "   1. Ensure the API key is correctly copied (no extra spaces)",
+                    "   2. Verify the key has access to Gemini API",
+                    "   3. Check if your Google Cloud project has billing enabled (if required)"
+                  ];
+                } else if (responseJson.error.message.includes("quota") || responseJson.error.message.includes("429")) {
+                  troubleshootingSteps = [
+                    "📊 **API Quota Exceeded**:",
+                    "   - You've reached your Gemini API usage limits",
+                    "   - **Check quotas**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) or Google Cloud Console",
+                    "   - **Wait and retry**: Quotas typically reset daily",
+                    "",
+                    "💡 **Solutions**:",
+                    "   1. Wait for quota reset (usually 24 hours)",
+                    "   2. Upgrade your Google Cloud billing plan if needed",
+                    "   3. Consider using a different API key with available quota"
+                  ];
+                } else {
+                  troubleshootingSteps = [
+                    "🔧 **General Troubleshooting**:",
+                    "   1. **Verify API Key**: Ensure GEMINI_API_KEY is correctly configured in GitHub Secrets",
+                    "   2. **Check API Status**: Visit [Google Cloud Status](https://status.cloud.google.com/)",
+                    "   3. **Regenerate Key**: Create a new API key at [Google AI Studio](https://makersuite.google.com/app/apikey)",
+                    "   4. **Verify Permissions**: Ensure your Google account has access to Gemini API"
+                  ];
+                }
+              } else {
+                troubleshootingSteps = [
+                  "🔧 **API Response Issues**:",
+                  "   1. The Gemini API returned an unexpected response format",
+                  "   2. This might be a temporary service issue",
+                  "   3. **Try again**: Trigger the workflow again in a few minutes",
+                  "   4. **Check API Status**: Visit [Google Cloud Status](https://status.cloud.google.com/)"
+                ];
               }
               
-              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Received an invalid response from the Gemini API.\n\n**Details**: " + errorDetails + "\n\n**Response received**: \n```json\n" + JSON.stringify(responseJson, null, 2) + "\n```\n\nPlease check:\n1. GEMINI_API_KEY is correctly configured\n2. API quota limits are not exceeded\n3. Gemini API service is available";
+              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: " + errorDetails + "\n\n" + 
+                troubleshootingSteps.join("\n") + "\n\n" +
+                "**Response received**: \n```json\n" + JSON.stringify(responseJson, null, 2) + "\n```\n\n" +
+                "---\n*Need help? Check the [README.md](../README.md#ai-code-review-setup) for detailed setup instructions.*";
               
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
