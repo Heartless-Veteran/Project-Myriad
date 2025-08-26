@@ -10,6 +10,7 @@ console.log('=====================================\n');
 
 const fs = require('fs');
 const { execSync } = require('child_process');
+const tmp = require('tmp');
 
 // Test 1: Configuration loading
 console.log('Test 1: Configuration System');
@@ -88,9 +89,11 @@ if(true) {  // Missing space
 `;
 
 try {
-  fs.writeFileSync('/tmp/test.kt', testKotlinContent);
-  fs.writeFileSync('/tmp/test.js', testJsContent);
-  
+  const tmpKtFile = tmp.fileSync({ postfix: '.kt' });
+  const tmpJsFile = tmp.fileSync({ postfix: '.js' });
+  fs.writeFileSync(tmpKtFile.name, testKotlinContent);
+  fs.writeFileSync(tmpJsFile.name, testJsContent);
+
   console.log('✅ Test files created for validation');
 } catch (e) {
   console.log('⚠️ Could not create test files for validation');
