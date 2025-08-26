@@ -1,27 +1,52 @@
-# This workflow warns and then closes issues and PRs that have had no activity for a specified amount of time.
-#
-# You can adjust the behavior by modifying this file.
-# For more information, see:
-# https://github.com/actions/stale
-name: Mark stale issues and pull requests
+name: Project - Mark Stale Issues and PRs
 
 on:
   schedule:
-  - cron: '30 9 * * *'
+    - cron: '30 9 * * *' # Daily at 9:30 AM UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
 
 jobs:
   stale:
-
+    name: Mark Stale Items
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
 
     steps:
-    - uses: actions/stale@v5
+    - name: Mark stale issues and pull requests
+      uses: actions/stale@v9
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: 'Stale issue message'
-        stale-pr-message: 'Stale pull request message'
-        stale-issue-label: 'no-issue-activity'
-        stale-pr-label: 'no-pr-activity'
+        
+        # Stale issue configuration
+        days-before-issue-stale: 60
+        days-before-issue-close: 14
+        stale-issue-message: |
+          This issue has been automatically marked as stale because it has not had 
+          recent activity for 60 days. It will be closed in 14 days if no further 
+          activity occurs. Thank you for your contributions.
+        close-issue-message: |
+          This issue was closed because it has been stalled for 14 days with no activity.
+        stale-issue-label: 'stale'
+        close-issue-label: 'stale-closed'
+        
+        # Stale PR configuration  
+        days-before-pr-stale: 30
+        days-before-pr-close: 7
+        stale-pr-message: |
+          This pull request has been automatically marked as stale because it has not had
+          recent activity for 30 days. It will be closed in 7 days if no further
+          activity occurs. Thank you for your contributions.
+        close-pr-message: |
+          This pull request was closed because it has been stalled for 7 days with no activity.
+        stale-pr-label: 'stale'
+        close-pr-label: 'stale-closed'
+        
+        # Exempt labels - issues/PRs with these labels will never be marked stale
+        exempt-issue-labels: 'pinned,security,bug,enhancement,help-wanted,good-first-issue'
+        exempt-pr-labels: 'pinned,security,work-in-progress,blocked'
+        
+        # Don't mark draft PRs as stale
+        exempt-draft-pr: true

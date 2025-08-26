@@ -1,48 +1,48 @@
-name: GitAuto-AI Code Review (Gemini)
+name: AI Code Review - Gemini
 
 # This workflow triggers on pull requests that are opened, have new commits pushed, or have a specific label added.
 on:
   pull_request:
     types: [opened, synchronize, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   gemini_code_reviewer:
+    name: Gemini AI Code Review
     # This job will run if the PR is opened, synchronized, or if the 'gemini-ai' label is added.
     if: |
       github.event.action == 'opened' ||
       github.event.action == 'synchronize' ||
-      (github.event.action == 'labeled' && github.event.label.name == 'gemini-ai')
+      (github.event.action == 'labeled' && github.event.label.name == 'gemini-ai') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+    
     steps:
-      # Step 1: Checkout the code from the pull request
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up the Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
 
-      # Step 3: Set up Java for Android/Kotlin analysis
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # Step 4: Install project dependencies
-      - name: Install Node.js dependencies
+      - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      # Step 5: Make Gradle wrapper executable
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      # Step 6: Run your local code analysis script
       - name: Run code analysis
         id: analysis
         run: |
