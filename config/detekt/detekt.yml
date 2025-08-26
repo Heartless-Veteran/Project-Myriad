@@ -341,7 +341,7 @@ naming:
     excludeClassPattern: '$^'
   InvalidPackageDeclaration:
     active: true
-    rootPackage: 'com.heartlessveteran.myriad'
+    rootPackage: *rootPackageName
     requireRootInDeclaration: false
   LambdaParameterNaming:
     active: false
