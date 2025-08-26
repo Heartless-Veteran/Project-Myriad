@@ -190,7 +190,7 @@ async function fixFile(filePath) {
         try {
           JSON.parse(cleanedContent);
         } catch (e) {
-          console.log(`⚠️ JSON validation failed for ${filePath}, skipping`);
+          console.log(`⚠️ JSON validation failed for ${filePath}, skipping: ${e.message}`);
           return false;
         }
       }
