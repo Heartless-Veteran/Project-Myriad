@@ -63,10 +63,10 @@ data class GeminiPart(
  */
 @Serializable
 data class GeminiGenerationConfig(
-    val temperature: Float? = 0.7f,
-    val topK: Int? = 40,
-    val topP: Float? = 0.95f,
-    val maxOutputTokens: Int? = 1024
+    val temperature: Float? = DEFAULT_TEMPERATURE,
+    val topK: Int? = DEFAULT_TOP_K,
+    val topP: Float? = DEFAULT_TOP_P,
+    val maxOutputTokens: Int? = DEFAULT_MAX_OUTPUT_TOKENS
 )
 
 /**
