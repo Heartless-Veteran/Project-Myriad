@@ -185,7 +185,7 @@ class ArchitectureValidator {
             const content = fs.readFileSync(file, 'utf8');
             const packageMatch = content.match(/^package\s+([^\s\n]+)/m);
             
-            if (packageMatch) {
+            if (packageMatch && typeof packageMatch[1] !== 'undefined') {
                 const declaredPackage = packageMatch[1];
                 const expectedPackage = this.getExpectedPackageFromPath(file);
                 
