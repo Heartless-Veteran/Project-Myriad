@@ -193,6 +193,8 @@ jobs:
 
   documentation-generation:
     name: 📖 Documentation Generation
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: [code-quality-checks, architecture-validation]
     
