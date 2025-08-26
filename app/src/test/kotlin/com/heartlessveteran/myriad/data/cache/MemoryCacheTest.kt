@@ -76,7 +76,7 @@ class CacheTest {
     fun `should return null for expired entries`() = runTest {
         cache.put("key1", "value1", ttl = 1L) // 1ms TTL
         
-        Thread.sleep(10) // Wait for expiration
+        advanceTimeBy(10) // Simulate time passing for expiration
         
         val retrieved = cache.get("key1")
         assertNull(retrieved)
