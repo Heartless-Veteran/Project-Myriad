@@ -65,13 +65,13 @@ pull_request_rules:
   - name: Label build system changes
     description: Add build-system label for build configuration changes
     conditions:
-      - files ~= (?i)(build\.gradle|gradle\.properties|settings\.gradle)
-      - files ~= ^gradle/
+      - or:
+          - files ~= (?i)^gradle/
+          - files ~= (?i)^(build\.gradle(\.kts)?|settings\.gradle(\.kts)?|gradle\.properties)$
     actions:
       label:
         toggle:
           - build-system
-  - name: Label CI/CD changes
     description: Add ci-cd label for workflow changes
     conditions:
       - files ~= ^\.github/workflows/
