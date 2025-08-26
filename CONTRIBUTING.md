@@ -81,7 +81,7 @@ app/
 ### Branch Strategy
 
 - `main` - Production-ready code
-- `develop` - Integration branch for features
+- `alpha` - Integration branch for features and pre-production testing
 - `feature/*` - Individual feature development
 - `hotfix/*` - Critical bug fixes
 

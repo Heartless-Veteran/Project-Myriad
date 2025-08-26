@@ -2,7 +2,7 @@ name: Code Quality - Super Linter
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, alpha ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
