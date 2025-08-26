@@ -41,6 +41,10 @@ junit.xml
 logs/
 *.log
 
+# Node.js
+node_modules/
+package-lock.json
+
 # Misc
 .tmp/
 .cache/

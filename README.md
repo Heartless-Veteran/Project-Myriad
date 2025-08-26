@@ -180,55 +180,14 @@ For detailed development setup instructions, see our [Contributing Guide](CONTRI
 
 ## 📈 Roadmap
 
-<details>
-<summary><b>🏗️ Phase 1: Foundation (Q1 2024)</b></summary>
+For detailed development plans, timelines, and implementation roadmap, see our comprehensive **[🗺️ ROADMAP.md](ROADMAP.md)**.
 
-- [x] Core architecture implementation (Clean Architecture + MVVM)
-- [x] Jetpack Compose UI with Material 3
-- [x] Room database with sealed Result classes  
-- [x] Hilt dependency injection setup
-- [x] Basic navigation and screens
-- [ ] Build system stabilization
-- [ ] File import/export system
-- [ ] Basic reader functionality
-
-</details>
-
-<details>
-<summary><b>🚀 Phase 2: Core Features (Q2 2024)</b></summary>
-
-- [ ] Download manager with queue support
-- [ ] Advanced reader modes (single, double, continuous, webtoon)
-- [ ] Source extension system architecture
-- [ ] Enhanced search and filtering
-- [ ] Collections and library organization
-- [ ] Progress tracking and statistics
-
-</details>
-
-<details>
-<summary><b>🤖 Phase 3: AI Integration (Q3 2024)</b></summary>
-
-- [ ] OCR translation pipeline
-- [ ] AI-powered content recommendations  
-- [ ] Art style analysis and categorization
-- [ ] Scene and chapter recognition
-- [ ] Intelligent metadata extraction
-- [ ] Personalized reading insights
-
-</details>
-
-<details>
-<summary><b>✨ Phase 4: Polish & Community (Q4 2024)</b></summary>
-
-- [ ] Performance optimization
-- [ ] Accessibility enhancements
-- [ ] Community source plugins
-- [ ] Advanced customization options
-- [ ] Cloud sync and backup
-- [ ] Multi-language support
-
-</details>
+**Quick Overview:**
+- **Phase 1 (Q1 2024)**: 🏗️ Foundation - Core architecture and basic functionality *(In Progress)*
+- **Phase 2 (Q2 2024)**: 🚀 Core Features - Media management and reader capabilities *(Planned)*
+- **Phase 3 (Q3 2024)**: 🤖 AI Integration - OCR translation and intelligent features *(Planned)*
+- **Phase 4 (Q4 2024)**: ✨ Polish & UX - Accessibility and user experience *(Planned)*
+- **Phase 5 (Q1 2025)**: 🔒 Security & Stability - Production readiness *(Planned)*
 
 ---
 
