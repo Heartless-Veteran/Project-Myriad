@@ -231,7 +231,7 @@ async function runAutoFix() {
   for (const file of files) {
     try {
       const fixed = await fixFile(file);
-      if (fixed) {totalFixed++;}
+      if (fixed) { totalFixed++; }
     } catch (error) {
       console.log(`❌ Error processing ${file}:`, error.message);
     }
