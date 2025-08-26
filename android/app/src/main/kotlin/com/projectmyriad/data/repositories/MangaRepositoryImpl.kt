@@ -43,27 +43,8 @@ class MangaRepositoryImpl @Inject constructor(
     }
     
     override suspend fun importMangaFromFile(filePath: String): Result<Manga> {
-        return try {
-            // TODO: Implement file parsing logic (.cbz/.cbr)
-            // This is a placeholder implementation
-            val manga = Manga(
-                id = java.util.UUID.randomUUID().toString(),
-                title = "Imported Manga",
-                author = "Unknown",
-                description = "Imported from $filePath",
-                coverImage = "",
-                chapters = emptyList(),
-                genres = emptyList(),
-                status = com.projectmyriad.domain.entities.MangaStatus.ONGOING,
-                rating = 0f,
-                tags = emptyList()
-            )
-            
-            mangaDao.insertManga(manga.toEntity())
-            Result.success(manga)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        // Feature not yet implemented: importing manga from file (.cbz/.cbr)
+        return Result.failure(NotImplementedError("importMangaFromFile is not yet implemented."))
     }
     
     override suspend fun deleteManga(mangaId: String): Result<Unit> {
