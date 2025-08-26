@@ -575,7 +575,8 @@ class NavigationService @Inject constructor() {
         val source = queryParams["source"]?.let {
             try {
                 Uri.decode(it)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
+                Log.e("NavigationService", "Failed to decode source parameter: $it", e)
                 return null
             }
         }
