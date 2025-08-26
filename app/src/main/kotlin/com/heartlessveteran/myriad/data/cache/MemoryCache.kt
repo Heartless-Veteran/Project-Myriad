@@ -89,9 +89,9 @@ class Cache<T>(private val config: CacheConfig) {
     private val cache = LinkedHashMap<String, CacheEntry<T>>(config.maxSize + 1, 0.75f, true)
     private val mutex = Mutex()
     
-    private var hits = 0L
-    private var misses = 0L
-    private var evictions = 0L
+    private val hits = java.util.concurrent.atomic.AtomicLong(0L)
+    private val misses = java.util.concurrent.atomic.AtomicLong(0L)
+    private val evictions = java.util.concurrent.atomic.AtomicLong(0L)
     
     /**
      * Get value from cache
