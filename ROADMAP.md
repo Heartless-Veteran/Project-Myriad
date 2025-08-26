@@ -285,6 +285,7 @@ npm run android
 - [**Security Guide**](SECURITY.md) - Security policies and vulnerability reporting
 
 ### Technical Guides
+- [**Requirements Specification**](docs/requirements.md) - Detailed technical requirements and constraints  
 - [**Gemini AI Integration**](docs/GEMINI_API.md) - AI features setup and usage
 - [**Dependency Management**](docs/dependency-management.md) - Package management strategy
 - [**Architecture Overview**](README.md#architecture) - System design and principles
