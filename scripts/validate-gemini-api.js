@@ -49,7 +49,6 @@ const testPayload = JSON.stringify({
 });
 
 try {
-  // Construct the curl argument array to avoid shell injection.
   const curlArgs = [
     '-s',
     '-w', '%{http_code}',
@@ -57,6 +56,11 @@ try {
     '-H', 'Content-Type: application/json',
     '-H', `x-api-key: ${apiKey}`,
     '-d', testPayload,
+    '-o', '/tmp/gemini-test-response.json'
+  ];
+
+  const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
+  
     '-o', '/tmp/gemini-test-response.json'
   ];
   const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
