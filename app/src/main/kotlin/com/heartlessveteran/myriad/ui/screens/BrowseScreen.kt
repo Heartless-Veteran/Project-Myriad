@@ -85,18 +85,20 @@ fun BrowseScreen(
                         CircularProgressIndicator()
                     }
                     uiState.error != null -> {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Text(
-                                text = uiState.error!!,
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                            Button(onClick = { viewModel.retry() }) {
-                                Text("Retry")
+                        uiState.error?.let { errorMsg ->
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Text(
+                                    text = errorMsg,
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                                Button(onClick = { viewModel.retry() }) {
+                                    Text("Retry")
+                                }
                             }
                         }
                     }
