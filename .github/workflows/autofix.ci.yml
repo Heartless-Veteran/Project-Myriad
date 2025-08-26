@@ -1,0 +1,52 @@
+name: autofix.ci
+
+on:
+  pull_request:
+
+permissions:
+  contents: write # Needed to commit changes to the PR branch
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code from the pull request branch
+      - uses: actions/checkout@v4
+        with:
+          # We need to fetch the branch history to push changes back to it
+          ref: ${{ github.head_ref }}
+
+      # Step 2: Set up Node.js with dependency caching for speed
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # This caches npm packages to speed up future runs
+          cache: 'npm'
+
+      # Step 3: Install dependencies using 'npm ci' for faster, more reliable installs
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Run autofixers to format the code
+      - name: Run ESLint autofix and Prettier
+        run: |
+          npx eslint --fix .
+          npx prettier --write .
+      
+      # Step 5: Commit the changes back to the pull request branch
+      - name: Commit changes
+        run: |
+          # Configure git with bot user details
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Check if there are any changes. If not, the script will exit successfully.
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          
+          # Commit and push the changes to the current branch
+          git commit -am "style: Automated code formatting"
+          git push
