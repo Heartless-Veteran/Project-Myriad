@@ -1,12 +1,17 @@
 name: GitAuto-AI Code Review (Gemini)
 
-# This workflow triggers on pull requests that are opened or have new commits pushed.
+# This workflow triggers on pull requests that are opened, have new commits pushed, or have a specific label added.
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, labeled]
 
 jobs:
   gemini_code_reviewer:
+    # This job will run if the PR is opened, synchronized, or if the 'gemini-ai' label is added.
+    if: |
+      github.event.action == 'opened' ||
+      github.event.action == 'synchronize' ||
+      (github.event.action == 'labeled' && github.event.label.name == 'gemini-ai')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,7 +60,7 @@ jobs:
             '{
               "contents": [{
                 "parts": [{
-                  "text": "You are an expert code reviewer for Android/Kotlin and Node.js projects. Please analyze the following report and provide concise, actionable suggestions for improvement in markdown format. Focus on code quality, security, performance, and best practices. Be constructive and specific.\n\nHere is the report:\n" + $content
+                  "text": "You are an expert code reviewer for Android/Kotlin and Node.js projects. Please analyze the following report and provide concise, actionable suggestions for improvement in m[...]
                 }]
               }]
             }')
@@ -82,7 +87,7 @@ jobs:
               aiResponse = fs.readFileSync('ai-response.json', 'utf8');
               responseJson = JSON.parse(aiResponse);
             } catch (error) {
-              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Failed to parse AI response. The Gemini API may be unavailable or the API key may be invalid.\n\n**Technical Details**: " + error.message;
+              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Failed to parse AI response. The Gemini API may be unavailable or the API key may be invalid.\n\n**Technical Detai[...]
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
