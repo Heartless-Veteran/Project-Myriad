@@ -20,6 +20,7 @@ package-lock.json
 # Analysis artifacts
 analysis-report.txt
 ai-response.json
+test-ai-workflow.sh
 
 # Xcode
 ios/
