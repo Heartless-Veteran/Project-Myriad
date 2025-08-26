@@ -3,6 +3,9 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+// Constants
+const MAX_KOTLIN_FILES_ANALYZED = 10; // Limit to avoid timeout during analysis
+
 console.log('--- GitAuto-AI Analysis Report ---');
 console.log(`Report generated on: ${new Date().toISOString()}`);
 console.log("-------------------------------------\n");
@@ -129,7 +132,7 @@ if (hasGradleBuild) {
     }
   });
   
-  console.log(`- Sample analysis (first 10 files):`);
+  console.log(`- Sample analysis (first ${MAX_KOTLIN_FILES_ANALYZED} files):`);
   console.log(`  - Total lines: ${totalLines}`);
   console.log(`  - Classes found: ${classCount}`);
   console.log(`  - Functions found: ${functionCount}`);
