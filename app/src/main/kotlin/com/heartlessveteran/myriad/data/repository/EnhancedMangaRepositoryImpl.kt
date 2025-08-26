@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.seconds
 class EnhancedMangaRepositoryImpl @Inject constructor(
     private val mangaDao: MangaDao,
     private val memoryCache: MemoryCache,
-    private val validator: MangaValidator = MangaValidator()
+    private val validator: MangaValidator
     // TODO: Add network API service when implemented
     // TODO: Add file manager service when implemented
 ) : MangaRepository {
