@@ -16,6 +16,7 @@ export default [
       'no-console': 'off', // We use console in analysis script
       'no-unused-vars': 'warn',
       'no-undef': 'error',
-    },
+};
+
   }
 ];
