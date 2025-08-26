@@ -125,7 +125,7 @@ dependencies {
     implementation("androidx.media3:media3-common:1.2.1")
     
     // AR for cosplay features
-    implementation("io.github.sceneview:arsceneview:0.10.0")
+    implementation("io.github.sceneview:arsceneview:0.10.2")
     
     // JSON parsing
     implementation("com.google.code.gson:gson:2.10.1")
