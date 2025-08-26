@@ -1,6 +1,6 @@
 # Dependency Management Strategy
 
-This document outlines the dependency management strategy for Project Myriad, addressing deprecated packages and maintaining up-to-date dependencies.
+This document outlines the dependency management strategy for Project Myriad, a Kotlin Android application, addressing deprecated packages and maintaining up-to-date dependencies.
 
 ## Recent Updates
 
@@ -8,22 +8,24 @@ This document outlines the dependency management strategy for Project Myriad, ad
 
 The following deprecated packages have been updated or replaced:
 
-1. **metro-react-native-babel-preset** 
-   - Replaced with @react-native/babel-preset (^0.80.0) to match React Native 0.80.2
-   - The old package has been deprecated in favor of the new scoped package
+1. **Hilt (Dagger) Dependency Injection** 
+   - Temporarily disabled due to Kotlin 2.0 KAPT compatibility issues
+   - Using manual dependency injection until KAPT is replaced with KSP
 
-2. **react-native-document-picker** 
-   - Updated to latest version (^9.3.0) which addresses deprecation warnings
+2. **Android Gradle Plugin Updates** 
+   - Updated to version 8.12.1 for better Kotlin 2.0 support
+   - Improved build performance and compatibility
 
-3. **react-native-vector-icons**
-   - Updated to latest version (^10.2.0) which addresses deprecation warnings
+3. **Kotlin Compiler Updates**
+   - Updated to Kotlin 2.2.10 with Compose compiler plugin
+   - Improved Jetpack Compose compilation performance
 
 ### Core Dependencies Updated
 
-- **react-native**: Updated to 0.80.2 (from 0.80.1)
-- **react-native-screens**: Updated to ^4.0.0 (from ^3.29.0)
-- **axios**: Updated to ^1.7.9 (from ^1.6.7)
-- **react-native-gradle-plugin**: Updated to 0.80.2 (from 0.73.6)
+- **Kotlin**: Updated to 2.2.10 (from 2.0.21)
+- **Android Gradle Plugin**: Updated to 8.12.1 (from 8.1.x)
+- **Jetpack Compose BOM**: Updated to 2024.02.00 (latest stable)
+- **Android SDK**: Targeting API 35/36 (Android 15+)
 
 ## Renovate Configuration
 
@@ -31,15 +33,15 @@ The project uses Renovate for automated dependency management with the following
 
 ### Package Rules
 
-1. **React Native Core**: Manual review required for React Native updates
-2. **React Native Ecosystem**: Grouped updates for React Native related packages
+1. **Kotlin Core**: Manual review required for Kotlin language updates
+2. **Android Ecosystem**: Grouped updates for Android and Jetpack related packages
 3. **Dev Dependencies**: Auto-merge enabled for development dependencies
 4. **Deprecated Package Handling**: Automatic replacement rules for known deprecated packages
 
 ### Security
 
 - Vulnerability alerts enabled
-- Lock file maintenance enabled
+- Lock file maintenance enabled (for Gradle)
 - Dependency dashboard enabled for visibility
 
 ## Manual Dependency Checks
@@ -47,9 +49,9 @@ The project uses Renovate for automated dependency management with the following
 ### Before Adding New Dependencies
 
 1. Check if the package is actively maintained
-2. Verify compatibility with current React Native version
+2. Verify compatibility with current Kotlin and Android versions
 3. Check for security vulnerabilities
-4. Consider bundle size impact
+4. Consider APK size impact
 
 ### Regular Maintenance
 
@@ -62,14 +64,13 @@ The project uses Renovate for automated dependency management with the following
 
 ### Common Issues
 
-1. **Gradle Plugin Compatibility**: Ensure React Native Gradle plugin version matches React Native version
-2. **Metro Configuration**: Update babel presets when Metro packages are updated. For React Native 0.80+, use @react-native/babel-preset instead of metro-react-native-babel-preset
+1. **Gradle Plugin Compatibility**: Ensure Android Gradle plugin version is compatible with Kotlin version
+2. **Compose Compilation**: Update Compose compiler when Kotlin version changes. For Kotlin 2.2+, use Compose compiler plugin instead of separate version.
 
 ### Known Issues
 
-1. **React 19 Compatibility**: Some packages like `react-native-fast-image@8.6.3` don't yet support React 19. We use `--legacy-peer-deps` flag for npm operations to handle peer dependency conflicts.
-2. **Peer Dependencies**: When installing dependencies, use `npm install --legacy-peer-deps` to avoid peer dependency resolution errors.
-3. **CI/CD**: All automated workflows use `--legacy-peer-deps` flag to ensure consistent builds.
+1. **Hilt/KAPT Compatibility**: Hilt is temporarily disabled due to Kotlin 2.0+ KAPT compatibility issues. Using manual dependency injection until KSP migration is complete.
+2. **Gradle Dependencies**: Some libraries may show warnings with Kotlin 2.2.10 but still function correctly.
+3. **Build Performance**: Large projects may benefit from enabling Gradle build cache and parallel builds.
 
-3. **Native Dependencies**: Run `cd ios && pod install` after updating native dependencies (iOS)
-4. **Android Build**: Clean and rebuild Android project after major dependency updates
+3. **Android Build**: Clean and rebuild Android project after major dependency updates using `./gradlew clean build`

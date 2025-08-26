@@ -41,10 +41,10 @@ Project Myriad is a comprehensive Android application for manga and anime enthus
 ## Technical Requirements
 
 ### Platform Support
-- Target Android API 21-34
+- Target Android API 24-36 (Android 7.0 to Android 15)
 - Support ARM, ARM64, x86, x86_64 architectures
 - Optimize for various screen sizes and resolutions
-- Enable Hermes JavaScript engine for performance
+- Leverage Android's ART runtime for performance
 
 ### Performance
 - Ensure smooth scrolling and navigation
@@ -54,29 +54,30 @@ Project Myriad is a comprehensive Android application for manga and anime enthus
 - Ensure battery-efficient operation
 
 ### User Experience
-- Create an intuitive and responsive UI
-- Implement dark mode and theme customization
-- Support multiple languages
-- Provide accessibility features
+- Create an intuitive and responsive UI with Jetpack Compose
+- Implement Material Design 3 theming and dark mode
+- Support multiple languages with Android localization
+- Provide accessibility features compliant with Android guidelines
 - Enable customizable reading/viewing experience
-- Implement gesture controls for navigation
+- Implement gesture controls for navigation using Compose gestures
 
 ### Data Management
-- Implement secure storage for user data
-- Provide backup and restore functionality
+- Implement secure storage using Android Keystore and Room Database
+- Provide backup and restore functionality using Android Backup API
 - Enable synchronization across devices (future feature)
-- Implement efficient caching strategies
-- Ensure data integrity and privacy
+- Implement efficient caching strategies with Room and SharedPreferences
+- Ensure data integrity and privacy with Android security best practices
 
 ## Constraints
 
 ### Technical Constraints
-- Must be built with React Native 0.73.6 and TypeScript
-- Must use React Navigation for navigation
-- Must use AsyncStorage for local data persistence
-- Must use SQLite for structured data storage
-- Must use Fast Image for optimized image loading
-- Must use WebView for online content integration
+- Must be built with Kotlin and Android SDK 24-36
+- Must use Jetpack Compose for modern declarative UI
+- Must use Room Database for local data persistence
+- Must use Hilt (or manual DI) for dependency injection
+- Must use Coil for optimized image loading
+- Must use Retrofit for network operations
+- Must follow Clean Architecture principles
 
 ### Legal and Ethical Constraints
 - Must respect copyright and intellectual property rights

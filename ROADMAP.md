@@ -1,6 +1,6 @@
 # Project Myriad - Development Roadmap 🗺️
 
-> **The Definitive Manga and Anime Platform** - A comprehensive roadmap for developing the ultimate React Native application with local media management, AI-powered features, and online content discovery.
+> **The Definitive Manga and Anime Platform** - A comprehensive roadmap for developing the ultimate Kotlin Android application with local media management, AI-powered features, and online content discovery.
 
 ## 📋 Overview
 
@@ -10,7 +10,7 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 - **The Vault**: Advanced local media management with .cbz/.cbr manga and .mp4/.mkv/.avi anime support
 - **AI Core**: OCR translation, art style analysis, and intelligent recommendations
 - **The Browser**: Extensible online content discovery and download system
-- **Modern Stack**: React Native 0.81, React 19, TypeScript, Redux Toolkit, SQLite
+- **Modern Stack**: Kotlin 2.2, Android SDK 24-36, Jetpack Compose, Clean Architecture, Room Database
 
 ---
 
@@ -25,12 +25,11 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 - [x] Core architecture implementation (Clean Architecture + MVVM)
 - [x] Jetpack Compose UI with Material 3  
 - [x] Room database with sealed Result classes
-- [x] Hilt dependency injection setup
+- [x] Dependency injection framework (manual implementation)
 - [x] Basic navigation and screens
-- [x] Redux Toolkit state management implementation
-- [x] TypeScript strict mode configuration
-- [x] Jest testing framework setup
-- [x] ESLint and code formatting tools
+- [x] Kotlin-first architecture implementation
+- [x] Android Unit testing framework setup
+- [x] Android Lint and code formatting tools
 
 #### 🔄 In Progress
 - [ ] Build system stabilization
@@ -42,12 +41,15 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 
 #### 📋 Phase 1 Tasks
 - [ ] **Testing Improvements**
-  - [ ] Expand Jest test coverage to 70%+
-  - [ ] Implement snapshot testing for UI components
+  - [ ] Expand Android unit test coverage to 70%+
+  - [ ] Implement UI testing for Compose components
   - [ ] Create integration tests for critical flows
-  - [ ] Add E2E testing with Detox
+  - [ ] Add instrumentation tests with Espresso
 - [ ] **Architecture Refinements**
   - [ ] Implement global error handling system
+  - [ ] Migrate to Hilt when KAPT/KSP is ready
+  - [ ] Optimize Room database performance
+  - [ ] Add comprehensive logging system
   - [ ] Create feature-based module organization
   - [ ] Add performance monitoring
   - [ ] Establish code quality metrics
@@ -209,8 +211,8 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 ### High Priority Issues
 - [ ] **Build System Improvements**
   - [ ] Gradle version compatibility
-  - [ ] React Native 0.81+ migration
-  - [ ] ESLint v9 configuration
+  - [ ] Kotlin 2.2+ migration completion
+  - [ ] Android Lint configuration
   - [ ] Dependency conflict resolution
 
 ### Medium Priority Issues  
@@ -218,7 +220,7 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
   - [ ] Increase test coverage from 15% to 70%+
   - [ ] Add KDoc for public APIs
   - [ ] Eliminate code duplication
-  - [ ] TypeScript strict mode enforcement
+  - [ ] Kotlin strict compilation settings
 
 ### Low Priority Issues
 - [ ] **Optimization**
@@ -248,24 +250,24 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 ## 🛠️ Development Setup
 
 ### Prerequisites
-- **Node.js**: 22.x with `--legacy-peer-deps` flag
-- **React Native**: 0.81+ development environment
-- **Android Studio**: For Android builds
-- **Java**: 17+ (Temurin distribution recommended)
+- **Android Studio**: Hedgehog (2023.1.1) or later
+- **JDK**: 17+ (Temurin distribution recommended)
+- **Android SDK**: API 24-36
+- **Kotlin**: 2.2.10+ (managed by Gradle)
 
 ### Quick Start
 ```bash
-# Install dependencies
-npm install --legacy-peer-deps
+# Build project
+./gradlew build
 
-# Start Metro bundler
-npm start
+# Build debug APK
+./gradlew assembleDebug
 
 # Run tests
-npm test
+./gradlew test
 
-# Android build (requires Android Studio setup)
-npm run android
+# Install on device/emulator
+./gradlew installDebug
 ```
 
 ### Key Commands
