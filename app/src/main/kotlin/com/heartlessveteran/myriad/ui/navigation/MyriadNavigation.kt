@@ -116,7 +116,7 @@ fun MyriadNavigation(navController: NavHostController) {
             
             composable(Screen.Browse.route) {
                 BrowseScreen(
-                    viewModel = androidx.lifecycle.viewmodel.compose.viewModel {
+                    viewModel = viewModel {
                         BrowseViewModel(
                             com.heartlessveteran.myriad.di.BrowseDiContainer.getLatestMangaUseCase,
                             com.heartlessveteran.myriad.di.BrowseDiContainer.searchMangaUseCase
