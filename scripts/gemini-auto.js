@@ -21,7 +21,9 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 
 // Check API key
 const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
+const testMode = process.env.GEMINI_TEST_MODE === 'true';
+
+if (!apiKey && !testMode) {
   console.log('❌ Error: GEMINI_API_KEY environment variable not set');
   process.exit(1);
 }
@@ -218,6 +220,11 @@ async function runAutoFix() {
   console.log(`📁 Found ${files.length} files to analyze:`);
   files.forEach(f => console.log(`   - ${f}`));
   console.log();
+
+  if (testMode) {
+    console.log('🧪 Test mode: Files discovered successfully');
+    return false;
+  }
 
   let totalFixed = 0;
 
