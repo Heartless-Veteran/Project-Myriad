@@ -6,7 +6,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 35
         targetSdkVersion = 35
-        kotlinVersion = "1.9.22"
+        kotlinVersion = "1.9.25"
         composeVersion = "2024.02.00"
         hiltVersion = "2.48"
         roomVersion = "2.6.1"
