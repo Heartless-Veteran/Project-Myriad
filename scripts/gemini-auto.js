@@ -337,11 +337,7 @@ async function fixFile(filePath) {
     issue.file.includes(filePath) || filePath.includes(path.basename(issue.file))
   );
   
-  // Skip if no issues found for this file
-  if (!lintIssues || lintIssues.messages.length === 0) {
-    console.log(`ℹ️ No issues detected for: ${filePath}`);
-    return false;
-  }
+  // Removed redundant per-file lint issue check (handled by pre-check)
 
   try {
     const prompt = createFixPrompt(originalContent, filePath, lintIssues.messages || []);
