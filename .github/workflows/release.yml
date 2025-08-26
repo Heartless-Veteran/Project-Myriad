@@ -1,0 +1,139 @@
+name: Release - Build and Deploy
+
+on:
+  release:
+    types: [created, published]
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+        - beta
+        - production
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install Node.js dependencies
+      run: npm install --legacy-peer-deps
+      
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      
+    - name: Make Gradle wrapper executable
+      run: chmod +x ./gradlew
+      
+    - name: Build debug APK
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'beta'
+      run: ./gradlew assembleDebug --no-daemon
+      
+    - name: Build release APK
+      if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'production')
+      run: ./gradlew assembleRelease --no-daemon
+      env:
+        # Add your signing configuration here if needed
+        # KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        # KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        # KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      
+    - name: Upload APK artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: app/build/outputs/apk/**/*.apk
+        retention-days: 30
+        
+    - name: Upload to release
+      if: github.event_name == 'release'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: app/build/outputs/apk/release/app-release.apk
+        asset_name: Project-Myriad-${{ github.event.release.tag_name }}.apk
+        asset_content_type: application/vnd.android.package-archive
+
+  create-release-notes:
+    name: Generate Release Notes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get the latest tag
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        
+        if [ -z "$LATEST_TAG" ]; then
+          echo "No previous tags found, generating initial changelog"
+          git log --pretty=format:"- %s (%an)" --since="30 days ago" > changelog.txt
+        else
+          echo "Generating changelog since $LATEST_TAG"
+          git log --pretty=format:"- %s (%an)" ${LATEST_TAG}..HEAD > changelog.txt
+        fi
+        
+        echo "Generated changelog with $(wc -l < changelog.txt) entries"
+        
+    - name: Update release notes
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const changelog = fs.readFileSync('changelog.txt', 'utf8');
+          
+          const releaseNotes = `## What's New
+          
+          ${changelog}
+          
+          ## Download
+          
+          Download the APK from the assets below.
+          
+          ## Installation
+          
+          1. Download the APK file
+          2. Enable "Install from Unknown Sources" in your Android settings
+          3. Install the APK file
+          
+          ---
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.release.target_commitish }}...v${{ github.event.release.tag_name }}`;
+          
+          await github.rest.repos.updateRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: ${{ github.event.release.id }},
+            body: releaseNotes
+          });
