@@ -331,7 +331,7 @@ function detectBasicCodeIssues(filePath, content) {
         }
       }
     }
-    
+            line: lines.findIndex(l => l.includes('data class')) + 1 || 1,
     if (config.kotlin.rules['data-class-conventions']) {
       // Check for data class best practices
       if (content.includes('data class')) {
