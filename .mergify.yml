@@ -72,6 +72,7 @@ pull_request_rules:
       label:
         toggle:
           - build-system
+    name: Label CI/CD changes
     description: Add ci-cd label for workflow changes
     conditions:
       - files ~= ^\.github/workflows/
