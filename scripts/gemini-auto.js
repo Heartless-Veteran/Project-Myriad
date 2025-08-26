@@ -296,7 +296,7 @@ function detectBasicCodeIssues(filePath, content) {
     if (config.kotlin.rules['null-safety']) {
       // Detect potential null pointer exceptions
       lines.forEach((line, index) => {
-        // Detect chained property/method access that may cause null pointer exceptions
+        if (/(?<!\?)\.[a-zA-Z]/.test(line) && !/^\s*import/.test(line)) {
         // 1. Ignore lines using safe call operator (?.)
         if (line.includes('?.')) return;
         // 2. Ignore lines using scope functions (let, also, run, apply, with)
