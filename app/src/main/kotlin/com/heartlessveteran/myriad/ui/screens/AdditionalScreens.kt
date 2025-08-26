@@ -453,7 +453,7 @@ fun AICoreScreen() {
         // Smart Recommendations Feature
         item {
             AIFeatureCard(
-                icon = Icons.Default.Recommend,
+                icon = Icons.Default.ThumbUp,
                 title = "Smart Recommendations",
                 description = "AI-driven content suggestions based on your reading patterns",
                 status = "Coming in Phase 3",
