@@ -68,7 +68,7 @@ try {
   console.log('📡 HTTP Response Code:', httpCode);
   
   if (httpCode === '200') {
-    console.log('✅ **Success**: Your GEMINI_API_KEY is valid and working!\n');
+      const response = require('fs').readFileSync(tempFilePath, 'utf8');
     
     // Try to read and display a sample of the response
     try {
