@@ -62,17 +62,17 @@ const testScenarios = [
 // Test each scenario
 testScenarios.forEach((scenario, index) => {
   console.log(`${index + 1}. Testing: ${scenario.name}`);
-  
+
   // Write test response to file
-  const tempFile = tmp.fileSync({ postfix: `.json` });
+  const tempFile = tmp.fileSync({ postfix: '.json' });
   const testResponseFile = tempFile.name;
   fs.writeFileSync(testResponseFile, JSON.stringify(scenario.response, null, 2));
-  
+
   // Simulate the error handling logic from the workflow
   try {
     const responseContent = fs.readFileSync(testResponseFile, 'utf8');
     const responseJson = JSON.parse(responseContent);
-    
+
     if (!responseJson.candidates || responseJson.candidates.length === 0) {
       if (responseJson.error) {
         console.log('   ✅ Error detected and would be handled appropriately');
@@ -88,7 +88,7 @@ testScenarios.forEach((scenario, index) => {
   } catch (parseError) {
     console.log('   ❌ Parse error would be handled with fallback message');
   }
-  
+
   // Clean up
   fs.unlinkSync(testResponseFile);
   console.log('');
