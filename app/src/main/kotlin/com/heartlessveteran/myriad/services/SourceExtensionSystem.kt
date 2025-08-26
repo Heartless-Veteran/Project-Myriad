@@ -487,6 +487,3 @@ class MockContentSource(
         return search(filters.query, page)
     }
 }
-
-// Global instance for easy access
-lateinit var sourceExtensionSystem: SourceExtensionSystem
