@@ -126,7 +126,7 @@ fun MangaLibraryScreen(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = uiState.errorMessage ?: "Unknown error",
+                                text = uiState.errorMessage ?: "An unexpected error occurred. Please try again.",
                                 color = MaterialTheme.colorScheme.error
                             )
                             Button(onClick = { viewModel.refresh() }) {
