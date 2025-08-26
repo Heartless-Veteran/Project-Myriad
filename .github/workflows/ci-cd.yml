@@ -346,6 +346,7 @@ jobs:
   notify:
     name: 📢 Notify Status
     runs-on: ubuntu-latest
+    permissions: {}
     needs: [lint, test, build, security, dependency-check, docs-check]
     if: always()
     steps:
