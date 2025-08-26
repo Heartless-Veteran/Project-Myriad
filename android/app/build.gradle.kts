@@ -106,7 +106,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     
     // Permissions
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
     
     // File handling
     implementation("androidx.documentfile:documentfile:1.0.1")
