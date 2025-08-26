@@ -273,5 +273,4 @@ class SmartCacheService @Inject constructor(
     }
 }
 
-// Global instance for easy access
-lateinit var smartCacheService: SmartCacheService
+// Remove global instance for better dependency injection
