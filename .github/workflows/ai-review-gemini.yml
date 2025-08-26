@@ -58,8 +58,8 @@ jobs:
         run: |
           # Check if API key is set
           if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
-            echo "GEMINI_API_KEY secret is not configured" >&2
-            echo '{"error": {"message": "GEMINI_API_KEY secret is not configured. Please add it in repository Settings > Secrets and variables > Actions"}}' > ai-response.json
+            echo "⚠️ GEMINI_API_KEY secret is not configured, creating helpful comment instead" >&2
+            echo '{"error": {"message": "GEMINI_API_KEY secret is not configured. Please add it in repository Settings > Secrets and variables > Actions"}, "skip_failure": true}' > ai-response.json
             exit 0
           fi
           
@@ -165,6 +165,44 @@ jobs:
               return;
             }
             
+            // Check if this is a configuration issue that should be handled gracefully
+            if (responseJson.error && responseJson.skip_failure) {
+              let setupBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n";
+              setupBody += "🔧 **Setup Required**: To enable AI-powered code reviews, please configure your Gemini API key.\n\n";
+              setupBody += "### Quick Setup Guide:\n\n";
+              setupBody += "1. **Get a free API key**:\n";
+              setupBody += "   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)\n";
+              setupBody += "   - Sign in with your Google account\n";
+              setupBody += "   - Click **Create API Key**\n";
+              setupBody += "   - Copy the generated key\n\n";
+              setupBody += "2. **Add it to GitHub**:\n";
+              setupBody += "   - Go to **Settings > Secrets and variables > Actions**\n";
+              setupBody += "   - Click **New repository secret**\n";
+              setupBody += "   - Name: `GEMINI_API_KEY`\n";
+              setupBody += "   - Value: Paste your API key\n\n";
+              setupBody += "3. **Test the setup**:\n";
+              setupBody += "   - Push a new commit or trigger this workflow manually\n";
+              setupBody += "   - The AI review will appear automatically on your next PR\n\n";
+              setupBody += "### Benefits of AI Code Review:\n";
+              setupBody += "- 🔍 **Code Quality**: Identifies potential bugs and improvements\n";
+              setupBody += "- 🚀 **Performance**: Suggests performance optimizations\n";
+              setupBody += "- 🔒 **Security**: Detects security vulnerabilities\n";
+              setupBody += "- 📚 **Best Practices**: Enforces coding standards\n\n";
+              setupBody += "---\n";
+              setupBody += "*This workflow will work without an API key but won't provide AI-powered suggestions. The setup is free and takes less than 2 minutes!*";
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: setupBody
+              });
+              
+              // Don't fail the workflow for missing API key
+              console.log('AI review skipped due to missing API key configuration');
+              return;
+            }
+            
             // Check if the response has the expected structure
             if (!responseJson.candidates || responseJson.candidates.length === 0) {
               let errorDetails = "Invalid API response structure";
@@ -242,7 +280,13 @@ jobs:
                 issue_number: context.issue.number,
                 body: errorBody
               });
-              core.setFailed('Invalid Gemini API response');
+              
+              // Only fail the workflow for actual API errors, not configuration issues
+              if (!responseJson.error || !responseJson.error.message.includes("GEMINI_API_KEY")) {
+                core.setFailed('Invalid Gemini API response');
+              } else {
+                console.log('Workflow completed with configuration guidance');
+              }
               return;
             }
 
