@@ -1,0 +1,142 @@
+name: GitAuto-AI Code Review (Gemini)
+
+# This workflow triggers on pull requests that are opened or have new commits pushed.
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  gemini_code_reviewer:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      # Step 1: Checkout the code from the pull request
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Step 3: Set up Java for Android/Kotlin analysis
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Step 4: Install project dependencies
+      - name: Install Node.js dependencies
+        run: npm install
+
+      # Step 5: Make Gradle wrapper executable
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      # Step 6: Run your local code analysis script
+      - name: Run code analysis
+        id: analysis
+        run: |
+          node ./scripts/analyze.js > analysis-report.txt
+      
+      # Step 7: Send the analysis report to the Gemini API
+      - name: Get Gemini suggestions
+        id: ai_suggestions
+        run: |
+          # Read the analysis report content from the file.
+          REPORT_CONTENT=$(cat analysis-report.txt)
+          
+          # Construct the JSON payload for the Gemini API.
+          JSON_PAYLOAD=$(jq -n --arg content "$REPORT_CONTENT" \
+            '{
+              "contents": [{
+                "parts": [{
+                  "text": "You are an expert code reviewer for Android/Kotlin and Node.js projects. Please analyze the following report and provide concise, actionable suggestions for improvement in markdown format. Focus on code quality, security, performance, and best practices. Be constructive and specific.\n\nHere is the report:\n" + $content
+                }]
+              }]
+            }')
+
+          # Make the API call using curl and save the response.
+          curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.GEMINI_API_KEY }}" \
+            -d "$JSON_PAYLOAD" \
+            -o ai-response.json
+
+      # Step 8: Post the Gemini suggestions as a comment on the pull request
+      - name: Post Gemini suggestions to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read the AI response
+            let aiResponse;
+            let responseJson;
+            
+            try {
+              aiResponse = fs.readFileSync('ai-response.json', 'utf8');
+              responseJson = JSON.parse(aiResponse);
+            } catch (error) {
+              const errorBody = "## 🤖 GitAuto-AI Review (Gemini)\n\n❌ **Error**: Failed to parse AI response. The Gemini API may be unavailable or the API key may be invalid.\n\n**Technical Details**: " + error.message;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: errorBody
+              });
+              return;
+            }
+            
+            // Check if the response has the expected structure
+            if (!responseJson.candidates || responseJson.candidates.length === 0) {
+              let errorDetails = "Invalid API response structure";
+              if (responseJson.error) {
+                errorDetails = `API Error: ${responseJson.error.message || 'Unknown error'}`;
+              }
+              
+              const errorBody = `## 🤖 GitAuto-AI Review (Gemini)
+
+❌ **Error**: Received an invalid response from the Gemini API.
+
+**Details**: ${errorDetails}
+
+**Response received**: 
+\`\`\`json
+${JSON.stringify(responseJson, null, 2)}
+\`\`\`
+
+Please check:
+1. GEMINI_API_KEY is correctly configured
+2. API quota limits are not exceeded
+3. Gemini API service is available`;
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: errorBody
+              });
+              core.setFailed('Invalid Gemini API response');
+              return;
+            }
+
+            // Extract suggestions from the API response
+            const suggestions = responseJson.candidates[0].content.parts[0].text;
+            const body = `## 🤖 GitAuto-AI Code Review (via Gemini)
+
+${suggestions}
+
+---
+*This review was automatically generated using Google's Gemini AI. Please review the suggestions carefully and use your judgment when implementing changes.*`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
