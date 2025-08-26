@@ -250,8 +250,6 @@ async function runAutoFix() {
 }
 
 // Add fetch polyfill for Node.js
-const fetch = require('node-fetch');
-
 // Main execution
 runAutoFix()
   .then(changesMade => {
