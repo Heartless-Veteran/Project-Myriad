@@ -418,15 +418,30 @@ function detectBasicCodeIssues(filePath, content) {
       }
       
       // Check for unquoted variables
+      // Detect unquoted shell variables (explicit approach)
+      // This checks for $VAR or ${VAR} outside of double/single quotes and not in comments.
       lines.forEach((line, index) => {
-        if (/\$[a-zA-Z_][a-zA-Z0-9_]*(?!["\w])/.test(line) && !line.trim().startsWith('#')) {
-          issues.push({
-            line: index + 1,
-            message: 'Variable should be quoted to prevent word splitting',
-            severity: 'warning',
-            category: 'security',
-            ruleId: 'quote-variables'
-          });
+        if (!line.trim().startsWith('#')) {
+          // Find all $VAR and ${VAR} occurrences
+          const variablePattern = /\$(\{?[a-zA-Z_][a-zA-Z0-9_]*\}?)/g;
+          let match;
+          while ((match = variablePattern.exec(line)) !== null) {
+            // Check if the variable is inside double or single quotes
+            const varIndex = match.index;
+            const before = line.slice(0, varIndex);
+            const doubleQuotes = (before.match(/"/g) || []).length;
+            const singleQuotes = (before.match(/'/g) || []).length;
+            // If not inside quotes (odd number of quotes before), flag it
+            if (doubleQuotes % 2 === 0 && singleQuotes % 2 === 0) {
+              issues.push({
+                line: index + 1,
+                message: 'Variable should be quoted to prevent word splitting',
+                severity: 'warning',
+                category: 'security',
+                ruleId: 'quote-variables'
+              });
+            }
+          }
         }
       });
     }
