@@ -89,7 +89,7 @@ fun MangaLibraryScreen(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(MangaFilter.values().toList()) { filter ->
+            items(MangaFilter.values()) { filter ->
                 FilterChip(
                     onClick = { viewModel.applyFilter(filter) },
                     label = { Text(getFilterDisplayName(filter)) },
