@@ -6,7 +6,6 @@
  */
 
 const fs = require('fs');
-const path = require('path');
 const tmp = require('tmp');
 
 console.log('🧪 Testing Gemini API Error Handling');

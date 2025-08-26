@@ -49,6 +49,8 @@ const testPayload = JSON.stringify({
 });
 
 try {
+  const tempResponsePath = '/tmp/gemini-test-response.json';
+  
   const curlArgs = [
     '-s',
     '-w', '%{http_code}',
@@ -56,23 +58,17 @@ try {
     '-H', 'Content-Type: application/json',
     '-H', `x-api-key: ${apiKey}`,
     '-d', testPayload,
-    '-o', '/tmp/gemini-test-response.json'
-    '-o', tempFile.name
-
-  const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
-  
-    '-o', '/tmp/gemini-test-response.json'
+    '-o', tempResponsePath
   ];
+  
   const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
   
   console.log('📡 HTTP Response Code:', httpCode);
   
   if (httpCode === '200') {
-      const response = require('fs').readFileSync(tempFilePath, 'utf8');
-    
     // Try to read and display a sample of the response
     try {
-      const response = require('fs').readFileSync('/tmp/gemini-test-response.json', 'utf8');
+      const response = require('fs').readFileSync(tempResponsePath, 'utf8');
       const responseJson = JSON.parse(response);
       
       if (responseJson.candidates && responseJson.candidates[0]) {
@@ -107,11 +103,9 @@ try {
     console.log('   - Consider upgrading your Google Cloud billing if needed');
     
   } else {
-      const errorResponse = require('fs').readFileSync(tempFilePath, 'utf8');
-    
     // Try to read error details
     try {
-      const errorResponse = require('fs').readFileSync('/tmp/gemini-test-response.json', 'utf8');
+      const errorResponse = require('fs').readFileSync(tempResponsePath, 'utf8');
       console.log('📄 **Error Response**:');
       console.log(JSON.stringify(JSON.parse(errorResponse), null, 2));
     } catch (readError) {
@@ -132,7 +126,7 @@ try {
   console.log('   - curl command not available');
   console.log('\n📝 **Technical Details**:', error.message);
   process.exit(1);
-  require('fs').unlinkSync(tempResponsePath);
+}
 
 // Clean up temporary files
 try {
