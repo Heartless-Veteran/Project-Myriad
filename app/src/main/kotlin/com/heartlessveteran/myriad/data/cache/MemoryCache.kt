@@ -14,7 +14,12 @@ data class CacheEntry<T>(
     val timestamp: Long,
     val ttl: Long = DEFAULT_TTL
 ) {
-    fun isExpired(): Boolean = System.currentTimeMillis() - timestamp > ttl
+    /**
+ * Whether this entry's time-to-live has elapsed.
+ *
+ * @return true if the current system time is past the entry's timestamp plus its TTL; false otherwise.
+ */
+fun isExpired(): Boolean = System.currentTimeMillis() - timestamp > ttl
     
     companion object {
         const val DEFAULT_TTL = 5 * 60 * 1000L // 5 minutes
@@ -52,7 +57,18 @@ class MemoryCache @Inject constructor() {
     private val mutex = Mutex()
     
     /**
-     * Get or create a cache for a specific key type
+     * Retrieve an existing named cache or create a new one with the given configuration.
+     *
+     * If a cache for `cacheKey` already exists it is returned; otherwise a new Cache is created
+     * using `config` and stored. This function is suspendable and performs the operation under a mutex
+     * so it is safe for concurrent callers.
+     *
+     * Note: the cache is stored without runtime type information — callers are responsible for
+     * using a consistent `T` for a given `cacheKey`; the implementation performs an unchecked cast.
+     *
+     * @param cacheKey Unique key identifying the cache.
+     * @param config Configuration to use when creating a new cache (ignored if the cache already exists).
+     * @return The Cache instance associated with `cacheKey`, typed as `Cache<T>`.
      */
     suspend fun <T> getCache(cacheKey: String, config: CacheConfig = CacheConfig()): Cache<T> {
         return mutex.withLock {
@@ -62,7 +78,10 @@ class MemoryCache @Inject constructor() {
     }
     
     /**
-     * Clear all caches
+     * Clears every managed cache and removes them from the global registry.
+     *
+     * This is a suspending operation that synchronizes access internally; it calls `clear()` on each
+     * per-type cache and then removes all cache entries from the manager.
      */
     suspend fun clearAll() {
         mutex.withLock {
@@ -72,7 +91,12 @@ class MemoryCache @Inject constructor() {
     }
     
     /**
-     * Get metrics for a specific cache
+     * Return a snapshot of runtime metrics for the named cache.
+     *
+     * Looks up the cache identified by `cacheKey` and returns its current CacheMetrics, or null if no cache exists for that key.
+     *
+     * @param cacheKey The identifier of the cache whose metrics are requested.
+     * @return A snapshot of the cache's metrics, or `null` if the cache is not present.
      */
     suspend fun getMetrics(cacheKey: String): CacheMetrics? {
         return mutex.withLock {
@@ -94,7 +118,14 @@ class Cache<T>(private val config: CacheConfig) {
     private val evictions = java.util.concurrent.atomic.AtomicLong(0L)
     
     /**
-     * Get value from cache
+     * Retrieves the value for the given cache key if present and not expired.
+     *
+     * If an entry is expired it is removed and null is returned. When metrics are enabled,
+     * a hit is recorded for a successful lookup and a miss is recorded for a missing or expired entry.
+     * This operation is coroutine-safe.
+     *
+     * @param key The cache key to look up.
+     * @return The cached value, or null if not present or expired.
      */
     suspend fun get(key: String): T? {
         return mutex.withLock {
@@ -114,7 +145,13 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Put value in cache
+     * Inserts or replaces an entry in the cache.
+     *
+     * The entry is stored with the current timestamp and the provided TTL. If the cache is at or above
+     * its configured max size, oldest entries are evicted (LRU order) until there is space; each eviction
+     * increments the eviction counter when metrics are enabled. Operation is coroutine-safe.
+     *
+     * @param ttl Time-to-live for this entry in milliseconds. Defaults to the cache's configured TTL.
      */
     suspend fun put(key: String, value: T, ttl: Long = config.ttl) {
         mutex.withLock {
@@ -130,7 +167,12 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Remove specific key from cache
+     * Removes and returns the value associated with the given key from the cache.
+     *
+     * This is a suspend function and performs the removal under the cache mutex.
+     *
+     * @param key The cache key to remove.
+     * @return The removed value, or `null` if the key was not present.
      */
     suspend fun remove(key: String): T? {
         return mutex.withLock {
@@ -139,7 +181,10 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Clear cache
+     * Removes all entries from this cache and resets its metrics.
+     *
+     * This suspending function acquires the cache's mutex, clears the internal store,
+     * and resets hit, miss, and eviction counters to zero.
      */
     suspend fun clear() {
         mutex.withLock {
@@ -151,7 +196,11 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Get cache metrics
+     * Returns a snapshot of the cache's current metrics.
+     *
+     * The returned CacheMetrics contains hits, misses, evictions, current size, and the computed `hitRate`.
+     *
+     * @return a snapshot of current cache metrics
      */
     suspend fun getMetrics(): CacheMetrics {
         return mutex.withLock {
@@ -160,7 +209,11 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Get all keys (for debugging)
+     * Return a thread-safe snapshot of all keys currently stored in this cache.
+     *
+     * The returned set is a copy and reflects the cache contents at the time of the call.
+     *
+     * @return A snapshot Set containing all cache keys.
      */
     suspend fun getKeys(): Set<String> {
         return mutex.withLock {
@@ -169,7 +222,11 @@ class Cache<T>(private val config: CacheConfig) {
     }
     
     /**
-     * Clean up expired entries
+     * Remove all expired entries from this cache.
+     *
+     * Scans the internal map under the cache's mutex and deletes any entries whose
+     * CacheEntry.isExpired() returns true. This mutates the cache's contents and
+     * reduces its reported size.
      */
     suspend fun cleanupExpired() {
         mutex.withLock {

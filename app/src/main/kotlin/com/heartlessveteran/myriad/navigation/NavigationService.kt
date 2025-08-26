@@ -54,7 +54,10 @@ class NavigationService @Inject constructor() {
     val navigationEvents: StateFlow<NavigationEvent?> = _navigationEvents.asStateFlow()
     
     /**
-     * Initialize the navigation service with NavController
+     * Initializes the navigation service with the provided NavController and begins observing destination changes.
+     *
+     * Sets the internal NavController reference and registers a listener that updates the service's NavigationState
+     * whenever the NavController's current route changes.
      */
     fun initialize(navController: NavController) {
         this.navController = navController
@@ -66,7 +69,12 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Navigate to a specific destination with type safety
+     * Requests navigation to the given Destination and immediately attempts to perform it.
+     *
+     * Emits a NavigationEvent.NavigateTo and executes navigation using the current NavController.
+     *
+     * @param destination The destination to navigate to.
+     * @param navOptions Optional NavOptions to apply to the navigation call (e.g., launchSingleTop, popUpTo).
      */
     fun navigateTo(
         destination: Destination, 
@@ -77,7 +85,10 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Navigate back to previous screen
+     * Requests navigation to go back one step.
+     *
+     * Emits a NavigateBack event on the navigationEvents StateFlow and attempts to call `navigateUp()` on the stored NavController.
+     * If no NavController is initialized, only the event is emitted.
      */
     fun navigateBack() {
         _navigationEvents.value = NavigationEvent.NavigateBack
@@ -85,7 +96,13 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Navigate back to specific destination
+     * Pops the navigation back stack to the specified destination and emits a corresponding navigation event.
+     *
+     * Emits a NavigateBackTo event with the provided destination and inclusive flag, then resolves the
+     * destination to a route and calls NavController.popBackStack(route, inclusive).
+     *
+     * @param destination The target Destination to pop back to; resolved to its navigation route.
+     * @param inclusive If true, the target destination itself will also be popped; otherwise it will remain.
      */
     fun navigateBackTo(destination: Destination, inclusive: Boolean = false) {
         _navigationEvents.value = NavigationEvent.NavigateBackTo(destination, inclusive)
@@ -95,7 +112,12 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Navigate and clear entire back stack
+     * Navigates to the given destination and clears the entire back stack.
+     *
+     * The back stack is popped up to the navigation graph's start destination (inclusive)
+     * before navigating to `destination`. Emits a NavigateAndClearBackStack event.
+     *
+     * @param destination The target Destination to navigate to after clearing the back stack.
      */
     fun navigateAndClearBackStack(destination: Destination) {
         _navigationEvents.value = NavigationEvent.NavigateAndClearBackStack(destination)
@@ -108,12 +130,19 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Check if we can navigate back
-     */
+ * Returns true if the navigation controller has a previous back stack entry.
+ *
+ * @return `true` when a previous destination exists and back navigation is possible; `false` otherwise.
+ */
     fun canNavigateBack(): Boolean = navController?.previousBackStackEntry != null
     
     /**
-     * Get current destination
+     * Returns the current Destination represented by the NavController's active route.
+     *
+     * If the NavController is not initialized, the current route is null, or the route
+     * cannot be mapped to a known Destination, this returns null.
+     *
+     * @return The mapped Destination or null when unavailable or unrecognized.
      */
     fun getCurrentDestination(): Destination? {
         val currentRoute = navController?.currentDestination?.route
@@ -121,56 +150,84 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Navigate to manga reading screen
+     * Navigate to the manga reading screen for the given manga.
+     *
+     * @param mangaId The identifier of the manga to open.
+     * @param chapterId Optional identifier of the chapter to open; if null, the default or last-read chapter may be used.
+     * @param page The page index to open within the chapter (0-based).
      */
     fun navigateToReading(mangaId: String, chapterId: String? = null, page: Int = 0) {
         navigateTo(Destination.Reading(mangaId, chapterId, page))
     }
     
     /**
-     * Navigate to anime watching screen
+     * Navigate to the watching (video player) screen for a specific anime.
+     *
+     * @param animeId The ID of the anime to watch.
+     * @param episodeId Optional episode ID to open; if null the default/first episode is used.
+     * @param timestamp Optional playback position (in milliseconds) to start playback from; defaults to 0.
      */
     fun navigateToWatching(animeId: String, episodeId: String? = null, timestamp: Long = 0) {
         navigateTo(Destination.Watching(animeId, episodeId, timestamp))
     }
     
     /**
-     * Navigate to manga detail screen
+     * Navigate to the Manga detail screen for a given manga.
+     *
+     * @param mangaId The unique identifier of the manga to view.
+     * @param sourceId Optional identifier of the source to open the manga from (if null, default source is used).
      */
     fun navigateToMangaDetail(mangaId: String, sourceId: String? = null) {
         navigateTo(Destination.MangaDetail(mangaId, sourceId))
     }
     
     /**
-     * Navigate to anime detail screen
+     * Navigate to the anime detail screen for the given anime.
+     *
+     * @param animeId The anime's unique identifier.
+     * @param sourceId Optional source identifier to open the anime from a specific source (nullable).
      */
     fun navigateToAnimeDetail(animeId: String, sourceId: String? = null) {
         navigateTo(Destination.AnimeDetail(animeId, sourceId))
     }
     
     /**
-     * Navigate to search screen
+     * Navigate to the search screen with optional pre-filled parameters.
+     *
+     * @param query Initial search query to populate the search field (defaults to empty).
+     * @param type Content type to filter search results (defaults to ContentType.ALL).
+     * @param source Optional source identifier to scope the search to a specific source.
      */
     fun navigateToSearch(query: String = "", type: ContentType = ContentType.ALL, source: String? = null) {
         navigateTo(Destination.Search(query, type, source))
     }
     
     /**
-     * Navigate to settings screen
-     */
+     * Navigate to the app Settings screen.
+     *
+     * @param section The settings subsection to open (defaults to GENERAL). */
     fun navigateToSettings(section: SettingsSection = SettingsSection.GENERAL) {
         navigateTo(Destination.Settings(section))
     }
     
     /**
-     * Clear navigation event after consumption
+     * Clears the currently stored navigation event so it won't be re-emitted to observers.
+     *
+     * Call this after handling a navigation event to mark it as consumed.
      */
     fun clearNavigationEvent() {
         _navigationEvents.value = null
     }
     
     /**
-     * Execute the actual navigation
+     * Validate and perform navigation to the given destination.
+     *
+     * Validates the destination using validateNavigation; if valid and a NavController is initialized,
+     * navigates to the resolved route using the provided NavOptions. If validation fails the navigation
+     * is not attempted. Any exceptions thrown by the navigation call are caught and logged.
+     *
+     * @param destination The destination to navigate to.
+     * @param navOptions Optional navigation options to apply when navigating.
      */
     private fun executeNavigation(destination: Destination, navOptions: NavOptions?) {
         val route = getRouteForDestination(destination)
@@ -189,7 +246,14 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Get navigation route string for destination
+     * Returns the navigation route string for the given Destination.
+     *
+     * For static destinations (Home, libraries, Browse, AI Core) this returns the predefined route constant.
+     * For dynamic destinations (Reading, Watching, MangaDetail, AnimeDetail, Search, Settings) this builds
+     * a route via the destination's `createRoute` helper, including any embedded parameters.
+     *
+     * @param destination Destination to convert into a route string.
+     * @return A route string suitable for passing to NavController.navigate.
      */
     private fun getRouteForDestination(destination: Destination): String {
         return when (destination) {
@@ -208,7 +272,14 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Parse route string back to destination
+     * Parse a navigation route string into a Destination instance.
+     *
+     * Maps well-known static routes (home, libraries, browse, AI core) to their corresponding
+     * Destination objects and delegates dynamic routes (reading, watching, manga/anime detail,
+     * search, settings) to specialized parser helpers. Returns null for a null or unrecognized route.
+     *
+     * @param route The navigation route string to parse, or null.
+     * @return The corresponding Destination, or null if the route is null or cannot be parsed.
      */
     private fun parseRouteToDestination(route: String?): Destination? {
         return when {
@@ -229,7 +300,18 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Validate navigation parameters
+     * Validates that the given destination contains acceptable parameters for navigation.
+     *
+     * Supported validations:
+     * - Destination.Reading: validates `mangaId` and `page`.
+     * - Destination.Watching: validates `animeId` and `timestamp`.
+     * - Destination.MangaDetail: validates `mangaId`.
+     * - Destination.AnimeDetail: validates `animeId`.
+     * - Destination.Search: validates `query` and `type`.
+     * For any other destination types, no validation is performed and the function returns true.
+     *
+     * @param destination The destination whose parameters should be validated.
+     * @return `true` if the destination's parameters pass validation (or no validation is required); `false` otherwise.
      */
     private fun validateNavigation(destination: Destination): Boolean {
         return when (destination) {
@@ -246,7 +328,15 @@ class NavigationService @Inject constructor() {
     }
     
     /**
-     * Update navigation state
+     * Updates the internal navigation state from a route string.
+     *
+     * Parses the given route to a Destination and, if successful, updates the
+     * backing StateFlow (_navigationState) with the new current destination,
+     * previous destination (nullified when unchanged), whether back navigation is
+     * possible, and a navigation history capped to the last 10 entries.
+     *
+     * @param route The navigation route string to parse; may be null. If the route
+     *              does not map to a Destination, the state is left unchanged.
      */
     private fun updateNavigationState(route: String?) {
         val currentDestination = parseRouteToDestination(route)
@@ -267,29 +357,87 @@ class NavigationService @Inject constructor() {
         }
     }
     
-    // Helper methods for parsing specific route types
+    /**
+     * Parses a navigation route string and returns a Destination.Reading if the route corresponds to a reading screen.
+     *
+     * The function extracts expected parameters (e.g., `mangaId`, optional `chapterId`, and optional `page`) from the
+     * route and constructs a Destination.Reading. Returns `null` when the route does not match the reading route format
+     * or required identifiers are missing.
+     *
+     * @param route The navigation route string to parse.
+     * @return A populated [Destination.Reading] when parsing succeeds, or `null` if the route is not a reading route or is invalid.
+     */
     private fun parseReadingRoute(route: String): Destination.Reading? {
         // Implementation would parse the route parameters
         // This is a simplified version
         return null // TODO: Implement route parsing
     }
     
+    /**
+     * Parses a navigation route string into a [Destination.Watching] instance.
+     *
+     * The function attempts to recognize a route that represents the "watching" destination and
+     * extract any encoded parameters (such as anime/episode identifiers and playback timestamp).
+     *
+     * @param route The route string to parse.
+     * @return A [Destination.Watching] representing the parsed route, or `null` if the route is
+     * not a valid watching route or required parameters are missing/unparseable.
+     */
     private fun parseWatchingRoute(route: String): Destination.Watching? {
         return null // TODO: Implement route parsing
     }
     
+    /**
+     * Parses a navigation route string into a Destination.MangaDetail instance.
+     *
+     * Converts a route produced by Destination.MangaDetail.createRoute(...) back into a
+     * Destination.MangaDetail with extracted parameters. Returns null if the supplied
+     * route is null, unrecognized, or cannot be parsed into a MangaDetail destination.
+     *
+     * @param route The route string to parse.
+     * @return A Destination.MangaDetail when parsing succeeds, or null otherwise.
+     */
     private fun parseMangaDetailRoute(route: String): Destination.MangaDetail? {
         return null // TODO: Implement route parsing
     }
     
+    /**
+     * Parses a navigation route string into a Destination.AnimeDetail if it matches the anime-detail route pattern.
+     *
+     * The function returns a Destination.AnimeDetail when `route` encodes the anime detail destination (including
+     * required and optional path/query parameters); returns null when the route is null, does not match, or cannot
+     * be parsed into an AnimeDetail.
+     *
+     * @param route The navigation route string to parse.
+     * @return A Destination.AnimeDetail when parsing succeeds, or null when the route is not an anime-detail route.
+     */
     private fun parseAnimeDetailRoute(route: String): Destination.AnimeDetail? {
         return null // TODO: Implement route parsing
     }
     
+    /**
+     * Parses a navigation route string into a Destination.Search, if possible.
+     *
+     * Accepts route strings produced by the `Destination.Search` routing logic (the dynamic
+     * route format used by the service) and returns a populated `Destination.Search` when the
+     * route represents a search screen. Returns `null` for `null`/unrecognized routes.
+     *
+     * @param route The navigation route string to parse (expected to follow the `Destination.Search` route format).
+     * @return A `Destination.Search` built from the route, or `null` if the route does not represent a search destination.
+     */
     private fun parseSearchRoute(route: String): Destination.Search? {
         return null // TODO: Implement route parsing
     }
     
+    /**
+     * Parses a settings route string into a corresponding [Destination.Settings] instance.
+     *
+     * The function converts a navigation route (for example a settings screen route with optional
+     * section identifiers or parameters) into the typed destination used by the navigation service.
+     *
+     * @param route The route string to parse.
+     * @return The parsed [Destination.Settings] if the route matches the settings route pattern, or `null` if the route is not a settings route or cannot be parsed.
+     */
     private fun parseSettingsRoute(route: String): Destination.Settings? {
         return null // TODO: Implement route parsing
     }

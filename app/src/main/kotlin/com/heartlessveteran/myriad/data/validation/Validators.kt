@@ -4,7 +4,13 @@ package com.heartlessveteran.myriad.data.validation
  * Data validation interface for consistent validation across the app
  */
 interface Validator<T> {
-    fun validate(data: T): ValidationResult
+    /**
+ * Validate the given data object and return the outcome.
+ *
+ * @param data The object to validate.
+ * @return `ValidationResult.Valid` if the object passed all checks; otherwise `ValidationResult.Invalid` containing the list of `ValidationError`s found.
+ */
+fun validate(data: T): ValidationResult
 }
 
 /**
@@ -29,6 +35,22 @@ data class ValidationError(
  */
 class MangaValidator : Validator<com.heartlessveteran.myriad.domain.entities.Manga> {
     
+    /**
+     * Validates a Manga entity and returns a ValidationResult summarizing any problems.
+     *
+     * Performs field-level checks and collects ValidationError entries for each violation:
+     * - title: must be non-blank and no longer than 500 characters ("TITLE_EMPTY", "TITLE_TOO_LONG")
+     * - author: if present, must be no longer than 200 characters ("AUTHOR_TOO_LONG")
+     * - rating: must be in the range 0..10 ("RATING_OUT_OF_RANGE")
+     * - totalChapters: must not be negative ("TOTAL_CHAPTERS_NEGATIVE")
+     * - readChapters: must not be negative and must not exceed totalChapters when totalChapters > 0
+     *   ("READ_CHAPTERS_NEGATIVE", "READ_CHAPTERS_EXCEED_TOTAL")
+     * - source: must be non-blank ("SOURCE_EMPTY")
+     * - localPath: required (non-null, non-blank) when isLocal is true ("LOCAL_PATH_REQUIRED")
+     *
+     * @param data The Manga instance to validate.
+     * @return ValidationResult.Valid if no validation errors were found; otherwise ValidationResult.Invalid containing the list of ValidationError.
+     */
     override fun validate(data: com.heartlessveteran.myriad.domain.entities.Manga): ValidationResult {
         val errors = mutableListOf<ValidationError>()
         
@@ -79,10 +101,19 @@ class MangaValidator : Validator<com.heartlessveteran.myriad.domain.entities.Man
 }
 
 /**
- * Extension functions for validation
+ * Returns whether this validation result represents a successful validation.
+ *
+ * @return `true` if this is [ValidationResult.Valid]; `false` if it is [ValidationResult.Invalid].
  */
 fun ValidationResult.isValid(): Boolean = this is ValidationResult.Valid
 
+/**
+ * Returns the list of validation errors for this result.
+ *
+ * For a `Valid` result this returns an empty list; for `Invalid` it returns the contained errors.
+ *
+ * @return A list of ValidationError (empty when the result is `Valid`).
+ */
 fun ValidationResult.getErrors(): List<ValidationError> {
     return when (this) {
         is ValidationResult.Valid -> emptyList()
@@ -90,6 +121,13 @@ fun ValidationResult.getErrors(): List<ValidationError> {
     }
 }
 
+/**
+ * Returns the validation error messages as a list of strings.
+ *
+ * For a `Valid` result this returns an empty list; for `Invalid` it returns the messages of each contained `ValidationError`.
+ *
+ * @return List of error message strings (empty if there are no errors).
+ */
 fun ValidationResult.getErrorMessages(): List<String> {
     return getErrors().map { it.message }
 }
