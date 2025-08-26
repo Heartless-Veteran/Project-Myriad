@@ -45,8 +45,9 @@ pull_request_rules:
   - name: Label Android-specific changes
     description: Add android label for Android-specific file changes
     conditions:
-      - files ~= (?i)\.(kt|java)$
-      - files ~= ^app/
+      - or:
+          - files ~= (?i)\.(kt|java)$
+          - files ~= ^app/
     actions:
       label:
         toggle:
