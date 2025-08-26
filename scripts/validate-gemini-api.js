@@ -10,7 +10,7 @@
  *   GEMINI_API_KEY=your_api_key_here node scripts/validate-gemini-api.js
  */
 
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 console.log('🤖 Gemini API Key Validation Script');
 console.log('=====================================\n');
@@ -49,13 +49,17 @@ const testPayload = JSON.stringify({
 });
 
 try {
-  const curlCommand = `curl -s -w "%{http_code}" "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
-    -H "Content-Type: application/json" \
-    -H "x-api-key: ${apiKey}" \
-    -d '${testPayload}' \
-    -o /tmp/gemini-test-response.json`;
-  
-  const httpCode = execSync(curlCommand, { encoding: 'utf8' }).trim();
+  // Construct the curl argument array to avoid shell injection.
+  const curlArgs = [
+    '-s',
+    '-w', '%{http_code}',
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+    '-H', 'Content-Type: application/json',
+    '-H', `x-api-key: ${apiKey}`,
+    '-d', testPayload,
+    '-o', '/tmp/gemini-test-response.json'
+  ];
+  const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
   
   console.log('📡 HTTP Response Code:', httpCode);
   
