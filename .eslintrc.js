@@ -14,6 +14,6 @@ module.exports = {
     // Basic rules for code analysis script
     'no-console': 'off', // We use console in analysis script
     'no-unused-vars': 'warn',
-    'no-undef': 'error',
+      'no-undef': 'error',
   }
 };
