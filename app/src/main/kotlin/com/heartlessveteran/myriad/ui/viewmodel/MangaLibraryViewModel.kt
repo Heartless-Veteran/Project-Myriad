@@ -36,7 +36,8 @@ enum class MangaFilter {
     READING,
     COMPLETED,
     ON_HOLD,
-    DROPPED
+    DROPPED,
+    UNREAD
 }
 
 /**
@@ -191,6 +192,9 @@ class MangaLibraryViewModel @Inject constructor(
             }
             MangaFilter.DROPPED -> mangaList.filter { 
                 it.status == MangaStatus.CANCELLED 
+            }
+            MangaFilter.UNREAD -> mangaList.filter { 
+                it.readChapters == 0 
             }
         }
     }

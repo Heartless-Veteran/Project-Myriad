@@ -46,8 +46,9 @@ data class LibraryStatistics(
 )
 
 /**
- * Enhanced filter options
+ * Enhanced filter options - Using basic MangaFilter to avoid duplication
  */
+/*
 enum class MangaFilter(val displayName: String) {
     ALL("All Manga"),
     FAVORITES("Favorites"),
@@ -57,6 +58,7 @@ enum class MangaFilter(val displayName: String) {
     DROPPED("Dropped"),
     UNREAD("Unread")
 }
+*/
 
 /**
  * Sort order options
