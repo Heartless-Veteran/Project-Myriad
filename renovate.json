@@ -15,27 +15,68 @@
     },
     {
       "groupName": "Jetpack Compose",
-      "automerge": false,
-      "matchPackageNames": ["/^androidx\\.compose/"]
+      "automerge": true,
+      "automergeType": "pr",
+      "matchPackageNames": ["/^androidx\\.compose/"],
+      "matchUpdateTypes": ["patch", "minor"]
     },
     {
       "groupName": "AndroidX libraries",
-      "automerge": false,
-      "matchPackageNames": ["/^androidx\\./"]
+      "automerge": true,
+      "automergeType": "pr",
+      "matchPackageNames": ["/^androidx\\./"],
+      "matchUpdateTypes": ["patch", "minor"]
     },
     {
       "groupName": "Hilt DI",
-      "automerge": false,
-      "matchPackageNames": ["/^com\\.google\\.dagger/"]
+      "automerge": true,
+      "automergeType": "pr",
+      "matchPackageNames": ["/^com\\.google\\.dagger/"],
+      "matchUpdateTypes": ["patch", "minor"]
     },
     {
       "matchDepTypes": ["testImplementation"],
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "matchPackageNames": ["gradle"],
+      "groupName": "Gradle",
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "matchPackageNames": ["/^com\\.squareup\\.retrofit2/", "/^com\\.squareup\\.okhttp3/"],
+      "groupName": "Square libraries",
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlinx/"],
+      "groupName": "Kotlinx libraries",
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "matchDepTypes": ["implementation"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchPackageNames": ["/^actions\\//"],
+      "groupName": "GitHub Actions",
+      "automerge": true,
+      "automergeType": "pr"
     }
   ],
   "vulnerabilityAlerts": {
-    "enabled": true
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "pr"
   },
   "lockFileMaintenance": {
     "enabled": false

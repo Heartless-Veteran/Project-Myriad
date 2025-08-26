@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.navigation
 
 import android.net.Uri
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import kotlinx.coroutines.flow.MutableStateFlow
