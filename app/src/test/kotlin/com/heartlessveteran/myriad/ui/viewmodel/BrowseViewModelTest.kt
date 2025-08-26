@@ -64,8 +64,8 @@ class BrowseViewModelTest {
         // When
         val viewModel = BrowseViewModel(mockGetLatestUseCase, mockSearchUseCase)
         
-        // Give some time for the flow to emit
-        kotlinx.coroutines.delay(100)
+        // Advance coroutine execution until idle
+        advanceUntilIdle()
 
         // Then
         val state = viewModel.uiState.value
