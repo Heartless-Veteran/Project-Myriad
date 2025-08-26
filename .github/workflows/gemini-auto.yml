@@ -1,0 +1,142 @@
+name: Gemini Auto - AI Code Fixer
+
+# This workflow automatically fixes code issues using Google's Gemini AI
+# and commits the fixes directly to pull requests
+on:
+  pull_request:
+    types: [opened, synchronize, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  gemini_auto_fix:
+    name: Gemini Auto Fix
+    # Run if PR is opened, synchronized, or labeled with 'gemini-auto'
+    if: |
+      github.event.action == 'opened' ||
+      github.event.action == 'synchronize' ||
+      (github.event.action == 'labeled' && github.event.label.name == 'gemini-auto') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Run Gemini Auto Analysis and Fix
+        id: gemini_auto
+        run: |
+          # Check if API key is configured
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "⚠️ GEMINI_API_KEY secret is not configured"
+            echo "status=missing_key" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Run the Gemini Auto script
+          if node ./scripts/gemini-auto.js; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "changes_made=true" >> $GITHUB_OUTPUT
+          else
+            echo "status=error" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+
+      - name: Commit and push fixes
+        if: steps.gemini_auto.outputs.changes_made == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Gemini Auto"
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "🤖 Gemini Auto: Apply AI-suggested fixes
+
+            Auto-generated fixes by Gemini AI to improve code quality,
+            performance, and adherence to best practices.
+            
+            - Fix linting issues
+            - Optimize performance
+            - Apply security improvements  
+            - Standardize code formatting"
+            git push
+            echo "✅ Gemini Auto fixes committed and pushed successfully"
+          else
+            echo "ℹ️ No changes to commit"
+          fi
+
+      - name: Post status comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ steps.gemini_auto.outputs.status }}';
+            const changesMade = '${{ steps.gemini_auto.outputs.changes_made }}';
+            
+            let body = "## 🤖 Gemini Auto\n\n";
+            
+            if (status === 'missing_key') {
+              body += "🔧 **Setup Required**: Configure your Gemini API key for auto-fixes.\n\n";
+              body += "### Quick Setup:\n";
+              body += "1. Get a free API key at [Google AI Studio](https://makersuite.google.com/app/apikey)\n";
+              body += "2. Add it as `GEMINI_API_KEY` in **Settings > Secrets and variables > Actions**\n";
+              body += "3. Add label `gemini-auto` to this PR or push new commits to trigger fixes\n\n";
+              body += "🚀 **What Gemini Auto does**:\n";
+              body += "- **Automatically fixes** linting issues\n";
+              body += "- **Optimizes performance** bottlenecks\n";
+              body += "- **Applies security** improvements\n";
+              body += "- **Standardizes formatting** and style\n";
+              body += "- **Commits fixes** directly to your PR\n";
+            } else if (status === 'success' && changesMade === 'true') {
+              body += "✅ **Auto-fixes applied successfully!**\n\n";
+              body += "🔧 **Changes made**:\n";
+              body += "- Linting issues resolved\n";
+              body += "- Performance optimizations applied\n";
+              body += "- Code formatting standardized\n";
+              body += "- Security improvements implemented\n\n";
+              body += "📝 **Review the commit** above to see all changes made by Gemini Auto.";
+            } else if (status === 'success') {
+              body += "✅ **Analysis complete - No fixes needed!**\n\n";
+              body += "🎉 Your code is already following best practices.";
+            } else {
+              body += "❌ **Error during auto-fix process**\n\n";
+              body += "Please check the workflow logs for details.";
+            }
+            
+            body += "\n\n---\n*Gemini Auto - Powered by Google's Gemini AI*";
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });

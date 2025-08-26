@@ -1,6 +1,10 @@
-name: AI Code Review - Gemini
+name: "[DEPRECATED] AI Code Review - Gemini"
 
-# This workflow triggers on pull requests that are opened, have new commits pushed, or have a specific label added.
+# DEPRECATED: This workflow has been replaced by 'Gemini Auto'
+# The new workflow provides auto-fix capabilities instead of just suggestions
+# Please use the 'gemini-auto' label or the new workflow instead
+
+# This workflow is kept for reference but will be removed in a future version
 on:
   pull_request:
     types: [opened, synchronize, labeled]
@@ -13,12 +17,9 @@ permissions:
 jobs:
   gemini_code_reviewer:
     name: Gemini AI Code Review
-    # This job will run if the PR is opened, synchronized, or if the 'gemini-ai' label is added.
-    if: |
-      github.event.action == 'opened' ||
-      github.event.action == 'synchronize' ||
-      (github.event.action == 'labeled' && github.event.label.name == 'gemini-ai') ||
-      github.event_name == 'workflow_dispatch'
+    # DEPRECATED: This job is disabled in favor of the new Gemini Auto workflow
+    # To enable auto-fixes, use the gemini-auto.yml workflow instead
+    if: false # Disabled - use Gemini Auto instead
     runs-on: ubuntu-latest
     
     steps:

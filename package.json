@@ -4,6 +4,7 @@
   "description": "The Definitive Manga and Anime Platform - Kotlin Android Edition",
   "scripts": {
     "analyze": "node ./scripts/analyze.js",
+    "gemini-auto": "node ./scripts/gemini-auto.js",
     "test": "echo 'No tests defined for Node.js environment' && exit 0",
     "lint": "npx eslint ."
   },
@@ -24,6 +25,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "tmp": "^0.2.5"
+    "tmp": "^0.2.5",
+    "node-fetch": "^2.7.0"
 }
 }
