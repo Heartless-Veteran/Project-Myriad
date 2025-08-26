@@ -188,7 +188,7 @@ ktlint {
 }
 
 detekt {
-    toolVersion = "1.23.7"
+    toolVersion = "1.23.8"
     config.setFrom(file("../config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
     autoCorrect = true
@@ -208,7 +208,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 // JaCoCo Test Coverage Configuration
 jacoco {
-    toolVersion = "0.8.12"
+    toolVersion = "0.8.13"
 }
 
 tasks.register<JacocoReport>("jacocoTestReport") {
