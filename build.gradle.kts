@@ -21,6 +21,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10" apply false
     id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
+    // Code Quality plugins
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.2" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.7" apply false
+    id("org.jetbrains.dokka") version "2.0.0" apply false
     // Firebase plugins - optional features
     // id("com.google.gms.google-services") version "4.4.0" apply false
     // id("com.google.firebase.crashlytics") version "2.9.9" apply false
