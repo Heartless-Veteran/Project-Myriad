@@ -178,7 +178,7 @@ function selectGeminiModel(filePath, content, issueCount = 0) {
   // Check complexity indicators
   const isLargeFile = content.length > (thresholds.fileSize || 50000);
   const hasManyIssues = issueCount > (thresholds.issueCount || 10);
-  const isKotlinClass = filePath.endsWith('.kt') && /class\s+\w+/.test(content) && thresholds.kotlinClass;
+  const isKotlinClass = filePath.endsWith('.kt') && /class\s+\w+/.test(content) && thresholds.kotlinClass !== false;
   
   if (isLargeFile || hasManyIssues || isKotlinClass) {
     console.log(`🧠 Using advanced model for complex task: ${path.basename(filePath)}`);
