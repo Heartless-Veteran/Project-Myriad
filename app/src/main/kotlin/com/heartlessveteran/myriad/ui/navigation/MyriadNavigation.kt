@@ -120,7 +120,11 @@ fun MyriadNavigation(navController: NavHostController) {
             }
             
             composable(Screen.Settings.route) {
-                SettingsScreen()
+                SettingsScreen(
+                    initialSection = SettingsSection.General, // or appropriate default section
+                    onBackClick = { navController.popBackStack() },
+                    onSectionChange = { /* handle section change if needed */ }
+                )
             }
             
             composable(Screen.Reading.route) { backStackEntry ->
