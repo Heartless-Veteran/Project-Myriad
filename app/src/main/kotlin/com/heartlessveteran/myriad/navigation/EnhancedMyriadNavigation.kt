@@ -48,7 +48,7 @@ val bottomNavItems = listOf(
 @Composable
 fun EnhancedMyriadNavigation(
     navController: NavHostController,
-    navigationService: NavigationService = hiltViewModel()
+    navigationService: NavigationService
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
