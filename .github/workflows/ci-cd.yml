@@ -108,6 +108,8 @@ jobs:
   # Android build
   build:
     name: 🏗️ Android Build
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: [lint, test]
     strategy:
