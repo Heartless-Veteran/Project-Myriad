@@ -134,7 +134,7 @@ dependencies {
     // OCR for translation
     implementation("com.google.mlkit:text-recognition:16.0.1")
     implementation("com.google.mlkit:language-id:17.0.6")
-    implementation("com.google.mlkit:translate:17.0.1")
+    implementation("com.google.mlkit:translate:17.0.3")
     
     // Video player for anime
     implementation("androidx.media3:media3-exoplayer:1.8.0")
