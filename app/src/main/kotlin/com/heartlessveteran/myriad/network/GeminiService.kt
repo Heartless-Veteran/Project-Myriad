@@ -15,7 +15,7 @@ interface GeminiService {
      * @param request The chat request containing the message and configuration
      * @return The chat response from Gemini API
      */
-    @POST("v1/models/gemini-pro:generateContent")
+    @POST(GEMINI_GENERATE_CONTENT_ENDPOINT)
     suspend fun generateContent(@Body request: GeminiChatRequest): GeminiChatResponse
 }
 
