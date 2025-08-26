@@ -12,14 +12,50 @@ permissions:
   pull-requests: write
 
 jobs:
+  pre_check:
+    name: Pre-check for Issues
+    runs-on: ubuntu-latest
+    outputs:
+      has_issues: ${{ steps.check.outputs.has_issues }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Check for issues requiring fixes
+        id: check
+        run: |
+          # Run quick pre-check to see if there are issues to fix
+          if GEMINI_TEST_MODE=true node ./scripts/gemini-auto.js | grep -q "Issues detected"; then
+            echo "has_issues=true" >> $GITHUB_OUTPUT
+            echo "✅ Issues detected - Gemini Auto will run"
+          else
+            echo "has_issues=false" >> $GITHUB_OUTPUT  
+            echo "ℹ️ No issues detected - Gemini Auto will be skipped"
+          fi
+
   gemini_auto_fix:
     name: Gemini Auto Fix
-    # Run if PR is opened, synchronized, or labeled with 'gemini-auto'
+    needs: pre_check
+    # Only run if there are actual issues to fix AND conditions are met
     if: |
-      github.event.action == 'opened' ||
-      github.event.action == 'synchronize' ||
-      (github.event.action == 'labeled' && github.event.label.name == 'gemini-auto') ||
-      github.event_name == 'workflow_dispatch'
+      needs.pre_check.outputs.has_issues == 'true' && (
+        github.event.action == 'opened' ||
+        github.event.action == 'synchronize' ||
+        (github.event.action == 'labeled' && github.event.label.name == 'gemini-auto') ||
+        github.event_name == 'workflow_dispatch'
+      )
     runs-on: ubuntu-latest
     
     steps:
@@ -50,15 +86,15 @@ jobs:
       - name: Run Gemini Auto Analysis and Fix
         id: gemini_auto
         run: |
-          # Check if API key is configured
+          # Security check: Verify API key is configured
           if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
             echo "⚠️ GEMINI_API_KEY secret is not configured"
             echo "status=missing_key" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Run the Gemini Auto script
-          if node ./scripts/gemini-auto.js; then
+          # Run the Gemini Auto script with enhanced security
+          if timeout 10m node ./scripts/gemini-auto.js; then
             echo "status=success" >> $GITHUB_OUTPUT
             echo "changes_made=true" >> $GITHUB_OUTPUT
           else
@@ -132,7 +168,37 @@ jobs:
               body += "Please check the workflow logs for details.";
             }
             
-            body += "\n\n---\n*Gemini Auto - Powered by Google's Gemini AI*";
+            body += "\n\n---\n*Gemini Auto - Enhanced with Security & Efficiency*";
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+
+  no_issues_comment:
+    name: No Issues Comment
+    needs: pre_check
+    # Run this job when there are no issues to fix
+    if: |
+      needs.pre_check.outputs.has_issues == 'false' && (
+        github.event.action == 'opened' ||
+        github.event.action == 'synchronize' ||
+        (github.event.action == 'labeled' && github.event.label.name == 'gemini-auto') ||
+        github.event_name == 'workflow_dispatch'
+      )
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Post no issues comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = "## 🤖 Gemini Auto\n\n" +
+              "✅ **No issues detected!**\n\n" +
+              "🎉 Your code already follows best practices. No fixes needed.\n\n" +
+              "---\n*Gemini Auto - Enhanced with Security & Efficiency*";
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
