@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Gemini API Key Validation Script
+ * Gemini Auto API Key Validation Script
  *
  * This script helps validate your GEMINI_API_KEY configuration locally
  * before committing to the repository workflow.
@@ -12,7 +12,7 @@
 
 const { execFileSync } = require('child_process');
 
-console.log('🤖 Gemini API Key Validation Script');
+console.log('🤖 Gemini Auto API Validation Script');
 console.log('=====================================\n');
 
 // Check if API key is provided

@@ -191,6 +191,26 @@ For detailed development plans, timelines, and implementation roadmap, see our c
 
 ---
 
+## 🤖 Gemini Auto - AI Code Fixer
+
+**Project Myriad** includes an advanced AI-powered code fixing system that automatically identifies and resolves code issues in pull requests.
+
+### ✨ Key Features
+- 🔧 **Auto-Fix**: Actually fixes code instead of just suggesting changes
+- 🚀 **Direct Commits**: Applies fixes directly to your PR  
+- 🧠 **AI-Powered**: Uses Google's Gemini AI for intelligent code analysis
+- 🔒 **Secure**: Processes code securely with proper authentication
+- ⚡ **Fast**: Completes analysis and fixes in minutes
+
+### 🛠️ Setup Gemini Auto
+1. **Get API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. **Add Secret**: Go to Settings > Secrets > `GEMINI_API_KEY`  
+3. **Use**: Add `gemini-auto` label to any PR or let it run automatically
+
+For detailed setup instructions, see **[📖 Gemini Auto Guide](docs/GEMINI_AUTO.md)**.
+
+---
+
 ## 🎯 Key Features Comparison
 
 | Feature | Project Myriad | Tachiyomi | Other Apps |

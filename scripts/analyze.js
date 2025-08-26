@@ -6,7 +6,7 @@ const path = require('path');
 // Constants
 const MAX_KOTLIN_FILES_ANALYZED = 10; // Limit to avoid timeout during analysis
 
-console.log('--- GitAuto-AI Analysis Report ---');
+console.log('--- Gemini Auto Analysis Report ---');
 console.log(`Report generated on: ${new Date().toISOString()}`);
 console.log('-------------------------------------\n');
 
