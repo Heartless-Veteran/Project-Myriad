@@ -2,6 +2,8 @@
 
 🤖 **Gemini Auto** is an AI-powered code fixing system that automatically identifies and resolves code issues in your pull requests. Unlike traditional AI review tools that only provide suggestions, Gemini Auto actually fixes the code and commits the changes directly to your PR.
 
+**🔒 Enhanced Security & Efficiency**: Now runs only when issues are detected, with comprehensive security validations and rate limiting.
+
 ## Features
 
 ### 🔧 Auto-Fix Capabilities
@@ -11,11 +13,20 @@
 - **Formatting**: Standardizes code style and formatting
 - **Error Handling**: Adds missing error handling patterns
 
+### 🛡️ Security Enhancements
+- **Conditional Execution**: Only runs when actual issues are detected
+- **Input Sanitization**: Validates all content sent to AI API
+- **Response Validation**: Checks AI responses for malicious content
+- **Rate Limiting**: Limits API calls per run to prevent quota exhaustion
+- **Size Validation**: Enforces file size limits for security
+- **Change Validation**: Ensures fixes are actual improvements
+
 ### 🚀 Seamless Integration
 - **Direct Commits**: Fixes are committed directly to your PR
 - **Smart Analysis**: Uses Google's Gemini AI for intelligent code understanding
 - **Multi-Language**: Supports JavaScript, TypeScript, Kotlin, and configuration files
 - **GitHub Integration**: Works seamlessly with GitHub Actions
+- **Efficient**: Pre-checks prevent unnecessary API calls
 
 ## Setup
 
@@ -41,24 +52,29 @@ Gemini Auto will automatically run on:
 
 ## How It Works
 
-1. **Code Analysis**: Scans your code for issues using multiple tools:
-   - ESLint for JavaScript/TypeScript linting
-   - Static analysis for performance and security issues
-   - Code style and formatting checks
+1. **Pre-Check Analysis**: Before using AI, scans your code to detect if fixes are actually needed:
+   - ESLint for JavaScript/TypeScript linting  
+   - Basic syntax analysis as fallback
+   - File-by-file issue detection
 
-2. **AI Processing**: Sends code to Google's Gemini AI with context about:
-   - Detected linting issues
-   - Performance improvement opportunities
-   - Security vulnerability patterns
-   - Code formatting standards
+2. **Conditional Execution**: Only proceeds with AI analysis if issues are detected:
+   - Saves API quota on clean code
+   - Reduces unnecessary workflow runs
+   - Provides clear feedback when no fixes needed
 
-3. **Auto-Fix**: Applies AI-suggested fixes directly to your files:
-   - Fixes syntax and linting errors
-   - Optimizes performance bottlenecks
-   - Applies security improvements
-   - Standardizes code formatting
+3. **Secure AI Processing**: When issues are found, sends code to Google's Gemini AI with security safeguards:
+   - Input sanitization and size limits
+   - Response validation for malicious content
+   - Rate limiting to prevent quota exhaustion
+   - Enhanced error handling
 
-4. **Commit & Push**: Creates a commit with all fixes and pushes to your PR:
+4. **Validated Auto-Fix**: Applies AI-suggested fixes with comprehensive validation:
+   - Ensures fixes are actual improvements
+   - Validates file structure integrity
+   - Checks for reasonable change magnitude
+   - Language-specific syntax validation
+
+5. **Commit & Push**: Creates a commit with validated fixes and pushes to your PR:
    ```
    🤖 Gemini Auto: Apply AI-suggested fixes
 
@@ -75,8 +91,29 @@ Gemini Auto will automatically run on:
 
 ### Limitations
 - Maximum 20 files per run (configurable)
-- Files must be under reasonable size limit
+- Maximum 15 API calls per run for quota conservation
+- Files must be under 100KB for security
 - Only applies safe, conservative fixes
+- Validates all changes before applying
+
+## Security Features
+
+### 🛡️ Input Validation
+- **File Size Limits**: Enforces 100KB maximum per file
+- **Content Sanitization**: Removes control characters and potential injection patterns
+- **Type Validation**: Ensures all inputs are properly formatted
+
+### 🔒 API Security
+- **Response Validation**: Checks AI responses for suspicious patterns
+- **Rate Limiting**: Maximum 15 API calls per run
+- **Error Handling**: Secure error messages without exposing sensitive data
+- **Timeout Protection**: 10-minute maximum execution time
+
+### ✅ Change Validation
+- **Improvement Verification**: Ensures fixes are actual improvements
+- **Size Change Limits**: Rejects changes over 200% size difference
+- **Structure Integrity**: Validates JSON, Kotlin package declarations, etc.
+- **Content Analysis**: Checks for malicious code patterns
 
 ## Manual Usage
 
@@ -125,9 +162,20 @@ If you were using the old "GitAuto-AI" system:
 
 - Code is sent to Google's Gemini API for analysis (standard terms apply)
 - API keys are securely stored in GitHub Secrets
-- All communication uses HTTPS
+- All communication uses HTTPS encryption
 - No code is permanently stored by the AI service
+- Input sanitization prevents injection attacks
+- Response validation blocks malicious content
+- Rate limiting prevents quota abuse
+
+## Performance & Efficiency
+
+- **Pre-Check**: Skips AI analysis when no issues detected
+- **Conditional Workflow**: Only runs when fixes are actually needed
+- **API Quota Conservation**: Limits calls to prevent exhaustion
+- **Smart Caching**: Reuses dependency installations where possible
 
 ---
 
-**Powered by Google's Gemini AI** 🤖
+**Powered by Google's Gemini AI** 🤖  
+*Enhanced with Security & Efficiency* 🛡️
