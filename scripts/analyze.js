@@ -70,7 +70,7 @@ if (hasPackageJson) {
   
   // Run ESLint if available
   try {
-    const eslintOutput = safeExec('npx eslint . --format compact');
+    const eslintOutput = safeExec('npx eslint "**/*.js" --ignore-pattern node_modules/** --ignore-pattern build/** --format compact');
     console.log('ESLint Analysis:');
     console.log(eslintOutput);
   } catch (error) {
