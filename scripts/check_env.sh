@@ -1,23 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🔎 Checking development environment..."
-
-# Check for Node.js
-echo -n "Checking for Node.js (version 18+)... "
-if ! command -v node &> /dev/null; then
-    echo "❌ Node.js not found. Please install Node.js version 18 or higher."
-    exit 1
-fi
-
-NODE_VERSION=$(node -v)
-NODE_MAJOR_VERSION=$(echo "$NODE_VERSION" | cut -d. -f1 | sed 's/v//')
-
-if [ "$NODE_MAJOR_VERSION" -lt 18 ]; then
-    echo "❌ Node.js version is $NODE_VERSION. Version 18 or higher is required."
-    exit 1
-fi
-echo "✅ Node.js $NODE_VERSION found."
+echo "🔎 Checking development environment for Android development..."
 
 # Check for JDK
 echo -n "Checking for JDK (version 11+)... "
@@ -54,6 +38,14 @@ if [ -n "$ANDROID_HOME" ]; then
     echo "✅ Android SDK found at ANDROID_HOME: $ANDROID_HOME"
 elif [ -n "$ANDROID_SDK_ROOT" ]; then
     echo "✅ Android SDK found at ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"
+fi
+
+# Check for Android Studio
+echo -n "Checking for Android Studio or gradle wrapper... "
+if [ -f "./gradlew" ]; then
+    echo "✅ Gradle wrapper found."
+else
+    echo "⚠️  Gradle wrapper not found. You may need to sync the project in Android Studio."
 fi
 
 echo "✅ Environment check passed!"

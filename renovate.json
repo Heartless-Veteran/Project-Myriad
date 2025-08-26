@@ -3,18 +3,33 @@
   "extends": ["config:recommended", ":dependencyDashboard"],
   "packageRules": [
     {
-      "matchPackageNames": ["react-native"],
-      "groupName": "React Native core",
+      "matchPackageNames": ["com.android.tools.build:gradle"],
+      "groupName": "Android Gradle Plugin",
       "automerge": false,
       "reviewersFromCodeOwners": true
     },
     {
-      "groupName": "React Native ecosystem",
+      "groupName": "Kotlin ecosystem",
       "automerge": false,
-      "matchPackageNames": ["/^@react-native//", "/^react-native-/"]
+      "matchPackageNames": ["org.jetbrains.kotlin:kotlin-gradle-plugin", "/^org\\.jetbrains\\.kotlin/"]
     },
     {
-      "matchDepTypes": ["devDependencies"],
+      "groupName": "Jetpack Compose",
+      "automerge": false,
+      "matchPackageNames": ["/^androidx\\.compose/"]
+    },
+    {
+      "groupName": "AndroidX libraries",
+      "automerge": false,
+      "matchPackageNames": ["/^androidx\\./"]
+    },
+    {
+      "groupName": "Hilt DI",
+      "automerge": false,
+      "matchPackageNames": ["/^com\\.google\\.dagger/"]
+    },
+    {
+      "matchDepTypes": ["testImplementation"],
       "automerge": true,
       "automergeType": "pr"
     }
@@ -23,6 +38,6 @@
     "enabled": true
   },
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": false
   }
 }
