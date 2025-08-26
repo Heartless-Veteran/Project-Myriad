@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const tmp = require('tmp');
 
 console.log('🧪 Testing Gemini API Error Handling');
 console.log('=====================================\n');
@@ -64,7 +65,8 @@ testScenarios.forEach((scenario, index) => {
   console.log(`${index + 1}. Testing: ${scenario.name}`);
   
   // Write test response to file
-  const testResponseFile = `/tmp/test-ai-response-${index}.json`;
+  const tempFile = tmp.fileSync({ postfix: `.json` });
+  const testResponseFile = tempFile.name;
   fs.writeFileSync(testResponseFile, JSON.stringify(scenario.response, null, 2));
   
   // Simulate the error handling logic from the workflow
