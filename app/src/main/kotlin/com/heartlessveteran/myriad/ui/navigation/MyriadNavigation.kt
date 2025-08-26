@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object AnimeLibrary : Screen("anime_library", "Anime", Icons.Default.PlayArrow)
     object Browse : Screen("browse", "Browse", Icons.Default.Search)
     object AICore : Screen("ai_core", "AI Core", Icons.Default.Psychology)
+    object Settings : Screen("settings", "Settings", Icons.Default.Settings)
     object Reading : Screen("reading/{mangaId}", "Reading", Icons.Default.AutoStories) {
         fun createRoute(mangaId: String) = "reading/$mangaId"
     }
@@ -43,7 +45,8 @@ val bottomNavItems = listOf(
     Screen.MangaLibrary,
     Screen.AnimeLibrary,
     Screen.Browse,
-    Screen.AICore
+    Screen.AICore,
+    Screen.Settings
 )
 
 /**
@@ -114,6 +117,14 @@ fun MyriadNavigation(navController: NavHostController) {
             
             composable(Screen.AICore.route) {
                 AICoreScreen()
+            }
+            
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    initialSection = SettingsSection.General, // or appropriate default section
+                    onBackClick = { navController.popBackStack() },
+                    onSectionChange = { /* handle section change if needed */ }
+                )
             }
             
             composable(Screen.Reading.route) { backStackEntry ->

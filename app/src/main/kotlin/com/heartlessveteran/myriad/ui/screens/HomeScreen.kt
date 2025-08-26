@@ -97,7 +97,7 @@ fun HomeScreen(
         
         // Recent Activity
         Text(
-            text = "Recent Activity",
+            text = "Development Status",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold
         )
@@ -108,7 +108,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(32.dp),
+                    .padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -116,12 +116,13 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "No recent activity",
+                        text = "🚀 Phase 2: Core Features Active",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "Start by adding manga or anime to your library",
+                        text = "Enhanced Settings, Basic Reader, and File Management features are now being implemented",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -132,7 +133,7 @@ fun HomeScreen(
         
         // AI Features Preview
         Text(
-            text = "AI-Powered Features",
+            text = "Phase 2: Core Features ✨",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold
         )
@@ -143,15 +144,15 @@ fun HomeScreen(
         ) {
             items(
                 listOf(
-                    "OCR Translation",
-                    "Art Style Matching", 
-                    "Scene Recommender",
-                    "AI Voice Reader",
-                    "Theme Matcher",
-                    "Mood Tracker"
+                    "Enhanced Settings" to "✅",
+                    "Basic Reader" to "✅", 
+                    "File Management" to "🚧",
+                    "Local Import" to "🚧",
+                    "Reading Progress" to "🚧",
+                    "OCR Translation" to "📋"
                 )
-            ) { feature ->
-                AIFeatureCard(feature = feature)
+            ) { (feature, status) ->
+                PhaseFeatureCard(feature = feature, status = status)
             }
         }
     }
@@ -225,20 +226,29 @@ private fun QuickActionCard(
 }
 
 @Composable
-private fun AIFeatureCard(feature: String) {
+private fun PhaseFeatureCard(feature: String, status: String) {
     Card(
         modifier = Modifier.width(140.dp)
     ) {
         Box(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = feature,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = status,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = feature,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Medium
+                )
+            }
         }
     }
 }
