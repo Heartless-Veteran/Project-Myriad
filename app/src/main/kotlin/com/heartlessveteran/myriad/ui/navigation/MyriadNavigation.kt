@@ -18,6 +18,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.heartlessveteran.myriad.ui.screens.*
+import com.heartlessveteran.myriad.navigation.SettingsSection
+import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 /**
  * Main navigation routes for the app
@@ -112,7 +115,17 @@ fun MyriadNavigation(navController: NavHostController) {
             }
             
             composable(Screen.Browse.route) {
-                BrowseScreen()
+                BrowseScreen(
+                    viewModel = viewModel {
+                        BrowseViewModel(
+                            com.heartlessveteran.myriad.di.BrowseDiContainer.getLatestMangaUseCase,
+                            com.heartlessveteran.myriad.di.BrowseDiContainer.searchMangaUseCase
+                        )
+                    },
+                    onMangaClick = { mangaUrl ->
+                        // TODO: Navigate to manga detail screen when implemented
+                    }
+                )
             }
             
             composable(Screen.AICore.route) {
