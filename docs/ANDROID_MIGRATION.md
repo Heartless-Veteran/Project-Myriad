@@ -17,6 +17,10 @@ This document outlines the comprehensive migration strategy from React Native to
 
 ### Phase 2: Core Implementation (In Progress)
 - [ ] Fix gradle wrapper and build system
+    - Update gradle wrapper to latest stable version
+    - Migrate build scripts to Kotlin DSL if not already done
+    - Resolve build errors on CI/CD pipelines
+    - Ensure compatibility with Jetpack Compose and Material 3 dependencies
 - [ ] Implement Room database with Flow
 - [ ] Create repository implementations
 - [ ] Build ViewModels with Compose state
