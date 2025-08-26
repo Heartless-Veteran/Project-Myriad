@@ -19,7 +19,7 @@
 
 ### Dependency Breakdown
 - **Implementation**: 41 dependencies
-- **Test**: 4 dependencies  
+- **Test**: 4 dependencies
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
