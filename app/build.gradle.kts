@@ -100,9 +100,9 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     
     // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    kapt("com.google.dagger:hilt-compiler:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.57.1")
     
     // Network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -152,7 +152,7 @@ dependencies {
     
     // Testing
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito:mockito-core:5.19.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.room:room-testing:2.7.2")
     
