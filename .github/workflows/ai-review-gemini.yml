@@ -121,7 +121,8 @@ Please check:
                 issue_number: context.issue.number,
                 body: errorBody
               });
-              throw new Error('Invalid Gemini API response');
+              core.setFailed('Invalid Gemini API response');
+              return;
             }
 
             // Extract suggestions from the API response
