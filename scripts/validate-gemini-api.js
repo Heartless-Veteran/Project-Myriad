@@ -107,7 +107,7 @@ try {
     console.log('   - Consider upgrading your Google Cloud billing if needed');
     
   } else {
-    console.log(`❌ **API Error (HTTP ${httpCode})**\n`);
+      const errorResponse = require('fs').readFileSync(tempFilePath, 'utf8');
     
     // Try to read error details
     try {
