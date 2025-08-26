@@ -296,7 +296,15 @@ function detectBasicCodeIssues(filePath, content) {
     if (config.kotlin.rules['null-safety']) {
       // Detect potential null pointer exceptions
       lines.forEach((line, index) => {
-        if (/\.(?!let|also|run|apply|with)[a-zA-Z_$][a-zA-Z0-9_$]*(?!\?)\./.test(line)) {
+        // Detect chained property/method access that may cause null pointer exceptions
+        // 1. Ignore lines using safe call operator (?.)
+        if (line.includes('?.')) return;
+        // 2. Ignore lines using scope functions (let, also, run, apply, with)
+        if (/\b(let|also|run|apply|with)\b/.test(line)) return;
+        // 3. Match chained access like: object.property.method
+        //    This regex matches a dot, followed by an identifier, followed by another dot
+        const chainedAccessPattern = /\.[a-zA-Z_$][a-zA-Z0-9_$]*\./;
+        if (chainedAccessPattern.test(line)) {
           issues.push({
             line: index + 1,
             message: 'Potential null pointer exception - consider using safe call operator',
