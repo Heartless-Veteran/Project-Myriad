@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.compose")
     // Firebase plugins commented out - optional feature
     // id("com.google.gms.google-services")
     // id("com.google.firebase.crashlytics")
@@ -13,12 +14,12 @@ plugins {
 
 android {
     namespace = "com.heartlessveteran.myriad"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.heartlessveteran.myriad"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
 

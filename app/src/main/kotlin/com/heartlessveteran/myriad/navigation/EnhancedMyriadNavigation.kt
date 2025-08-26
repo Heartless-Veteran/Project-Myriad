@@ -440,7 +440,3 @@ private fun getRoutePattern(destination: Destination): String {
         else -> ""
     }
 }
-
-// Import statements for navigation arguments
-import androidx.navigation.NavType
-import androidx.navigation.navArgument

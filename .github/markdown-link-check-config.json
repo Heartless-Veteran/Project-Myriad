@@ -1,0 +1,19 @@
+{
+  "alive-status-codes": [200, 206, 429],
+  "retry-on-429": true,
+  "retry-count": 3,
+  "check-modified-files-only": false,
+  "base-url": "https://heartless-veteran.github.io/Project-Myriad/",
+  "file-extension": ".md",
+  "ignore-patterns": [
+    {
+      "pattern": "^(?!https://github.com/Heartless-Veteran/Project-Myriad).*github.com.*"
+    },
+    {
+      "pattern": "localhost"
+    },
+    {
+      "pattern": "127.0.0.1"
+    }
+  ]
+}

@@ -62,11 +62,6 @@ object NetworkModule {
             }
         }
     }
-            } else {
-                HttpLoggingInterceptor.Level.BASIC
-            }
-        }
-    }
     
     /**
      * Provides the Gemini authentication interceptor.
@@ -104,7 +99,7 @@ object NetworkModule {
     @GeminiRetrofit
     fun provideGeminiRetrofit(
         @GeminiClient okHttpClient: OkHttpClient,
-            .baseUrl(GEMINI_BASE_URL)
+        json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
