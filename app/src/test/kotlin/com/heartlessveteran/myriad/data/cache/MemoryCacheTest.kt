@@ -186,7 +186,7 @@ class CacheTest {
         cache.put("key1", "value1", ttl = 1L) // Will expire
         cache.put("key2", "value2", ttl = 10000L) // Won't expire
         
-        Thread.sleep(10) // Wait for first entry to expire
+        advanceTimeBy(10) // Simulate time passing for first entry to expire
         
         cache.cleanupExpired()
         
