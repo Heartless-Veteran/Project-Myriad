@@ -120,7 +120,7 @@ function analyzeCodeWithLinters() {
         }
       });
     } catch (e) {
-      // ESLint output might not be JSON if there are no issues
+      console.warn(`Could not parse ESLint JSON output. This might be expected if no issues were found. Error: ${e.message}`);
     }
   }
 
