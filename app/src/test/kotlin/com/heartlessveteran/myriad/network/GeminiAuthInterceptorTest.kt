@@ -36,7 +36,20 @@ class GeminiAuthInterceptorTest {
             }
             
             override fun connection(): okhttp3.Connection? = null
-            override fun call(): okhttp3.Call = TODO()
+            override fun call(): okhttp3.Call = object : okhttp3.Call {
+                override fun request(): Request = request()
+                override fun execute(): okhttp3.Response {
+                    throw UnsupportedOperationException("Not implemented in mock")
+                }
+                override fun enqueue(responseCallback: okhttp3.Callback) {
+                    throw UnsupportedOperationException("Not implemented in mock")
+                }
+                override fun cancel() {}
+                override fun isExecuted(): Boolean = false
+                override fun isCanceled(): Boolean = false
+                override fun clone(): okhttp3.Call = this
+                override fun timeout(): Timeout = Timeout.NONE
+            }
             override fun connectTimeoutMillis(): Int = 30000
             override fun withConnectTimeout(timeout: Int, unit: java.util.concurrent.TimeUnit): okhttp3.Interceptor.Chain = this
             override fun readTimeoutMillis(): Int = 30000
