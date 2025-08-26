@@ -118,7 +118,7 @@ if (hasGradleBuild) {
   let classCount = 0;
   let functionCount = 0;
   
-  kotlinFiles.slice(0, 10).forEach(file => { // Analyze first 10 files to avoid timeout
+  kotlinFiles.slice(0, MAX_KOTLIN_FILES_ANALYZED).forEach(file => { // Analyze first N files to avoid timeout
     try {
       const content = fs.readFileSync(file, 'utf8');
       totalLines += content.split('\n').length;
