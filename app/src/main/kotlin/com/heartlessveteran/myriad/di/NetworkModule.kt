@@ -104,7 +104,7 @@ object NetworkModule {
     @GeminiRetrofit
     fun provideGeminiRetrofit(
         @GeminiClient okHttpClient: OkHttpClient,
-        json: Json
+            .baseUrl(GEMINI_BASE_URL)
     ): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
