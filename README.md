@@ -70,12 +70,16 @@ app/
 - JDK 11 or higher
 - Android SDK API 21-35
 - Kotlin 1.9.22
+- Node.js 18+ (for AI code review workflow)
 
 #### Installation
 ```bash
 # Clone the repository
 git clone https://github.com/Heartless-Veteran/Project-Myriad.git
 cd Project-Myriad
+
+# Install Node.js dependencies (for CI/CD)
+npm install
 
 # Open in Android Studio and sync project
 # Build and run on Android device/emulator
@@ -134,6 +138,25 @@ cd android && ./gradlew assembleRelease
 2. Add Android app with package `com.projectmyriad`
 3. Download `google-services.json` to `app/` directory
 4. Enable Authentication, Firestore, and Storage
+
+#### AI Code Review Setup
+This project includes an automated AI code review system using Google's Gemini API:
+
+1. **Generate Gemini API Key**: 
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create and copy a new API key
+
+2. **Configure GitHub Secret**:
+   - In your GitHub repository, go to Settings > Secrets and variables > Actions
+   - Click "New repository secret"
+   - Name: `GEMINI_API_KEY`
+   - Value: Your Gemini API key
+
+3. **Automatic Review Process**:
+   - AI reviews are automatically triggered on pull requests
+   - The system analyzes both Kotlin/Android and Node.js code
+   - Gemini AI provides suggestions as PR comments
+   - Reviews include code quality, security, and best practices feedback
 
 #### Local Development
 - The app works offline-first with local Room database

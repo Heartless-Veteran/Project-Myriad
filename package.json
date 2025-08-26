@@ -1,0 +1,25 @@
+{
+  "name": "project-myriad",
+  "version": "1.0.0",
+  "description": "The Definitive Manga and Anime Platform - Kotlin Android Edition",
+  "scripts": {
+    "analyze": "node ./scripts/analyze.js",
+    "test": "echo 'No tests defined for Node.js environment' && exit 0",
+    "lint": "npx eslint . --format compact"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-plugin-node": "^11.1.0"
+  },
+  "keywords": [
+    "manga",
+    "anime",
+    "android",
+    "kotlin"
+  ],
+  "author": "Project Myriad Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
