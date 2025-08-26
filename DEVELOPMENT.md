@@ -1,339 +1,233 @@
 # Project Myriad Development Guidelines
 
-This document provides essential information for developers working on Project Myriad, a React Native application for manga and anime content. Following these guidelines ensures consistency, maintainability, and quality across the codebase.
+This document provides essential information for developers working on Project Myriad, a pure Android manga reader application built with modern Kotlin technologies. Following these guidelines ensures consistency, maintainability, and quality across the codebase.
 
 ## Build and Configuration Instructions
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- React Native CLI
-- Android Studio (for Android development)
-- Xcode (for iOS development, macOS only)
-- JDK 11
+- Android Studio Hedgehog | 2023.1.1 or newer
+- JDK 11 or higher
+- Android SDK API 24-35
+- Kotlin 1.9.22
 
 ### Setting Up the Development Environment
 
 1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+2. Open in Android Studio and sync project
+3. Build and run on Android device/emulator
 
 ### Running the Application
 
-#### Android
+#### Debug Build
 
 ```bash
-# Start the Metro bundler
-npm start
+# Build debug APK
+./gradlew assembleDebug
 
-# In a separate terminal, run the Android app
-npm run android
+# Install on device/emulator
+./gradlew installDebug
 ```
 
 #### Building a Release APK
 
 ```bash
 # Generate a release build for Android
-npm run build:android
+./gradlew assembleRelease
 ```
 
-The APK will be generated at `android/app/build/outputs/apk/release/app-release.apk`.
+The APK will be generated at `app/build/outputs/apk/release/app-release.apk`.
 
 ### Configuration Files
 
-- **React Native Config**: `react-native.config.js` contains project-specific configuration.
-- **Metro Config**: `metro.config.js` configures the Metro bundler.
-- **Babel Config**: `babel.config.js` contains JavaScript transpilation settings.
-- **TypeScript Config**: `tsconfig.json` defines TypeScript compilation options.
+- **Build Config**: `build.gradle.kts` contains project-wide build configuration
+- **App Config**: `app/build.gradle.kts` contains app-specific build configuration  
+- **Settings**: `settings.gradle.kts` defines project structure
+- **Gradle Properties**: `gradle.properties` contains build optimization settings
 
 ## Testing Information
 
 ### Test Framework
 
-Project Myriad uses Jest and React Native Testing Library for testing. The test configuration is defined in:
-- `jest.config.js`: Main Jest configuration
-- `jest.setup.js`: Test setup and mocks
+Project Myriad uses JUnit and MockK for unit testing. The test configuration is defined in the app's `build.gradle.kts` file.
 
 ### Running Tests
 
 ```bash
-# Run all tests
-npm test
+# Run all unit tests
+./gradlew testDebugUnitTest
 
-# Run a specific test file
-npm test -- path/to/test.ts
-
-# Run tests with coverage report
-npm test -- --coverage
+# Run instrumented tests (requires device/emulator)
+./gradlew connectedDebugAndroidTest
 ```
 
 ### Writing Tests
 
-Tests should be placed in the `__tests__` directory or named with `.test.ts` or `.spec.ts` suffix.
+- Place unit tests in `app/src/test/kotlin/`
+- Place instrumented tests in `app/src/androidTest/kotlin/`
+- Follow AAA pattern (Arrange, Act, Assert)
+- Use MockK for mocking dependencies
 
-#### Component Test Example
+## Kotlin Guidelines
 
-```typescript
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import MyComponent from '../src/components/MyComponent';
+### Code Style
 
-describe('MyComponent', () => {
-  it('renders correctly', () => {
-    const { getByText } = render(<MyComponent title="Test" />);
-    expect(getByText('Test')).toBeTruthy();
-  });
+- Follow official Kotlin coding conventions
+- Use meaningful variable and function names
+- Keep functions small and focused on single responsibility
+- Prefer immutability when possible
 
-  it('handles press events', () => {
-    const onPressMock = jest.fn();
-    const { getByText } = render(<MyComponent title="Press Me" onPress={onPressMock} />);
-    fireEvent.press(getByText('Press Me'));
-    expect(onPressMock).toHaveBeenCalled();
-  });
-});
+### Architecture Guidelines
+
+Project Myriad follows Clean Architecture principles with MVVM pattern:
+
+```
+app/src/main/kotlin/com/heartlessveteran/myriad/
+├── data/                   # Data layer
+│   ├── database/          # Room database
+│   ├── repository/        # Repository implementations
+│   └── di/               # Data dependency injection
+├── domain/               # Business logic layer
+│   ├── entities/         # Core entities
+│   ├── repository/       # Repository interfaces
+│   └── models/          # Domain models (Result, etc.)
+├── ui/                  # Presentation layer
+│   ├── screens/         # Compose screens
+│   ├── navigation/      # Navigation setup
+│   ├── theme/          # Material 3 theming
+│   └── viewmodel/      # MVVM ViewModels
+└── di/                 # Dependency injection modules
 ```
 
-#### Utility Function Test Example
+### Dependency Injection
 
-```typescript
-import { formatFileSize, truncateText } from '../src/utils/helpers';
+- Use Hilt for dependency injection
+- Define modules in the `di/` packages
+- Use `@HiltAndroidApp` for Application class
+- Use `@AndroidEntryPoint` for Activities and Fragments
 
-describe('Helper Functions', () => {
-  describe('formatFileSize', () => {
-    it('should format bytes correctly', () => {
-      expect(formatFileSize(0)).toBe('0 Bytes');
-      expect(formatFileSize(1024)).toBe('1 KB');
-      expect(formatFileSize(1048576)).toBe('1 MB');
-    });
-  });
+### Database Guidelines
 
-  describe('truncateText', () => {
-    it('should truncate text when it exceeds maxLength', () => {
-      const longText = 'This is a very long text that needs to be truncated';
-      expect(truncateText(longText, 20)).toBe('This is a very lon...');
-    });
-  });
-});
-```
+- Use Room for local database
+- Define entities in `domain/entities/`
+- Implement DAOs in `data/database/dao/`
+- Use Flow for reactive data streams
 
-### Mocking Dependencies
+### UI Guidelines
 
-For components that use external dependencies, create mocks in the test file:
-
-```typescript
-// Mock a service
-jest.mock('../src/services/ApiService', () => ({
-  fetchData: jest.fn().mockResolvedValue({ data: 'mocked data' }),
-}));
-
-// Mock a hook
-jest.mock('../src/hooks/useAuth', () => ({
-  __esModule: true,
-  default: () => ({
-    user: { id: '123', name: 'Test User' },
-    isAuthenticated: true,
-    login: jest.fn(),
-    logout: jest.fn(),
-  }),
-}));
-```
-
-## TypeScript Guidelines
-
-### Types and Interfaces
-
-- Use TypeScript interfaces for defining object shapes
-- Prefer interfaces over type aliases for object definitions
-- Use type aliases for union types and complex types
-- Export all types and interfaces that are used across multiple files
-- Place shared types in the `src/types` directory
-
-```typescript
-// Good
-interface UserProfile {
-  id: string;
-  username: string;
-  preferences: UserPreferences;
-}
-
-// Good
-type ContentFormat = 'manga' | 'anime';
-```
-
-### Type Safety
-
-- Avoid using `any` type whenever possible
-- Use generics for reusable components and functions
-- Add explicit return types to functions
-- Use union types instead of optional parameters when appropriate
-
-```typescript
-// Good
-function fetchContent<T extends ContentItem>(id: string): Promise<T> {
-  // Implementation
-}
-
-// Avoid
-function processData(data: any): any {
-  // Implementation
-}
-```
-
-## React Native Guidelines
-
-### Component Structure
-
-- Use functional components with hooks
-- Organize component files with the following structure:
-  1. Imports
-  2. Types/Interfaces
-  3. Constants
-  4. Component definition
-  5. Styles
-- Keep components focused on a single responsibility
-- Extract reusable logic into custom hooks
-
-```typescript
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-interface CardProps {
-  title: string;
-  content: string;
-}
-
-const Card: React.FC<CardProps> = ({ title, content }) => {
-  // Component logic
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.content}>{content}</Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    // Styles
-  },
-  title: {
-    // Styles
-  },
-  content: {
-    // Styles
-  },
-});
-
-export default Card;
-```
-
-### State Management
-
-- Use React Context for global state when appropriate
-- Implement Redux or MobX for complex state management
-- Keep component state minimal and focused
-- Use the appropriate hooks for different state needs:
-  - `useState` for simple state
-  - `useReducer` for complex state logic
-  - `useContext` for accessing shared state
-
-### Performance Optimization
-
-- Memoize expensive calculations with `useMemo`
-- Optimize callback functions with `useCallback`
-- Use `React.memo` for components that render often but with the same props
-- Implement virtualized lists for long scrollable content
-- Use image optimization techniques for faster loading
+- Use Jetpack Compose for UI
+- Follow Material 3 design guidelines
+- Keep Composables small and focused
+- Use ViewModels for state management
+- Handle UI state with sealed classes
 
 ## File Organization
 
-### Directory Structure
-
-- Organize files by feature or domain rather than by file type
-- Keep related files close to each other
-- Use consistent naming conventions
-
-```
-src/
-  components/     # Shared components
-  screens/        # Screen components
-  navigation/     # Navigation configuration
-  services/       # API and service integrations
-  utils/          # Utility functions
-  hooks/          # Custom hooks
-  types/          # TypeScript types and interfaces
-  assets/         # Images, fonts, etc.
-  constants/      # App constants
-```
-
 ### Naming Conventions
 
-- Use PascalCase for component files and component names
-- Use camelCase for utility functions, hooks, and non-component files
-- Use kebab-case for asset files
-- Add descriptive suffixes to files:
-  - `.component.tsx` for components
-  - `.hook.ts` for custom hooks
-  - `.service.ts` for services
-  - `.util.ts` for utilities
+- Use PascalCase for classes and interfaces
+- Use camelCase for functions and variables
+- Use UPPER_SNAKE_CASE for constants
+- Add descriptive suffixes:
+  - `Activity` for activities
+  - `Fragment` for fragments  
+  - `ViewModel` for ViewModels
+  - `Repository` for repositories
+  - `Dao` for data access objects
 
-## Code Style
+### Package Structure
 
-### Formatting
-
-- Use consistent indentation (2 spaces)
-- Limit line length to 100 characters
-- Use semicolons at the end of statements
-- Use single quotes for strings
-- Add trailing commas in multi-line object and array literals
-
-### Comments and Documentation
-
-- Write self-documenting code with clear variable and function names
-- Add JSDoc comments for public APIs and complex functions
-- Include comments for non-obvious code sections
-- Document component props with descriptive comments
-
-```typescript
-/**
- * Fetches content from the specified source and applies filters
- * @param source - The content source identifier
- * @param filters - Optional filters to apply to the results
- * @returns A promise that resolves to an array of content items
- */
-async function fetchContentFromSource(
-  source: string, 
-  filters?: ContentFilters
-): Promise<ContentItem[]> {
-  // Implementation
-}
-```
-
-## Testing Guidelines
-
-- Write unit tests for utility functions and hooks
-- Write component tests for UI behavior
-- Use integration tests for critical user flows
-- Mock external dependencies in tests
-- Aim for high test coverage of core functionality
-
-## Accessibility Guidelines
-
-- Use semantic components (`Button` instead of `TouchableOpacity` with a text)
-- Add appropriate accessibility labels
-- Ensure sufficient color contrast
-- Support screen readers
-- Test with accessibility tools
+- Group by feature, not by type
+- Keep related files close together
+- Use consistent package naming across features
 
 ## Performance Guidelines
 
-- Minimize render cycles
-- Optimize image loading and caching
-- Reduce bundle size by code splitting
-- Implement efficient list rendering
-- Profile and optimize slow operations
+### Memory Management
 
-By following these guidelines, we ensure that Project Myriad maintains a high standard of code quality, performance, and user experience.
+- Avoid memory leaks by properly managing lifecycle
+- Use weak references where appropriate
+- Profile memory usage regularly
+
+### Database Performance
+
+- Use appropriate database queries
+- Implement proper indexing
+- Use pagination for large datasets
+- Cache frequently accessed data
+
+### UI Performance
+
+- Optimize Compose recomposition
+- Use LazyColumn/LazyRow for long lists
+- Implement proper image caching with Coil
+- Profile UI rendering performance
+
+## Testing Guidelines
+
+### Unit Testing
+
+- Test business logic in isolation
+- Mock external dependencies
+- Aim for high code coverage
+- Test edge cases and error conditions
+
+### Integration Testing
+
+- Test component interactions
+- Use test databases for data layer tests
+- Verify proper dependency injection
+
+### UI Testing
+
+- Test user interactions
+- Verify UI state changes
+- Use Compose testing APIs
+- Test accessibility features
+
+## Code Quality
+
+### Linting and Static Analysis
+
+```bash
+# Run lint checks
+./gradlew lintDebug
+```
+
+### Code Review Guidelines
+
+- Review for architectural consistency
+- Check performance implications
+- Verify proper error handling
+- Ensure adequate test coverage
+- Review security implications
+
+## Troubleshooting
+
+### Common Build Issues
+
+1. **Gradle sync fails**: Check Android Studio version and SDK installation
+2. **Compose version conflicts**: Verify Kotlin and Compose compiler versions
+3. **Memory issues**: Increase Gradle JVM heap size in `gradle.properties`
+
+### Debugging
+
+- Use Android Studio debugger
+- Add logging with proper log levels
+- Use network inspection tools
+- Profile app performance regularly
+
+## Contributing Guidelines
+
+- Follow the established architecture patterns
+- Write tests for new features
+- Update documentation for significant changes
+- Use meaningful commit messages
+- Create focused pull requests
+
+## Additional Resources
+
+- [Kotlin Documentation](https://kotlinlang.org/docs/)
+- [Android Developer Guides](https://developer.android.com/)
+- [Jetpack Compose Documentation](https://developer.android.com/jetpack/compose)
+- [Material Design 3](https://m3.material.io/)

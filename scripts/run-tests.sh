@@ -1,13 +1,18 @@
 #!/bin/bash
 
-echo "Running unit tests for files changed in PR #100..."
+echo "Running unit tests for Project Myriad Android app..."
 
-echo "Test utilities are available in __tests__/utils/testUtils.tsx for shared mock functionality"
-# Run specific test files
-npm test -- __tests__/components/Card.test.tsx
-npm test -- __tests__/components/ContentList.test.tsx
-npm test -- __tests__/navigation/AppNavigator.test.tsx
-npm test -- __tests__/screens/AICoreScreen.test.tsx
-npm test -- __tests__/screens/HomeScreen.test.tsx
-npm test -- __tests__/screens/LibraryScreen.test.tsx
-npm test -- __tests__/store/slices/librarySlice.test.ts
+# Run all unit tests
+./gradlew testDebugUnitTest --info
+
+echo ""
+echo "Running instrumented tests (requires connected device/emulator)..."
+
+# Check for connected device/emulator
+if adb devices | awk 'NR>1 && $2=="device"' | grep -q device; then
+    ./gradlew connectedDebugAndroidTest
+else
+    echo "⚠️  No connected device/emulator found. Skipping instrumented tests."
+fi
+echo ""
+echo "✅ All tests completed!"

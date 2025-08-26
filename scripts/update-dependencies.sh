@@ -1,56 +1,38 @@
 #!/bin/bash
 
-# Project Myriad - Dependency Update Script
+# Project Myriad Android - Dependency Update Script
 # This script helps maintain and update project dependencies
 
 set -e
 
-echo "🔄 Project Myriad - Dependency Update Script"
-echo "============================================="
+echo "🔄 Project Myriad Android - Dependency Update Script"
+echo "====================================================="
 
-# Check if npm is available
-if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed. Please install Node.js and npm first."
+# Check if gradlew is available
+if [ ! -f "./gradlew" ]; then
+    echo "❌ gradle wrapper (gradlew) not found. Please ensure you're in the project root directory."
     exit 1
 fi
 
-# Check for deprecated babel preset and warn user
-if grep -q "metro-react-native-babel-preset" package.json; then
-    echo "⚠️  Warning: Found deprecated metro-react-native-babel-preset"
-    echo "   Consider updating to @react-native/babel-preset for React Native 0.80+"
-    echo ""
-fi
+# Check for dependency updates
+echo "📊 Checking for dependency updates..."
+./gradlew dependencyUpdates
 
-# Check for outdated packages
-echo "📊 Checking for outdated packages..."
-npm outdated || true
-
-# Update dependencies
+# Build project to verify dependencies
 echo ""
-echo "🔄 Updating dependencies..."
-npm update --legacy-peer-deps
+echo "🔄 Building project to verify dependencies..."
+./gradlew clean assembleDebug
 
-# Check for security vulnerabilities
+# Run lint checks
 echo ""
-echo "🔒 Checking for security vulnerabilities..."
-npm audit
+echo "🔍 Running lint checks..."
+./gradlew lintDebug
 
-# Fix security vulnerabilities if any
-echo ""
-echo "🔧 Attempting to fix security vulnerabilities..."
-npm audit fix --legacy-peer-deps || true
-
-# Clean install to ensure consistency
-echo ""
-echo "🧹 Performing clean install..."
-rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
-
-# Run tests to ensure everything still works
+# Run unit tests to ensure everything still works
 echo ""
 echo "🧪 Running tests to verify updates..."
-npm test
+./gradlew testDebugUnitTest
 
 echo ""
-echo "✅ Dependency update completed successfully!"
-echo "📋 Please review the changes and test the application thoroughly."
+echo "✅ Dependency update checks completed successfully!"
+echo "📋 Please review any suggested updates and test the application thoroughly."
