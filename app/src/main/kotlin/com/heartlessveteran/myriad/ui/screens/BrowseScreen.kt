@@ -90,7 +90,7 @@ fun BrowseScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                Text(
+                                text = uiState.error,
                                     text = errorMsg,
                                     color = MaterialTheme.colorScheme.error,
                                     style = MaterialTheme.typography.bodyLarge,
