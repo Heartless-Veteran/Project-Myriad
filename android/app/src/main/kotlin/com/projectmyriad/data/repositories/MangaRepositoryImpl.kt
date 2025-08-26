@@ -37,9 +37,9 @@ class MangaRepositoryImpl @Inject constructor(
     }
     
     override fun getChaptersForManga(mangaId: String): Flow<List<MangaChapter>> {
-        // TODO: Implement chapter DAO and logic
-        // For now return empty flow
-        return kotlinx.coroutines.flow.flowOf(emptyList())
+        return chapterDao.getChaptersForManga(mangaId).map { entities ->
+            entities.map { it.toChapterDomain() }
+        }
     }
     
     override suspend fun importMangaFromFile(filePath: String): Result<Manga> {
