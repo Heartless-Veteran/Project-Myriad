@@ -1,5 +1,6 @@
 package com.heartlessveteran.myriad.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -368,9 +369,42 @@ class NavigationService @Inject constructor() {
      * @return A populated [Destination.Reading] when parsing succeeds, or `null` if the route is not a reading route or is invalid.
      */
     private fun parseReadingRoute(route: String): Destination.Reading? {
-        // Implementation would parse the route parameters
-        // This is a simplified version
-        return null // TODO: Implement route parsing
+        // Pattern: reading/{mangaId}/{chapterId}?page={page} or reading/{mangaId}?page={page}
+        if (!route.startsWith("reading/")) return null
+        
+        val routeWithoutPrefix = route.removePrefix("reading/")
+        val (pathPart, queryPart) = if ("?" in routeWithoutPrefix) {
+            val parts = routeWithoutPrefix.split("?", limit = 2)
+            parts[0] to parts[1]
+        } else {
+            routeWithoutPrefix to ""
+        }
+        
+        val pathSegments = pathPart.split("/")
+        if (pathSegments.isEmpty()) return null
+        
+        val mangaId = try {
+            Uri.decode(pathSegments[0])
+        } catch (e: Exception) {
+            return null
+        }
+        
+        val chapterId = if (pathSegments.size > 1) {
+            try {
+                Uri.decode(pathSegments[1])
+            } catch (e: Exception) {
+                return null
+            }
+        } else null
+        
+        val page = if (queryPart.isNotEmpty()) {
+            queryPart.split("&")
+                .find { it.startsWith("page=") }
+                ?.substringAfter("=")
+                ?.toIntOrNull() ?: 0
+        } else 0
+        
+        return Destination.Reading(mangaId, chapterId, page)
     }
     
     /**
@@ -384,7 +418,42 @@ class NavigationService @Inject constructor() {
      * not a valid watching route or required parameters are missing/unparseable.
      */
     private fun parseWatchingRoute(route: String): Destination.Watching? {
-        return null // TODO: Implement route parsing
+        // Pattern: watching/{animeId}/{episodeId}?timestamp={timestamp} or watching/{animeId}?timestamp={timestamp}
+        if (!route.startsWith("watching/")) return null
+        
+        val routeWithoutPrefix = route.removePrefix("watching/")
+        val (pathPart, queryPart) = if ("?" in routeWithoutPrefix) {
+            val parts = routeWithoutPrefix.split("?", limit = 2)
+            parts[0] to parts[1]
+        } else {
+            routeWithoutPrefix to ""
+        }
+        
+        val pathSegments = pathPart.split("/")
+        if (pathSegments.isEmpty()) return null
+        
+        val animeId = try {
+            Uri.decode(pathSegments[0])
+        } catch (e: Exception) {
+            return null
+        }
+        
+        val episodeId = if (pathSegments.size > 1) {
+            try {
+                Uri.decode(pathSegments[1])
+            } catch (e: Exception) {
+                return null
+            }
+        } else null
+        
+        val timestamp = if (queryPart.isNotEmpty()) {
+            queryPart.split("&")
+                .find { it.startsWith("timestamp=") }
+                ?.substringAfter("=")
+                ?.toLongOrNull() ?: 0L
+        } else 0L
+        
+        return Destination.Watching(animeId, episodeId, timestamp)
     }
     
     /**
@@ -398,7 +467,28 @@ class NavigationService @Inject constructor() {
      * @return A Destination.MangaDetail when parsing succeeds, or null otherwise.
      */
     private fun parseMangaDetailRoute(route: String): Destination.MangaDetail? {
-        return null // TODO: Implement route parsing
+        // Pattern: manga-detail/{mangaId}/{sourceId} or manga-detail/{mangaId}
+        if (!route.startsWith("manga-detail/")) return null
+        
+        val pathPart = route.removePrefix("manga-detail/")
+        val pathSegments = pathPart.split("/")
+        if (pathSegments.isEmpty()) return null
+        
+        val mangaId = try {
+            Uri.decode(pathSegments[0])
+        } catch (e: Exception) {
+            return null
+        }
+        
+        val sourceId = if (pathSegments.size > 1) {
+            try {
+                Uri.decode(pathSegments[1])
+            } catch (e: Exception) {
+                return null
+            }
+        } else null
+        
+        return Destination.MangaDetail(mangaId, sourceId)
     }
     
     /**
@@ -412,7 +502,28 @@ class NavigationService @Inject constructor() {
      * @return A Destination.AnimeDetail when parsing succeeds, or null when the route is not an anime-detail route.
      */
     private fun parseAnimeDetailRoute(route: String): Destination.AnimeDetail? {
-        return null // TODO: Implement route parsing
+        // Pattern: anime-detail/{animeId}/{sourceId} or anime-detail/{animeId}
+        if (!route.startsWith("anime-detail/")) return null
+        
+        val pathPart = route.removePrefix("anime-detail/")
+        val pathSegments = pathPart.split("/")
+        if (pathSegments.isEmpty()) return null
+        
+        val animeId = try {
+            Uri.decode(pathSegments[0])
+        } catch (e: Exception) {
+            return null
+        }
+        
+        val sourceId = if (pathSegments.size > 1) {
+            try {
+                Uri.decode(pathSegments[1])
+            } catch (e: Exception) {
+                return null
+            }
+        } else null
+        
+        return Destination.AnimeDetail(animeId, sourceId)
     }
     
     /**
@@ -426,7 +537,51 @@ class NavigationService @Inject constructor() {
      * @return A `Destination.Search` built from the route, or `null` if the route does not represent a search destination.
      */
     private fun parseSearchRoute(route: String): Destination.Search? {
-        return null // TODO: Implement route parsing
+        // Pattern: search?query={encodedQuery}&type={TYPE}&source={encodedSource}
+        if (!route.startsWith("search")) return null
+        
+        val queryPart = if ("?" in route) {
+            route.substringAfter("?")
+        } else {
+            return Destination.Search() // Return default search with empty parameters
+        }
+        
+        val queryParams = queryPart.split("&").associate { param ->
+            val (key, value) = if ("=" in param) {
+                val parts = param.split("=", limit = 2)
+                parts[0] to parts[1]
+            } else {
+                param to ""
+            }
+            key to value
+        }
+        
+        val query = queryParams["query"]?.let { 
+            try {
+                Uri.decode(it)
+            } catch (e: Exception) {
+                ""
+            }
+        } ?: ""
+        
+        val type = queryParams["type"]?.let { typeStr ->
+            try {
+                ContentType.valueOf(typeStr.uppercase())
+            } catch (e: IllegalArgumentException) {
+                ContentType.ALL
+            }
+        } ?: ContentType.ALL
+        
+        val source = queryParams["source"]?.let {
+            try {
+                Uri.decode(it)
+            } catch (e: IllegalArgumentException) {
+                Log.e("NavigationService", "Failed to decode source parameter: $it", e)
+                return null
+            }
+        }
+        
+        return Destination.Search(query, type, source)
     }
     
     /**
@@ -439,6 +594,22 @@ class NavigationService @Inject constructor() {
      * @return The parsed [Destination.Settings] if the route matches the settings route pattern, or `null` if the route is not a settings route or cannot be parsed.
      */
     private fun parseSettingsRoute(route: String): Destination.Settings? {
-        return null // TODO: Implement route parsing
+        // Pattern: settings/{section} where section is lowercase enum name
+        if (!route.startsWith("settings")) return null
+        
+        return if (route == "settings") {
+            // Default settings route
+            Destination.Settings()
+        } else if (route.startsWith("settings/")) {
+            val sectionStr = route.removePrefix("settings/")
+            val section = try {
+                SettingsSection.valueOf(sectionStr.uppercase())
+            } catch (e: IllegalArgumentException) {
+                return null // Invalid section name
+            }
+            Destination.Settings(section)
+        } else {
+            null
+        }
     }
 }

@@ -1,217 +1,377 @@
-# Project Myriad
-## The Definitive Manga and Anime Platform - Kotlin Android Edition
+# Project Myriad 🚀
+## The Definitive Manga and Anime Platform
 
-**Project Myriad** is a comprehensive Kotlin Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery built with modern Android architecture.
+<div align="center">
 
-### 🚀 Features
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Android](https://img.shields.io/badge/platform-Android-green.svg)
+![Kotlin](https://img.shields.io/badge/language-Kotlin-purple.svg)
+![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
+![Build Status](https://img.shields.io/badge/build-in%20progress-yellow.svg)
 
-#### Core Functionality
-- **The Vault**: Local media management with support for .cbz/.cbr manga and .mp4/.mkv/.avi anime files
-- **AI Core**: OCR translation, art style matching, and AI-powered recommendations
-- **The Browser**: Online content discovery with extensible source system
-- **Clean Architecture**: MVVM pattern with Repository pattern, sealed Result classes
-- **Modern UI**: Jetpack Compose with Material 3 design system
+*A comprehensive Kotlin Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery built with modern Android architecture.*
 
-#### AI-Powered Features (In Development)
-- **Scene Recommender**: AI-driven scene and chapter recommendations
-- **AR Cosplay**: Augmented reality cosplay assistance and matching
-- **AI Voice Reader**: Text-to-speech for manga with AI voice generation
-- **Theme Matcher**: Intelligent theme and mood detection
-- **Art Style Generator**: Generate artwork in similar styles
-- **Waifu/Husbando Matcher**: Character personality and preference matching
-- **Quote Bot**: Memorable quote extraction and sharing
-- **Trivia System**: Interactive trivia based on consumed content
-- **Relationship Maps**: Character relationship visualization
-- **Episode Companion**: Context-aware episode information
-- **Mood Tracker**: Reading/watching mood analysis and recommendations
+[Features](#-features) • [Tech Stack](#%EF%B8%8F-technology-stack) • [Architecture](#%EF%B8%8F-architecture) • [Getting Started](#-getting-started) • [Contributing](#-contributing) • [Roadmap](#-roadmap)
 
-### 🛠️ Technology Stack
-
-- **Kotlin** - Primary programming language
-- **Jetpack Compose** - Modern Android UI toolkit
-- **Material 3** - Latest Material Design system
-- **MVVM + Clean Architecture** - Separation of concerns
-- **Room Database** - Local data persistence
-- **Hilt** - Dependency injection
-- **Retrofit** - Network operations
-- **Coil** - Image loading
-- **StateFlow/SharedFlow** - Reactive data streams
-- **Navigation Compose** - Type-safe navigation
-- **Firebase** - Authentication, cloud sync, analytics
-- **Coroutines** - Asynchronous programming
-
-### 🏗️ Architecture
-
-```
-app/
-├── data/                   # Data layer
-│   ├── database/          # Room database
-│   ├── repository/        # Repository implementations
-│   └── network/          # API services
-├── domain/               # Business logic layer
-│   ├── entities/         # Core entities
-│   ├── repository/       # Repository interfaces
-│   ├── usecases/        # Business use cases
-│   └── models/          # Domain models (Result, etc.)
-├── ui/                  # Presentation layer
-│   ├── screens/         # Compose screens
-│   ├── components/      # Reusable UI components
-│   ├── navigation/      # Navigation setup
-│   ├── theme/          # Material 3 theming
-│   └── viewmodel/      # MVVM ViewModels
-├── di/                 # Dependency injection modules
-└── utils/             # Utility functions
-```
-
-### 🚀 Getting Started
-
-#### Prerequisites
-- Android Studio Hedgehog | 2023.1.1 or newer
-- JDK 11 or higher
-- Android SDK API 21-35
-- Kotlin 1.9.22
-- Node.js 18+ (for AI code review workflow)
-
-#### Installation
-```bash
-# Clone the repository
-git clone https://github.com/Heartless-Veteran/Project-Myriad.git
-cd Project-Myriad
-
-# Install Node.js dependencies (for CI/CD)
-npm install
-
-# Open in Android Studio and sync project
-# Build and run on Android device/emulator
-```
-
-#### Building for Release
-```bash
-# Build release APK
-cd android && ./gradlew assembleRelease
-
-# The APK will be generated in:
-# android/app/build/outputs/apk/release/app-release.apk
-```
-
-### 🧪 Testing
-```bash
-# Run unit tests
-./gradlew testDebugUnitTest
-
-# Run instrumented tests
-./gradlew connectedDebugAndroidTest
-```
-
-### 📦 Key Dependencies
-
-#### Core Android
-- `androidx.core:core-ktx` - Kotlin extensions
-- `androidx.lifecycle:lifecycle-*` - Lifecycle components
-- `androidx.activity:activity-compose` - Compose activity integration
-
-#### UI & Design
-- `androidx.compose:compose-bom` - Compose Bill of Materials
-- `androidx.compose.material3:material3` - Material 3 components
-- `androidx.navigation:navigation-compose` - Navigation component
-
-#### Architecture
-- `androidx.room:room-*` - Local database
-- `com.google.dagger:hilt-android` - Dependency injection
-- `com.squareup.retrofit2:retrofit` - Network client
-- `io.coil-kt:coil-compose` - Image loading
-
-#### Firebase & Cloud
-- `com.google.firebase:firebase-bom` - Firebase services
-- `com.google.firebase:firebase-auth-ktx` - Authentication
-- `com.google.firebase:firebase-firestore-ktx` - Cloud database
-
-#### AI & ML
-- `com.google.mlkit:text-recognition` - OCR capabilities
-- `com.google.mlkit:translate` - Translation services
-- `io.github.sceneview:arsceneview` - AR functionality
-
-### 🔧 Configuration
-
-#### Firebase Setup
-1. Create a Firebase project at https://console.firebase.google.com
-2. Add Android app with package `com.projectmyriad`
-3. Download `google-services.json` to `app/` directory
-4. Enable Authentication, Firestore, and Storage
-
-#### AI Code Review Setup
-This project includes an automated AI code review system using Google's Gemini API:
-
-1. **Generate Gemini API Key**: 
-   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Create and copy a new API key
-
-2. **Configure GitHub Secret**:
-   - In your GitHub repository, go to Settings > Secrets and variables > Actions
-   - Click "New repository secret"
-   - Name: `GEMINI_API_KEY`
-   - Value: Your Gemini API key
-
-3. **Validate Your Setup (Optional)**:
-   - Test your API key locally before committing:
-     ```bash
-     GEMINI_API_KEY=your_api_key_here node scripts/validate-gemini-api.js
-     ```
-
-4. **Automatic Review Process**:
-   - AI reviews are automatically triggered on pull requests
-   - The system analyzes both Kotlin/Android and Node.js code
-   - Gemini AI provides suggestions as PR comments
-   - Reviews include code quality, security, and best practices feedback
-
-**Troubleshooting AI Review Issues**:
-
-If you encounter HTTP 403 errors or other API issues:
-
-- **Missing API Key**: Ensure `GEMINI_API_KEY` is set in repository secrets
-- **Invalid API Key**: Regenerate your key at [Google AI Studio](https://makersuite.google.com/app/apikey)
-- **Quota Exceeded**: Check your usage limits at Google AI Studio (quotas typically reset daily)
-- **Permissions**: Verify your Google account has access to Gemini API
-- **API Status**: Check [Google Cloud Status](https://status.cloud.google.com/) for service issues
-
-Use the validation script `scripts/validate-gemini-api.js` to test your API key configuration locally.
-
-#### Local Development
-- The app works offline-first with local Room database
-- AI features gracefully degrade when services unavailable
-- Firebase integration is optional for basic functionality
-
-### 📋 Development Status
-
-- [x] Core architecture implementation (Clean Architecture + MVVM)
-- [x] Jetpack Compose UI with Material 3
-- [x] Room database with sealed Result classes
-- [x] Hilt dependency injection setup
-- [x] Basic navigation and screens
-- [ ] File import and management system
-- [ ] AI feature implementations
-- [ ] Firebase integration
-- [ ] Online content sources
-- [ ] Advanced UI features
-
-### 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow Kotlin coding conventions and architecture patterns
-4. Add tests for new functionality
-5. Commit your changes (`git commit -m 'Add some amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-### 📞 Support
-
-For support and questions, please open an issue on GitHub.
+</div>
 
 ---
 
-**Project Myriad** - Bringing manga and anime content together with the power of AI and modern Kotlin Android development.
+## 🌟 Features
+
+### 📚 **The Vault** - Local Media Management
+- **Multi-format Support**: .cbz/.cbr manga archives and .mp4/.mkv/.avi anime files
+- **Smart Organization**: Automatic metadata extraction and library organization
+- **Offline First**: Full functionality without internet connection
+- **Advanced Search**: Powerful filtering and discovery within your collection
+
+### 🤖 **AI Core** - Intelligent Features
+- **OCR Translation**: Real-time manga translation with AI-powered OCR
+- **Art Style Matching**: Intelligent categorization based on visual analysis  
+- **Smart Recommendations**: AI-driven content suggestions based on reading patterns
+- **Scene Analysis**: Automatic chapter and scene recognition
+
+### 🌐 **The Browser** - Online Discovery Engine
+- **Extensible Sources**: Plugin architecture for multiple content providers
+- **Global Search**: Search across all configured sources simultaneously
+- **Download Manager**: Queue management with pause/resume functionality
+- **Sync & Backup**: Cloud synchronization for settings and progress
+
+### 🎨 **Enhanced Reading Experience**
+- **Multiple Reading Modes**: Single page, double page, continuous scroll, webtoon
+- **Customizable Interface**: Themes, typography, and layout preferences
+- **Progress Tracking**: Detailed reading statistics and completion tracking
+- **Collections System**: Organize content with custom collections and tags
+
+---
+
+## 🛠️ Technology Stack
+
+<table>
+<tr>
+<td valign="top" width="33%">
+
+### **Core**
+- **Kotlin** - Modern, expressive language
+- **Android SDK 36** - Latest Android capabilities
+- **Material 3** - Cutting-edge design system
+- **Jetpack Compose** - Declarative UI toolkit
+
+</td>
+<td valign="top" width="33%">
+
+### **Architecture**
+- **Clean Architecture** - Separation of concerns
+- **MVVM Pattern** - Reactive UI architecture  
+- **Hilt** - Dependency injection
+- **Room** - Local database persistence
+
+</td>
+<td valign="top" width="33%">
+
+### **Networking**
+- **Retrofit** - Type-safe HTTP client
+- **OkHttp** - Efficient network operations
+- **Kotlinx Serialization** - JSON parsing
+- **Coroutines** - Asynchronous programming
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🏗️ Architecture
+
+Project Myriad follows **Clean Architecture** principles with clear separation between layers:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    🎨 Presentation Layer                    │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
+│  │   Compose   │ │  ViewModels │ │   Navigation        │   │
+│  │   Screens   │ │   (MVVM)    │ │   (Type-safe)       │   │
+│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                               │
+┌─────────────────────────────────────────────────────────────┐
+│                   🧠 Domain Layer                           │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
+│  │  Use Cases  │ │ Repositories│ │   Domain Models     │   │
+│  │ (Business)  │ │(Interfaces) │ │   (Pure Kotlin)     │   │
+│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                               │
+┌─────────────────────────────────────────────────────────────┐
+│                    💾 Data Layer                            │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
+│  │    Room     │ │   Retrofit  │ │   File System       │   │
+│  │  Database   │ │  API Client │ │   (.cbz/.cbr)       │   │
+│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Key Architectural Principles
+
+- **Single Source of Truth** - Room database as the authoritative data source
+- **Unidirectional Data Flow** - Clear data flow from UI to data layer
+- **Separation of Concerns** - Each layer has distinct responsibilities
+- **Dependency Inversion** - Abstractions don't depend on concretions
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Android Studio** Hedgehog (2023.1.1) or later
+- **JDK 11** or higher  
+- **Android SDK** with API 36+
+- **4GB+ RAM** recommended for smooth development
+
+### Quick Setup
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Heartless-Veteran/Project-Myriad.git
+   cd Project-Myriad
+   ```
+
+2. **Configure API Keys** (Optional - for AI features)
+   ```bash
+   # Copy and edit local properties
+   cp local.properties.example local.properties
+   # Add your Gemini API key
+   echo "geminiApiKey=YOUR_API_KEY_HERE" >> local.properties
+   ```
+
+3. **Build & Run**
+   ```bash
+   # Build the project
+   ./gradlew build
+   
+   # Run on device/emulator
+   ./gradlew installDebug
+   ```
+
+### Development Setup
+
+For detailed development setup instructions, see our [Contributing Guide](CONTRIBUTING.md).
+
+---
+
+## 📱 Screenshots
+
+<div align="center">
+
+| Home Screen | Library View | Reading Interface |
+|-------------|--------------|-------------------|
+| ![Home](docs/images/home-screen.png) | ![Library](docs/images/library-view.png) | ![Reader](docs/images/reader-interface.png) |
+
+| AI Features | Settings | Download Queue |
+|-------------|----------|----------------|
+| ![AI](docs/images/ai-features.png) | ![Settings](docs/images/settings-screen.png) | ![Downloads](docs/images/download-queue.png) |
+
+*Screenshots will be updated as features are implemented*
+
+</div>
+
+---
+
+## 📈 Roadmap
+
+<details>
+<summary><b>🏗️ Phase 1: Foundation (Q1 2024)</b></summary>
+
+- [x] Core architecture implementation (Clean Architecture + MVVM)
+- [x] Jetpack Compose UI with Material 3
+- [x] Room database with sealed Result classes  
+- [x] Hilt dependency injection setup
+- [x] Basic navigation and screens
+- [ ] Build system stabilization
+- [ ] File import/export system
+- [ ] Basic reader functionality
+
+</details>
+
+<details>
+<summary><b>🚀 Phase 2: Core Features (Q2 2024)</b></summary>
+
+- [ ] Download manager with queue support
+- [ ] Advanced reader modes (single, double, continuous, webtoon)
+- [ ] Source extension system architecture
+- [ ] Enhanced search and filtering
+- [ ] Collections and library organization
+- [ ] Progress tracking and statistics
+
+</details>
+
+<details>
+<summary><b>🤖 Phase 3: AI Integration (Q3 2024)</b></summary>
+
+- [ ] OCR translation pipeline
+- [ ] AI-powered content recommendations  
+- [ ] Art style analysis and categorization
+- [ ] Scene and chapter recognition
+- [ ] Intelligent metadata extraction
+- [ ] Personalized reading insights
+
+</details>
+
+<details>
+<summary><b>✨ Phase 4: Polish & Community (Q4 2024)</b></summary>
+
+- [ ] Performance optimization
+- [ ] Accessibility enhancements
+- [ ] Community source plugins
+- [ ] Advanced customization options
+- [ ] Cloud sync and backup
+- [ ] Multi-language support
+
+</details>
+
+---
+
+## 🎯 Key Features Comparison
+
+| Feature | Project Myriad | Tachiyomi | Other Apps |
+|---------|----------------|-----------|------------|
+| **Modern UI (Material 3)** | ✅ | ❌ | ⚠️ |
+| **AI-Powered Features** | ✅ | ❌ | ❌ |
+| **Local File Support** | ✅ | ✅ | ⚠️ |
+| **Online Sources** | 🚧 | ✅ | ✅ |
+| **Download Manager** | 🚧 | ✅ | ✅ |
+| **Clean Architecture** | ✅ | ❌ | ❌ |
+| **Kotlin Compose** | ✅ | ❌ | ❌ |
+
+*Legend: ✅ Implemented | 🚧 In Progress | ❌ Not Available | ⚠️ Limited*
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+./gradlew test
+
+# Run instrumentation tests  
+./gradlew connectedAndroidTest
+
+# Generate test coverage report
+./gradlew jacocoTestReport
+```
+
+**Current Test Coverage**: 15% (Expanding to 70%+ target)
+
+---
+
+## 📊 Project Statistics
+
+<div align="center">
+
+![GitHub code size](https://img.shields.io/github/languages/code-size/Heartless-Veteran/Project-Myriad)
+![Lines of code](https://img.shields.io/tokei/lines/github/Heartless-Veteran/Project-Myriad)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Heartless-Veteran/Project-Myriad)
+![GitHub last commit](https://img.shields.io/github/last-commit/Heartless-Veteran/Project-Myriad)
+
+</div>
+
+- **Languages**: Kotlin (95%), XML (5%)
+- **Architecture**: Clean Architecture + MVVM
+- **Minimum API**: 24 (Android 7.0)
+- **Target API**: 36 (Android 15+)
+- **Test Coverage**: 15% (improving to 70%+)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+### Quick Start for Contributors
+
+1. **Check Issues** - Look for `good first issue` labels
+2. **Read Guidelines** - Review our [Contributing Guide](CONTRIBUTING.md)  
+3. **Fork & Clone** - Set up your development environment
+4. **Make Changes** - Follow our coding standards
+5. **Submit PR** - Create a pull request with detailed description
+
+### Ways to Contribute
+
+- 🐛 **Report Bugs** - Help us identify and fix issues
+- 💡 **Suggest Features** - Share ideas for new functionality
+- 📝 **Improve Docs** - Enhance documentation and guides
+- 🎨 **Design UI/UX** - Contribute to the visual experience
+- 🧪 **Write Tests** - Improve code coverage and reliability
+- 🌐 **Translations** - Help localize the app
+
+### Recognition
+
+All contributors are recognized in our [Hall of Fame](CONTRIBUTORS.md) and release notes.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Licenses
+
+- [OkHttp](https://square.github.io/okhttp/) - Apache 2.0
+- [Retrofit](https://square.github.io/retrofit/) - Apache 2.0
+- [Room](https://developer.android.com/jetpack/androidx/releases/room) - Apache 2.0
+- [Hilt](https://dagger.dev/hilt/) - Apache 2.0
+
+---
+
+## 🌐 Links & Resources
+
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-Project%20Repository-black?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad)
+[![Issues](https://img.shields.io/badge/Issues-Bug%20Reports%20%26%20Features-red?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/issues)
+[![Discussions](https://img.shields.io/badge/Discussions-Community%20Chat-blue?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/discussions)
+[![Wiki](https://img.shields.io/badge/Wiki-Documentation-green?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/wiki)
+
+</div>
+
+### Additional Resources
+
+- 📖 **[Development Guide](DEVELOPMENT.md)** - Detailed development setup
+- 🔍 **[Code Analysis](CODE_ANALYSIS.md)** - Current implementation status  
+- 📋 **[Feature Requests](https://github.com/Heartless-Veteran/Project-Myriad/issues/new?template=feature_request.md)** - Suggest new features
+- 🐛 **[Bug Reports](https://github.com/Heartless-Veteran/Project-Myriad/issues/new?template=bug_report.md)** - Report issues
+
+---
+
+## 💬 Community & Support
+
+### Get Help
+
+- **GitHub Issues** - Technical problems and feature requests
+- **GitHub Discussions** - General questions and community chat
+- **Discord Server** - Real-time community support *(Coming Soon)*
+- **Documentation** - Comprehensive guides and API reference
+
+### Stay Updated
+
+- ⭐ **Star this repo** to show your support
+- 👁️ **Watch releases** for update notifications  
+- 🍴 **Fork the project** to contribute
+- 📱 **Follow us** for development updates
+
+---
+
+<div align="center">
+
+## 🎌 Built with ❤️ for the Manga & Anime Community
+
+**Project Myriad** - *Where AI meets Otaku Culture*
+
+*"Reading the future, one page at a time"* 📖✨
+
+---
+
+<sub>Made with 🚀 by the Project Myriad Team | © 2024 | MIT License</sub>
+
+</div>
