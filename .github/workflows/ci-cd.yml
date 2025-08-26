@@ -11,6 +11,8 @@ jobs:
   # Lint and code quality checks
   lint:
     name: 🔍 Code Quality
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -58,6 +60,8 @@ jobs:
   # Unit tests
   test:
     name: 🧪 Unit Tests
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     needs: lint
     steps:
