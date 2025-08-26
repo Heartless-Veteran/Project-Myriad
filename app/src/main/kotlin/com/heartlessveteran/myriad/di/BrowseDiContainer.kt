@@ -41,7 +41,7 @@ object BrowseDiContainer {
         .build()
     
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.mangadex.org/")
+        .baseUrl(MangaDxApi.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
