@@ -191,12 +191,16 @@ fun WatchingScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    initialSection: com.heartlessveteran.myriad.navigation.SettingsSection = com.heartlessveteran.myriad.navigation.SettingsSection.GENERAL,
+    onBackClick: () -> Unit = {},
+    onSectionChange: (com.heartlessveteran.myriad.navigation.SettingsSection) -> Unit = {}
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = { 
                 Text(
-                    text = "Settings",
+                    text = "Settings - ${initialSection.name.lowercase().replaceFirstChar { it.uppercase() }}",
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -215,9 +219,17 @@ fun SettingsScreen() {
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = "Coming soon in the next phase",
+                    text = "Section: ${initialSection.name}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Enhanced settings coming in Phase 2",
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                
+                Button(onClick = onBackClick) {
+                    Text("Back")
+                }
             }
         }
     }
