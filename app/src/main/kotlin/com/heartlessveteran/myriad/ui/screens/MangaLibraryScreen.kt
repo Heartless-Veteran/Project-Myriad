@@ -270,4 +270,5 @@ private fun getFilterDisplayName(filter: MangaFilter): String = when (filter) {
     MangaFilter.COMPLETED -> "Completed"
     MangaFilter.ON_HOLD -> "On Hold"
     MangaFilter.DROPPED -> "Dropped"
+    MangaFilter.UNREAD -> "Unread"
 }
