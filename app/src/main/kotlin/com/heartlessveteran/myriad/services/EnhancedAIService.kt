@@ -347,6 +347,3 @@ class EnhancedAIService @Inject constructor(
         return "translation_${imageHash}_${optionsHash}"
     }
 }
-
-// Global instance for easy access
-lateinit var enhancedAIService: EnhancedAIService
