@@ -132,7 +132,7 @@ try {
   console.log('   - curl command not available');
   console.log('\n📝 **Technical Details**:', error.message);
   process.exit(1);
-}
+  require('fs').unlinkSync(tempResponsePath);
 
 // Clean up temporary files
 try {
