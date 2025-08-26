@@ -3,7 +3,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log("--- GitAuto-AI Analysis Report ---");
+console.log('--- GitAuto-AI Analysis Report ---');
 console.log(`Report generated on: ${new Date().toISOString()}`);
 console.log("-------------------------------------\n");
 
