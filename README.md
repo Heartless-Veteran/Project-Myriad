@@ -1,11 +1,38 @@
 # Project Myriad 🚀
+
+<!-- PROJECT_STATS -->
+## 📊 Project Statistics
+
+| Metric | Value |
+|--------|-------|
+| **Kotlin Files** | 35 |
+| **Test Files** | 7 |
+| **Lines of Code** | 4,645 |
+| **Dependencies** | 49 |
+| **Target SDK** | 35 |
+| **Min SDK** | 24 |
+| **Version** | 1.0.0 |
+| **Commits** | 2 |
+| **Contributors** | 0 |
+
+*Last updated: 2025-08-26*
+
+### Dependency Breakdown
+- **Implementation**: 41 dependencies
+- **Test**: 4 dependencies  
+- **Android Test**: 4 dependencies
+
+### Recent Activity
+- Latest commit: bf3134f Initial plan
+
+<!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
 
 <div align="center">
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Android](https://img.shields.io/badge/platform-Android-green.svg)
-![Kotlin](https://img.shields.io/badge/language-Kotlin-purple.svg)
+![Kotlin](https://img.shields.io/badge/kotlin-35%20files-purple)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Build Status](https://img.shields.io/badge/build-in%20progress-yellow.svg)
 
@@ -78,6 +105,32 @@
 </td>
 </tr>
 </table>
+
+---
+
+## 🔄 Automated Quality & Documentation
+
+Project Myriad features a comprehensive **Automated Documentation & Code Quality Workflow** that ensures consistent code standards and up-to-date documentation:
+
+### 🔍 **Quality Assurance**
+- **ktlint**: Kotlin code style checking and auto-formatting
+- **Detekt**: Static code analysis with auto-corrections
+- **Android Lint**: Platform-specific issue detection
+- **JaCoCo**: Test coverage reporting and tracking
+
+### 📚 **Documentation Automation**
+- **Dokka**: API documentation generation
+- **README Statistics**: Automated project metrics updates
+- **Architecture Validation**: Clean Architecture compliance checking
+- **Dependency Tracking**: Current dependency documentation
+
+### 🚀 **Automated Improvements**
+- **Weekly Quality PRs**: Automated pull requests with improvements
+- **Code Formatting**: Automatic style fixes
+- **Documentation Updates**: Current project statistics and metrics
+- **Architecture Compliance**: Validates layer separation and naming conventions
+
+> 📋 **Workflow Status**: Runs on every push, PR, and weekly schedule. See [docs/AUTOMATED_WORKFLOW.md](docs/AUTOMATED_WORKFLOW.md) for details.
 
 ---
 

@@ -7,6 +7,11 @@ plugins {
     // id("dagger.hilt.android.plugin") // Temporarily disabled due to kapt requirement
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
+    // Code Quality plugins
+    id("org.jlleitschuh.gradle.ktlint")
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
+    id("jacoco")
     // Firebase plugins commented out - optional feature
     // id("com.google.gms.google-services")
     // id("com.google.firebase.crashlytics")
@@ -164,4 +169,97 @@ dependencies {
     
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+// Code Quality Configurations
+ktlint {
+    version.set("1.3.1")
+    debug.set(true)
+    verbose.set(true)
+    android.set(true)
+    outputToConsole.set(true)
+    outputColorName.set("RED")
+    ignoreFailures.set(false)
+    
+    filter {
+        exclude("**/build/**")
+        exclude("**/generated/**")
+    }
+}
+
+detekt {
+    toolVersion = "1.23.7"
+    config.setFrom(file("../config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    
+    source.setFrom(files("src/main/kotlin", "src/test/kotlin"))
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
+    }
+}
+
+// JaCoCo Test Coverage Configuration
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+    
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/databinding/**",
+        "**/generated/**"
+    )
+    
+    val debugTree = fileTree("${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+    
+    val mainSrc = "${project.projectDir}/src/main/kotlin"
+    
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(project.layout.buildDirectory.get()) {
+        include("**/*.exec", "**/*.ec")
+    })
+}
+
+// Dokka API Documentation Configuration
+tasks.dokkaHtml.configure {
+    outputDirectory.set(file("../docs/api"))
+    
+    dokkaSourceSets {
+        named("main") {
+            displayName.set("Project Myriad")
+            moduleName.set("myriad")
+            
+            includes.from("../docs/packages.md")
+            
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl.set(uri("https://github.com/Heartless-Veteran/Project-Myriad/tree/main/app/src/main/kotlin").toURL())
+                remoteLineSuffix.set("#L")
+            }
+        }
+    }
 }
