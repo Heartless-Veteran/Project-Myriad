@@ -149,7 +149,13 @@ potential-bugs:
     active: true
 `;
         
-        fs.mkdirSync(path.dirname('config/detekt/detekt.yml'), { recursive: true });
+        try {
+            fs.mkdirSync(path.dirname('config/detekt/detekt.yml'), { recursive: true });
+        } catch (err) {
+            console.error(`   ❌ Failed to create directory for detekt config: ${err.message}`);
+            this.issues.push(`Failed to create directory for detekt config: ${err.message}`);
+            return;
+        }
         fs.writeFileSync('config/detekt/detekt.yml', minimalConfig.trim());
         console.log('   🔧 Created minimal detekt configuration');
     }
