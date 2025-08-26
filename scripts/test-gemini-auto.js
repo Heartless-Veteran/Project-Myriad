@@ -17,7 +17,7 @@ const { execSync } = require('child_process');
 try {
   const output = execSync('node scripts/gemini-auto.js', { encoding: 'utf8' });
   console.log('✅ File discovery test passed');
-  
+
   if (output.includes('src/demo.js')) {
     console.log('✅ Demo file detected correctly');
   } else {
@@ -30,11 +30,11 @@ try {
 // Test 2: Linting issues detection
 console.log('\nTest 2: Linting Issues Detection');
 try {
-  const lintOutput = execSync('npx eslint src/demo.js --format json --quiet', { 
+  const lintOutput = execSync('npx eslint src/demo.js --format json --quiet', {
     encoding: 'utf8',
     stdio: 'pipe'
   });
-  
+
   const lintData = JSON.parse(lintOutput);
   if (lintData.length > 0 && lintData[0].messages.length > 0) {
     console.log(`✅ Found ${lintData[0].messages.length} linting issues in demo file`);
@@ -52,7 +52,7 @@ try {
   const beforeContent = require('fs').readFileSync('src/demo.js', 'utf8');
   execSync('npx eslint src/demo.js --fix', { stdio: 'pipe' });
   const afterContent = require('fs').readFileSync('src/demo.js', 'utf8');
-  
+
   if (beforeContent !== afterContent) {
     console.log('✅ ESLint auto-fix applied changes successfully');
   } else {
