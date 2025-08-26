@@ -117,7 +117,7 @@ dependencies {
     implementation("net.lingala.zip4j:zip4j:2.11.5")
     
     // OCR for translation
-    implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation("com.google.mlkit:text-recognition:16.0.1")
     implementation("com.google.mlkit:language-id:17.0.4")
     implementation("com.google.mlkit:translate:17.0.1")
     
