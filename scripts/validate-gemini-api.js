@@ -57,7 +57,7 @@ try {
     '-H', `x-api-key: ${apiKey}`,
     '-d', testPayload,
     '-o', '/tmp/gemini-test-response.json'
-  ];
+    '-o', tempFile.name
 
   const httpCode = execFileSync('curl', curlArgs, { encoding: 'utf8' }).trim();
   
