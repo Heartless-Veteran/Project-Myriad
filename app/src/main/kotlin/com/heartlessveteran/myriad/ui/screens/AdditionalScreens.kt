@@ -185,3 +185,40 @@ fun WatchingScreen(
         }
     }
 }
+
+/**
+ * Settings Screen - Configuration and preferences
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        TopAppBar(
+            title = { 
+                Text(
+                    text = "Settings",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        )
+        
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = "Coming soon in the next phase",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}

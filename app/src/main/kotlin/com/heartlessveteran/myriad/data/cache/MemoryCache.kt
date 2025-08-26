@@ -135,11 +135,11 @@ class Cache<T>(private val config: CacheConfig) {
                 if (entry != null) {
                     cache.remove(key) // Remove expired entry
                 }
-                if (config.enableMetrics) misses++
+                if (config.enableMetrics) misses.incrementAndGet()
                 return null
             }
             
-            if (config.enableMetrics) hits++
+            if (config.enableMetrics) hits.incrementAndGet()
             entry.data
         }
     }
@@ -159,7 +159,7 @@ class Cache<T>(private val config: CacheConfig) {
             while (cache.size >= config.maxSize) {
                 val oldest = cache.entries.first()
                 cache.remove(oldest.key)
-                if (config.enableMetrics) evictions++
+                if (config.enableMetrics) evictions.incrementAndGet()
             }
             
             cache[key] = CacheEntry(value, System.currentTimeMillis(), ttl)
@@ -189,9 +189,9 @@ class Cache<T>(private val config: CacheConfig) {
     suspend fun clear() {
         mutex.withLock {
             cache.clear()
-            hits = 0
-            misses = 0
-            evictions = 0
+            hits.set(0)
+            misses.set(0)
+            evictions.set(0)
         }
     }
     
@@ -204,7 +204,7 @@ class Cache<T>(private val config: CacheConfig) {
      */
     suspend fun getMetrics(): CacheMetrics {
         return mutex.withLock {
-            CacheMetrics(hits, misses, evictions, cache.size)
+            CacheMetrics(hits.get(), misses.get(), evictions.get(), cache.size)
         }
     }
     

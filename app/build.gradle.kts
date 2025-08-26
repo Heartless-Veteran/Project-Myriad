@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
+    // id("kotlin-kapt") // Temporarily disabled due to Kotlin 2.0 incompatibility
+    // id("dagger.hilt.android.plugin") // Temporarily disabled due to kapt requirement
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
     // Firebase plugins commented out - optional feature
@@ -98,18 +98,18 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
-    kapt("androidx.room:room-compiler:2.7.2")
+    // kapt("androidx.room:room-compiler:2.7.2") // Temporarily disabled
     
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    kapt("com.google.dagger:hilt-compiler:2.57.1")
+    // kapt("com.google.dagger:hilt-compiler:2.57.1") // Temporarily disabled
     
     // Network
     implementation("com.squareup.retrofit2:retrofit:2.12.0")
     implementation("com.squareup.retrofit2:converter-gson:2.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     
     // Image Loading
