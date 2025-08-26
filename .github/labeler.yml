@@ -1,0 +1,73 @@
+# Configuration for actions/labeler
+# This file defines which labels to apply to pull requests based on file paths
+
+# Android/Kotlin related changes
+"android":
+  - "app/src/**/*"
+  - "**/*.kt"
+  - "**/*.kts"
+  - "android/**/*"
+  - "build.gradle*"
+  - "gradle/**/*"
+  - "gradlew*"
+
+# Node.js/JavaScript related changes  
+"javascript":
+  - "**/*.js"
+  - "**/*.mjs"
+  - "**/*.ts"
+  - "package*.json"
+  - "scripts/**/*"
+
+# Configuration changes
+"configuration":
+  - "*.json"
+  - "*.yml"
+  - "*.yaml"
+  - "*.toml"
+  - "*.config.js"
+  - ".github/**/*"
+  - "renovate.json"
+  - ".eslintrc*"
+
+# Documentation changes
+"documentation":
+  - "**/*.md"
+  - "docs/**/*"
+  - "README*"
+  - "CHANGELOG*"
+  - "CONTRIBUTING*"
+
+# GitHub Actions & Workflows
+"github-actions":
+  - ".github/workflows/**/*"
+  - ".github/actions/**/*"
+
+# Security related
+"security":
+  - "SECURITY.md"
+  - "**/*security*"
+  - "**/*auth*"
+  - ".github/dependabot.yml"
+
+# Dependencies
+"dependencies":
+  - "package*.json"
+  - "build.gradle*"
+  - "gradle/libs.versions.toml"
+  - "requirements*.txt"
+
+# Tests
+"tests":
+  - "**/*test*"
+  - "**/*spec*"
+  - "__tests__/**/*"
+  - "test/**/*"
+
+# Gradle/Build system
+"build":
+  - "gradle/**/*"
+  - "gradlew*"
+  - "build.gradle*"
+  - "settings.gradle*"
+  - "*.gradle.kts"

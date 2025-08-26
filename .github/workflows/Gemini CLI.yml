@@ -1,2 +1,41 @@
-- name: Run Gemini CLI
-  uses: google-github-actions/run-gemini-cli@v0.1.12
+name: AI - Gemini CLI Integration
+
+on:
+  workflow_call:
+    # This workflow can be called by other workflows
+    inputs:
+      command:
+        description: 'Gemini CLI command to run'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Gemini CLI command to run'
+        required: true
+        type: string
+        default: 'help'
+
+permissions:
+  contents: read
+
+jobs:
+  run-gemini:
+    name: Execute Gemini CLI
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Run Gemini CLI
+        uses: google-github-actions/run-gemini-cli@v0.1.12
+        with:
+          command: ${{ inputs.command }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
