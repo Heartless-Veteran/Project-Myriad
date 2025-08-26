@@ -83,7 +83,7 @@ pull_request_rules:
   - name: Label security-related changes
     description: Add security label for security-related file changes
     conditions:
-      - files ~= (?i)(security|vulnerabilit|auth|token|key|secret|password|encrypt)
+      - files ~= (?i)(security|vulnerability|auth|token|key|secret|password|encrypt)
       - files ~= ^SECURITY\.md$
     actions:
       label:
