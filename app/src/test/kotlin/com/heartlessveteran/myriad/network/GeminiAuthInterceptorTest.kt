@@ -36,7 +36,7 @@ class GeminiAuthInterceptorTest {
             }
             
             override fun connection(): okhttp3.Connection? = null
-            override fun call(): okhttp3.Call = object : okhttp3.Call {
+            override fun call(): okhttp3.Call = mock(okhttp3.Call::class.java)
                 override fun request(): Request = request()
                 override fun execute(): okhttp3.Response {
                     throw UnsupportedOperationException("Not implemented in mock")
