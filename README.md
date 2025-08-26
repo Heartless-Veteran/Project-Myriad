@@ -191,23 +191,42 @@ For detailed development plans, timelines, and implementation roadmap, see our c
 
 ---
 
-## 🤖 Gemini Auto - AI Code Fixer
+## 🤖 Gemini Auto Enhanced - AI Code Fixer
 
-**Project Myriad** includes an advanced AI-powered code fixing system that automatically identifies and resolves code issues in pull requests.
+**Project Myriad** includes an advanced AI-powered code fixing system with **language-specific intelligence** that automatically identifies and resolves code issues in pull requests.
 
-### ✨ Key Features
-- 🔧 **Auto-Fix**: Actually fixes code instead of just suggesting changes
-- 🚀 **Direct Commits**: Applies fixes directly to your PR  
-- 🧠 **AI-Powered**: Uses Google's Gemini AI for intelligent code analysis
-- 🔒 **Secure**: Processes code securely with proper authentication
-- ⚡ **Fast**: Completes analysis and fixes in minutes
+### ✨ Enhanced Features
+- 🔧 **Language-Specific Analysis**: Specialized rules for Kotlin, JavaScript, TypeScript, and Shell
+- 🧠 **Smart AI Selection**: Uses Gemini 1.5 Pro for complex tasks, Gemini 1.5 Flash for simple ones
+- ⚙️ **Configurable Rules**: Custom `.gemini-rules.json` for project-specific preferences
+- 📊 **Rich Reporting**: Categorized fixes with detailed statistics and educational explanations
+- 🛡️ **Enhanced Security**: Advanced validation, rate limiting, and secure processing
+- 🚀 **Direct Commits**: Applies fixes directly to your PR with detailed commit messages
 
-### 🛠️ Setup Gemini Auto
+### 🔍 Language-Specific Optimizations
+- **Kotlin**: Null-safety, coroutine contexts, data classes, Compose performance
+- **JavaScript/TypeScript**: Modern syntax, unused imports, async/await patterns
+- **Shell Scripts**: Best practices, security patterns, shebang validation
+- **Security Analysis**: Vulnerability detection and automatic fixes
+- **Performance**: Language-specific optimization opportunities
+
+### 🛠️ Setup Gemini Auto Enhanced
 1. **Get API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. **Add Secret**: Go to Settings > Secrets > `GEMINI_API_KEY`  
-3. **Use**: Add `gemini-auto` label to any PR or let it run automatically
+2. **Add Secret**: Go to Settings > Secrets > `GEMINI_API_KEY`
+3. **Custom Config**: Optional `.gemini-rules.json` for project-specific rules
+4. **Run Locally**: Use `./gradlew geminiAutoFix` for local analysis
+5. **Use**: Add `gemini-auto` label to any PR or let it run automatically
 
-For detailed setup instructions, see **[📖 Gemini Auto Guide](docs/GEMINI_AUTO.md)**.
+### 📈 Advanced Configuration
+```json
+{
+  "kotlin": { "enabled": true, "rules": { "null-safety": true, "coroutine-context": true } },
+  "fixCategories": { "security": true, "performance": true, "style": true },
+  "modelSelection": { "defaultModel": "gemini-1.5-flash", "complexTaskModel": "gemini-1.5-pro" }
+}
+```
+
+For complete setup and configuration options, see **[📖 Enhanced Gemini Auto Guide](docs/GEMINI_AUTO.md)**.
 
 ---
 

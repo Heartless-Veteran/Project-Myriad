@@ -1,17 +1,36 @@
-# Gemini Auto - AI Code Fixer
+# Gemini Auto Enhanced - AI Code Fixer
 
-🤖 **Gemini Auto** is an AI-powered code fixing system that automatically identifies and resolves code issues in your pull requests. Unlike traditional AI review tools that only provide suggestions, Gemini Auto actually fixes the code and commits the changes directly to your PR.
+🤖 **Gemini Auto Enhanced** is an advanced AI-powered code fixing system that automatically identifies and resolves code issues in your pull requests with language-specific intelligence. Unlike traditional AI review tools that only provide suggestions, Gemini Auto actually fixes the code and commits the changes directly to your PR.
 
-**🔒 Enhanced Security & Efficiency**: Now runs only when issues are detected, with comprehensive security validations and rate limiting.
+**🚀 New Enhanced Features**: Language-specific analyzers, intelligent model selection, configurable rules, and rich categorized reporting.
 
 ## Features
 
-### 🔧 Auto-Fix Capabilities
-- **Lint Issues**: Automatically fixes ESLint errors and warnings
-- **Performance**: Optimizes code for better performance
+### 🔧 Enhanced Auto-Fix Capabilities
+- **Language-Specific Analysis**: Specialized rules for Kotlin, JavaScript/TypeScript, and Shell
+- **Kotlin Optimizations**: Null-safety, coroutine context, data classes, Compose performance
+- **JavaScript/TypeScript**: Modern syntax, unused imports, async/await patterns
+- **Shell Scripts**: Best practices, security patterns, shebang validation
 - **Security**: Applies security best practices and fixes vulnerabilities  
-- **Formatting**: Standardizes code style and formatting
-- **Error Handling**: Adds missing error handling patterns
+- **Performance**: Optimizes code for better performance with language-specific patterns
+- **Style**: Standardizes code formatting with language conventions
+
+### 🧠 Intelligent AI Selection
+- **Smart Model Selection**: Uses Gemini 1.5 Pro for complex tasks (large files, many issues, Kotlin classes)
+- **Efficient Processing**: Falls back to Gemini 1.5 Flash for simpler tasks
+- **Task Complexity Analysis**: Automatically determines optimal model based on file size and issue count
+
+### ⚙️ Configurable Rule System
+- **Custom Configuration**: Support for `.gemini-rules.json` project-specific rules
+- **Fix Categories**: Enable/disable specific types of fixes (Security, Performance, Style, Architecture, Testing)
+- **Severity Thresholds**: Configurable minimum severity for fixes
+- **Include/Exclude Patterns**: Granular control over which files to analyze
+
+### 📊 Rich Reporting & Analytics
+- **Categorized Issue Reports**: Issues grouped by type (Security, Performance, Style)
+- **Detailed Statistics**: Comprehensive analysis with file counts and fix breakdowns
+- **Educational Explanations**: Context-aware explanations for applied fixes
+- **Progress Tracking**: Real-time feedback during analysis process
 
 ### 🛡️ Security Enhancements
 - **Conditional Execution**: Only runs when actual issues are detected
@@ -23,9 +42,9 @@
 
 ### 🚀 Seamless Integration
 - **Direct Commits**: Fixes are committed directly to your PR
-- **Smart Analysis**: Uses Google's Gemini AI for intelligent code understanding
-- **Multi-Language**: Supports JavaScript, TypeScript, Kotlin, and configuration files
-- **GitHub Integration**: Works seamlessly with GitHub Actions
+- **Gradle Task Integration**: Run locally with `./gradlew geminiAutoFix`
+- **GitHub Integration**: Enhanced workflow with detailed PR comments
+- **Multi-Language Support**: Kotlin (primary), JavaScript, TypeScript, Shell scripts
 - **Efficient**: Pre-checks prevent unnecessary API calls
 
 ## Setup
@@ -85,9 +104,94 @@ Gemini Auto will automatically run on:
 ## Configuration
 
 ### File Types Analyzed
+- **Kotlin**: `.kt` files in `app/src/main/` (primary focus)
 - **JavaScript/TypeScript**: `.js`, `.ts`, `.jsx`, `.tsx` files in `src/`
-- **Kotlin**: `.kt` files in `app/src/`
+- **Shell Scripts**: `.sh` files in `scripts/`
 - **Config Files**: `package.json`, `build.gradle.kts`
+
+### Custom Configuration
+
+Create a `.gemini-rules.json` file in your project root to customize Gemini Auto behavior:
+
+```json
+{
+  "kotlin": {
+    "enabled": true,
+    "rules": {
+      "null-safety": true,
+      "coroutine-context": true,
+      "compose-performance": true,
+      "hilt-injection": true,
+      "data-class-conventions": true
+    }
+  },
+  "javascript": {
+    "enabled": true,
+    "rules": {
+      "modern-syntax": true,
+      "unused-imports": true,
+      "async-await": true,
+      "const-let": true
+    }
+  },
+  "shell": {
+    "enabled": true,
+    "rules": {
+      "shellcheck": true,
+      "best-practices": true
+    }
+  },
+  "fixCategories": {
+    "security": true,
+    "performance": true,
+    "style": true,
+    "architecture": false,
+    "testing": false
+  },
+  "severityThreshold": "medium",
+  "includePatterns": [
+    "app/src/main/**/*.kt",
+    "src/**/*.js",
+    "src/**/*.ts"
+  ],
+  "excludePatterns": [
+    "**/test/**",
+    "**/build/**"
+  ],
+  "modelSelection": {
+    "defaultModel": "gemini-1.5-flash",
+    "complexTaskModel": "gemini-1.5-pro",
+    "complexityThresholds": {
+      "fileSize": 50000,
+      "issueCount": 10,
+      "kotlinClass": true
+    }
+  }
+}
+```
+
+### Configuration Options
+
+#### Language Rules
+- **kotlin.rules.null-safety**: Detect and fix potential null pointer exceptions
+- **kotlin.rules.coroutine-context**: Ensure proper coroutine dispatcher usage
+- **kotlin.rules.compose-performance**: Optimize Jetpack Compose performance
+- **kotlin.rules.data-class-conventions**: Enforce data class best practices
+- **javascript.rules.modern-syntax**: Promote modern ES6+ syntax
+- **javascript.rules.unused-imports**: Remove unused imports and variables
+- **shell.rules.best-practices**: Apply shell scripting best practices
+
+#### Fix Categories
+- **security**: Security vulnerabilities and best practices
+- **performance**: Performance optimizations and bottlenecks
+- **style**: Code formatting and style conventions
+- **architecture**: Design patterns and architectural improvements
+- **testing**: Test coverage and testing best practices
+
+#### Model Selection
+- **defaultModel**: Model for simple tasks (default: `gemini-1.5-flash`)
+- **complexTaskModel**: Model for complex analysis (default: `gemini-1.5-pro`)
+- **complexityThresholds**: Criteria for using the complex model
 
 ### Limitations
 - Maximum 20 files per run (configurable)
@@ -95,6 +199,18 @@ Gemini Auto will automatically run on:
 - Files must be under 100KB for security
 - Only applies safe, conservative fixes
 - Validates all changes before applying
+
+### Local Usage
+
+Run Gemini Auto locally using the Gradle task:
+
+```bash
+# Run Gemini Auto locally
+./gradlew geminiAutoFix
+
+# Check Gemini Auto configuration
+./gradlew geminiAutoCheck
+```
 
 ## Security Features
 
