@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.heartlessveteran.myriad.ui.theme.AnimeAccent
+import com.heartlessveteran.myriad.navigation.SettingsSection
 
 /**
  * Anime Library Screen - Similar to manga library but for anime content
@@ -785,7 +786,7 @@ fun SettingsScreen(
     onBackClick: () -> Unit = {},
     onSectionChange: (SettingsSection) -> Unit = {}
 ) {
-    var currentSection by remember { mutableStateOf(initialSection) }
+    var currentSection by remember { mutableStateOf<SettingsSection>(initialSection) }
     
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
