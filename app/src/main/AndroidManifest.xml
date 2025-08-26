@@ -12,7 +12,6 @@
     
     <!-- Media permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
     <!-- Device features -->
     <uses-permission android:name="android.permission.VIBRATE" />
