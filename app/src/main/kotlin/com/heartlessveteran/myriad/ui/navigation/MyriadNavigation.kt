@@ -117,7 +117,10 @@ fun MyriadNavigation(navController: NavHostController) {
             composable(Screen.Browse.route) {
                 BrowseScreen(
                     viewModel = androidx.lifecycle.viewmodel.compose.viewModel {
-                        BrowseViewModel(com.heartlessveteran.myriad.di.BrowseDiContainer.getLatestMangaUseCase)
+                        BrowseViewModel(
+                            com.heartlessveteran.myriad.di.BrowseDiContainer.getLatestMangaUseCase,
+                            com.heartlessveteran.myriad.di.BrowseDiContainer.searchMangaUseCase
+                        )
                     },
                     onMangaClick = { mangaUrl ->
                         // TODO: Navigate to manga detail screen when implemented
