@@ -284,6 +284,8 @@ jobs:
   release:
     name: 🎉 Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [build, security, dependency-check]
     if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]')
     steps:
