@@ -85,7 +85,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     
     // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     kapt("com.google.dagger:hilt-compiler:2.48")
     
