@@ -127,11 +127,12 @@ jobs:
       run: |
         if [ -f "app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml" ]; then
           # Extract coverage percentage from JaCoCo XML report
-          COVERAGE=$(grep -o 'covered="[0-9]*"' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | head -1 | grep -o '[0-9]*')
-          TOTAL=$(grep -o 'missed="[0-9]*"' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | head -1 | grep -o '[0-9]*')
+          LINE_COUNTER=$(grep '<counter type="LINE"' app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml | head -1)
+          COVERED=$(echo "$LINE_COUNTER" | sed -n 's/.*covered="\([0-9]*\)".*/\1/p')
+          MISSED=$(echo "$LINE_COUNTER" | sed -n 's/.*missed="\([0-9]*\)".*/\1/p')
           
-          if [ -n "$COVERAGE" ] && [ -n "$TOTAL" ]; then
-            PERCENTAGE=$(echo "scale=2; $COVERAGE * 100 / ($COVERAGE + $TOTAL)" | bc -l)
+          if [ -n "$COVERED" ] && [ -n "$MISSED" ] && [ $((COVERED + MISSED)) -gt 0 ]; then
+            PERCENTAGE=$(echo "scale=2; $COVERED * 100 / ($COVERED + $MISSED)" | bc -l)
             echo "percentage=$PERCENTAGE" >> $GITHUB_OUTPUT
           else
             echo "percentage=0" >> $GITHUB_OUTPUT
