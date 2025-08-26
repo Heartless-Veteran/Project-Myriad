@@ -21,5 +21,8 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "dependencies": {
+    "tmp": "^0.2.5"
+}
 }

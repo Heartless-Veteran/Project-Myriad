@@ -152,11 +152,29 @@ This project includes an automated AI code review system using Google's Gemini A
    - Name: `GEMINI_API_KEY`
    - Value: Your Gemini API key
 
-3. **Automatic Review Process**:
+3. **Validate Your Setup (Optional)**:
+   - Test your API key locally before committing:
+     ```bash
+     GEMINI_API_KEY=your_api_key_here node scripts/validate-gemini-api.js
+     ```
+
+4. **Automatic Review Process**:
    - AI reviews are automatically triggered on pull requests
    - The system analyzes both Kotlin/Android and Node.js code
    - Gemini AI provides suggestions as PR comments
    - Reviews include code quality, security, and best practices feedback
+
+**Troubleshooting AI Review Issues**:
+
+If you encounter HTTP 403 errors or other API issues:
+
+- **Missing API Key**: Ensure `GEMINI_API_KEY` is set in repository secrets
+- **Invalid API Key**: Regenerate your key at [Google AI Studio](https://makersuite.google.com/app/apikey)
+- **Quota Exceeded**: Check your usage limits at Google AI Studio (quotas typically reset daily)
+- **Permissions**: Verify your Google account has access to Gemini API
+- **API Status**: Check [Google Cloud Status](https://status.cloud.google.com/) for service issues
+
+Use the validation script `scripts/validate-gemini-api.js` to test your API key configuration locally.
 
 #### Local Development
 - The app works offline-first with local Room database
