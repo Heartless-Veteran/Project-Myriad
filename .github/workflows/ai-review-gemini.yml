@@ -8,6 +8,9 @@ on:
 jobs:
   gemini_code_reviewer:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       # Step 1: Checkout the code from the pull request
       - name: Checkout code
