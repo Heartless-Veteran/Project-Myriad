@@ -1,2 +1,41 @@
-- name: Setup Kotlin
-  uses: fwilhe2/setup-kotlin@1694fbd49c38ab354ff58e249fe2d73d74a1c6eb # v1.2
+name: Development - Kotlin Setup
+
+on:
+  workflow_call:
+    # This workflow can be called by other workflows
+  workflow_dispatch:
+    # Allow manual triggering
+
+permissions:
+  contents: read
+
+jobs:
+  setup-kotlin:
+    name: Setup Kotlin Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@v1
+        with:
+          version: '1.9.20'
+          
+      - name: Verify Kotlin installation
+        run: |
+          kotlin -version
+          kotlinc -version
+          
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        
+      - name: Verify Gradle setup
+        run: ./gradlew --version
