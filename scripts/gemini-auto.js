@@ -419,7 +419,7 @@ async function runAutoFix() {
   }
 
   if (testMode) {
-    console.log('🧪 Test mode: Issues detected, would proceed with AI analysis');
+    console.log('🧪 Test mode enabled: Issues detected, but AI analysis is skipped.');
     return false;
   }
 
