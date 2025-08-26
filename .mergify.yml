@@ -55,8 +55,9 @@ pull_request_rules:
   - name: Label documentation changes
     description: Add documentation label for documentation changes
     conditions:
-      - files ~= (?i)\.(md|txt|rst)$
-      - files ~= ^docs/
+      - or:
+          - files ~= (?i)\.(md|txt|rst)$
+          - files ~= ^docs/
     actions:
       label:
         toggle:
