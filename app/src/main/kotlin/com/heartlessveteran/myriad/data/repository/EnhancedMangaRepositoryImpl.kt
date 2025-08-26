@@ -41,7 +41,7 @@ class EnhancedMangaRepositoryImpl @Inject constructor(
     // Cache instances
     private suspend fun getMangaCache() = memoryCache.getCache<List<Manga>>(CacheKeys.MANGA, CacheConfigs.MANGA)
     private suspend fun getSearchCache() = memoryCache.getCache<List<Manga>>(CacheKeys.SEARCH_RESULTS, CacheConfigs.SEARCH_RESULTS)
-    private suspend fun getSingleMangaCache() = memoryCache.getCache<Manga>(CacheKeys.MANGA, CacheConfigs.MANGA)
+    private suspend fun getSingleMangaCache() = memoryCache.getCache<Manga>(CacheKeys.ONLINE_MANGA, CacheConfigs.MANGA)
     
     override fun getAllManga(): Flow<List<Manga>> = 
         mangaDao.getAllManga().map { mangaList ->
