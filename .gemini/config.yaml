@@ -9,19 +9,13 @@ code_review:
     summary: true
     code_review: true
 ignore_patterns:
-  - "node_modules/**"
-  - "android/**"
-  - "ios/**"
+  - ".gradle/**"
+  - "build/**"
+  - "app/build/**"
   - "**/*.apk"
   - "**/*.aab"
   - ".idea/**"
-  - "**/.gradle/**"
-  - "dist/**"
-  - "build/**"
+  - "**/local.properties"
   - "coverage/**"
   - "*.lock"
-  - "ISSUE-56-RESOLUTION-REPORT.md"
-  - "PHASE-2-OVERVIEW.md"
-  - "DEVELOPMENT.md"
-  - "SECURITY.md"
   - "docs/**"
