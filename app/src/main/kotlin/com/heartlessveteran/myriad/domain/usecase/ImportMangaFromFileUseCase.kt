@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
  * .cbz/.cbr archive files, including validation and error handling.
  */
 
-class ImportMangaFromFileUseCase constructor(
+class ImportMangaFromFileUseCase @Inject constructor(
     // TODO: Inject FileManagerService when implemented
     // private val fileManagerService: FileManagerService
 ) {
