@@ -28,13 +28,15 @@ interface MangaRepository {
     suspend fun toggleFavorite(mangaId: String): Result<Unit>
     suspend fun updateReadProgress(mangaId: String, readChapters: Int): Result<Unit>
     
-    // Local file operations
+    // File operations - NOW IMPLEMENTED via FileManagerService
     suspend fun importMangaFromFile(filePath: String): Result<Manga>
     suspend fun scanLocalMangaDirectory(directoryPath: String): Result<List<Manga>>
     
-    // Online source operations
+    // Online source operations - NOW IMPLEMENTED via SourceService  
     suspend fun searchOnlineManga(query: String, source: String): Result<List<Manga>>
     suspend fun getMangaFromSource(sourceId: String, source: String): Result<Manga>
+    
+    // Download operations - NOW IMPLEMENTED via DownloadService
     suspend fun downloadManga(manga: Manga): Result<Unit>
     
     // Metadata operations
