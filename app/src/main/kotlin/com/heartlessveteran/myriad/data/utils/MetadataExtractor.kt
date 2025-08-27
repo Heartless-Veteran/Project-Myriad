@@ -415,8 +415,8 @@ object MetadataExtractor {
     }
     
     /**
-     * Extract text content from XML tag using simple regex.
-     * This is a basic implementation - for complex XML, consider using a proper parser.
+     * Extract text content from an XML tag using `XmlPullParser`.
+     * This implementation is case-insensitive and returns the first non-empty text content found for the given tag.
      */
     private fun extractXmlTag(xmlContent: String, tagName: String): String? {
         try {
