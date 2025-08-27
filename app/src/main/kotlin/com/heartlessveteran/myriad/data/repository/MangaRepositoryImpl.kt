@@ -16,8 +16,7 @@ import java.util.*
 /**
  * Implementation of MangaRepository using Room database and various services
  */
-@Singleton
-class MangaRepositoryImpl @Inject constructor(
+class MangaRepositoryImpl(
     private val mangaDao: MangaDao,
     // Service dependencies - will be implemented in next phase
     // private val fileManagerService: FileManagerService,

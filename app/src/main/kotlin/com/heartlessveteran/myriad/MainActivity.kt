@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
  * Main Activity for Project Myriad
  * Entry point for the Kotlin Android application
  */
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
