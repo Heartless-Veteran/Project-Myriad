@@ -15,8 +15,7 @@ import java.util.*
  * Full implementation will include ZIP/RAR parsing, metadata extraction,
  * and comprehensive error handling.
  */
-@Singleton
-class FileManagerServiceImpl @Inject constructor(
+class FileManagerServiceImpl(
     // Future dependencies:
     // private val metadataExtractor: MetadataExtractor,
     // private val archiveUtils: ArchiveUtils,

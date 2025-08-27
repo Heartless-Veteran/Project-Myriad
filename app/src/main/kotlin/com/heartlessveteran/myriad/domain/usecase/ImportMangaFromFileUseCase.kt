@@ -13,8 +13,7 @@ import kotlinx.coroutines.withContext
  * This use case handles the business logic for importing manga from
  * .cbz/.cbr archive files, including validation and error handling.
  */
-
-class ImportMangaFromFileUseCase @Inject constructor(
+class ImportMangaFromFileUseCase(
     // TODO: Inject FileManagerService when implemented
     // private val fileManagerService: FileManagerService
 ) {
