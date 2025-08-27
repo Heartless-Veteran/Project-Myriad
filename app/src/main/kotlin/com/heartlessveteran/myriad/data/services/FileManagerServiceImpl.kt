@@ -90,8 +90,8 @@ class FileManagerServiceImpl(
                 // Create manga entity
                 val manga = createMangaFromMetadata(file, metadata, pageCount)
                 
-                // TODO: Save to database when DAO is integrated
-                // mangaDao.insertManga(manga)
+                // Note: Database persistence is handled by the repository layer
+                // This service focuses on file processing and metadata extraction
                 
                 // Clean up extracted files (we only needed them for validation)
                 cleanupExtractionDirectory(extractDir)
