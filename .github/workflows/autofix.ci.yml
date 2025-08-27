@@ -15,6 +15,7 @@ jobs:
   autofix:
     name: Auto-format Code
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # Run on PRs from forks, manual triggers, or when 'autofix.ci' label is added
     if: |
       github.event_name == 'workflow_dispatch' || 
