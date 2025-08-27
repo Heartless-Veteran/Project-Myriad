@@ -44,6 +44,16 @@ enum class MangaFilter {
 }
 
 /**
+ * Statistics data for manga library
+ */
+data class MangaLibraryStatistics(
+    val totalCount: Int,
+    val favoriteCount: Int,
+    val readingCount: Int,
+    val completedCount: Int
+)
+
+/**
  * ViewModel for managing manga library state and operations
  */
 class MangaLibraryViewModel(
