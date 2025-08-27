@@ -73,7 +73,19 @@ object MetadataExtractor {
             val parsedInfo = parseFilename(file.nameWithoutExtension)
             metadata.putAll(parsedInfo)
             
-            // TODO: Extract ComicInfo.xml if present in archive
+            // Extract ComicInfo.xml from archive if present
+            if (ArchiveUtils.isSupportedArchive(filePath)) {
+                val comicInfoMetadata = extractComicInfoFromArchive(filePath)
+                if (comicInfoMetadata.isNotEmpty()) {
+                    // ComicInfo.xml metadata takes precedence over filename parsing
+                    comicInfoMetadata.forEach { (key, value) ->
+                        metadata[key] = value
+                    }
+                    metadata["hasComicInfo"] = true
+                    Log.d(TAG, "Found ComicInfo.xml in archive: ${file.name}")
+                }
+            }
+            
             // TODO: Parse EPUB metadata if applicable
             // TODO: Read embedded metadata from images
             
@@ -278,6 +290,145 @@ object MetadataExtractor {
         }
         
         return parts.joinToString(" • ")
+    }
+    
+    /**
+     * Extract ComicInfo.xml metadata from archive.
+     * ComicInfo.xml is a standard format for comic/manga metadata.
+     */
+    private suspend fun extractComicInfoFromArchive(archivePath: String): Map<String, Any> = withContext(Dispatchers.IO) {
+        val metadata = mutableMapOf<String, Any>()
+        
+        try {
+            // Use zip4j to read ComicInfo.xml from archive
+            val zipFile = net.lingala.zip4j.ZipFile(archivePath)
+            
+            if (!zipFile.isValidZipFile) {
+                return@withContext metadata
+            }
+            
+            // Look for ComicInfo.xml (case-insensitive)
+            val comicInfoHeader = zipFile.fileHeaders.find { header ->
+                header.fileName.equals("ComicInfo.xml", ignoreCase = true) ||
+                header.fileName.equals("comicinfo.xml", ignoreCase = true)
+            }
+            
+            if (comicInfoHeader != null) {
+                // Extract and parse the ComicInfo.xml
+                zipFile.getInputStream(comicInfoHeader).use { inputStream ->
+                    val xmlContent = inputStream.bufferedReader().readText()
+                    metadata.putAll(parseComicInfoXml(xmlContent))
+                }
+            }
+            
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not extract ComicInfo.xml from archive: $archivePath", e)
+        }
+        
+        metadata
+    }
+    
+    /**
+     * Parse ComicInfo.xml content and extract relevant metadata.
+     * ComicInfo.xml format: https://anansi-project.github.io/docs/comicinfo/documentation
+     */
+    private fun parseComicInfoXml(xmlContent: String): Map<String, Any> {
+        val metadata = mutableMapOf<String, Any>()
+        
+        try {
+            // Simple XML parsing for key ComicInfo elements
+            // In a production app, you might want to use a proper XML parser
+            
+            // Extract title
+            extractXmlTag(xmlContent, "Title")?.let { title ->
+                if (title.isNotBlank()) metadata["title"] = title
+            }
+            
+            // Extract series
+            extractXmlTag(xmlContent, "Series")?.let { series ->
+                if (series.isNotBlank()) {
+                    metadata["series"] = series
+                    if (!metadata.containsKey("title")) {
+                        metadata["title"] = series // Use series as fallback title
+                    }
+                }
+            }
+            
+            // Extract volume
+            extractXmlTag(xmlContent, "Volume")?.let { volume ->
+                volume.toIntOrNull()?.let { metadata["volume"] = it }
+            }
+            
+            // Extract issue/chapter number
+            extractXmlTag(xmlContent, "Number")?.let { number ->
+                number.toFloatOrNull()?.let { metadata["chapter"] = it }
+            }
+            
+            // Extract summary
+            extractXmlTag(xmlContent, "Summary")?.let { summary ->
+                if (summary.isNotBlank()) metadata["description"] = summary
+            }
+            
+            // Extract writer/author
+            extractXmlTag(xmlContent, "Writer")?.let { writer ->
+                if (writer.isNotBlank()) metadata["author"] = writer
+            }
+            
+            // Extract penciller/artist
+            extractXmlTag(xmlContent, "Penciller")?.let { artist ->
+                if (artist.isNotBlank()) metadata["artist"] = artist
+            }
+            
+            // Extract publisher
+            extractXmlTag(xmlContent, "Publisher")?.let { publisher ->
+                if (publisher.isNotBlank()) metadata["publisher"] = publisher
+            }
+            
+            // Extract year
+            extractXmlTag(xmlContent, "Year")?.let { year ->
+                year.toIntOrNull()?.let { metadata["year"] = it }
+            }
+            
+            // Extract genre
+            extractXmlTag(xmlContent, "Genre")?.let { genre ->
+                if (genre.isNotBlank()) {
+                    // Split genres by comma and clean up
+                    val genres = genre.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    if (genres.isNotEmpty()) metadata["genres"] = genres
+                }
+            }
+            
+            // Extract page count
+            extractXmlTag(xmlContent, "PageCount")?.let { pageCount ->
+                pageCount.toIntOrNull()?.let { metadata["pageCount"] = it }
+            }
+            
+            // Extract language code
+            extractXmlTag(xmlContent, "LanguageISO")?.let { language ->
+                if (language.isNotBlank()) metadata["language"] = language
+            }
+            
+        } catch (e: Exception) {
+            Log.w(TAG, "Error parsing ComicInfo.xml content", e)
+        }
+        
+        return metadata
+    }
+    
+    /**
+     * Extract text content from XML tag using simple regex.
+     * This is a basic implementation - for complex XML, consider using a proper parser.
+     */
+    private fun extractXmlTag(xmlContent: String, tagName: String): String? {
+        return try {
+            val pattern = Pattern.compile("<$tagName(?:\\s[^>]*)?>([^<]*)</$tagName>", Pattern.CASE_INSENSITIVE)
+            val matcher = pattern.matcher(xmlContent)
+            if (matcher.find()) {
+                matcher.group(1)?.trim()?.takeIf { it.isNotEmpty() }
+            } else null
+        } catch (e: Exception) {
+            null
+        }
     }
     
     /**
