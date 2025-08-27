@@ -7,12 +7,20 @@ on:
     branches: [ main, alpha ]
   workflow_dispatch:
 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+  GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
+
+permissions:
+  contents: read
+
 jobs:
   # Lint and code quality checks
   lint:
     name: 🔍 Code Quality
     permissions:
       contents: read
+      security-events: write
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -172,6 +180,9 @@ jobs:
     name: 🔒 Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
     needs: lint
     steps:
       - name: Checkout code
@@ -196,6 +207,9 @@ jobs:
     name: 📦 Dependency Check
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -224,6 +238,13 @@ jobs:
       - name: Run dependency vulnerability check
         run: ./gradlew dependencyCheckAnalyze
         continue-on-error: true
+
+      - name: Upload dependency check SARIF
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('**/dependency-check-report.sarif') != ''
+        with:
+          sarif_file: build/reports/dependency-check-report.sarif
+          category: dependency-check
 
       - name: Upload dependency check results
         uses: actions/upload-artifact@v4

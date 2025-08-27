@@ -15,6 +15,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
     - name: Checkout code
@@ -59,6 +60,7 @@ jobs:
   dependency-submission:
     name: Submit Dependency Graph
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 
