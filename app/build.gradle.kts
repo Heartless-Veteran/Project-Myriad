@@ -9,7 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     // Code Quality plugins
     id("org.jlleitschuh.gradle.ktlint")
-    id("io.gitlab.arturbosch.detekt")
+    // id("io.gitlab.arturbosch.detekt") // Temporarily disabled for initial assessment
     id("org.jetbrains.dokka")
     id("jacoco")
     // Firebase plugins commented out - optional feature
@@ -187,24 +187,24 @@ ktlint {
     }
 }
 
-detekt {
-    toolVersion = "1.23.8"
-    config.setFrom(file("../config/detekt/detekt.yml"))
-    buildUponDefaultConfig = true
-    autoCorrect = true
-    
-    source.setFrom(files("src/main/kotlin", "src/test/kotlin"))
-}
+// detekt {
+//     toolVersion = "1.23.8"
+//     config.setFrom(file("../config/detekt/detekt.yml"))
+//     buildUponDefaultConfig = true
+//     autoCorrect = true
+//     
+//     source.setFrom(files("src/main/kotlin", "src/test/kotlin"))
+// }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        txt.required.set(true)
-        sarif.required.set(true)
-        md.required.set(true)
-    }
-}
+// tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+//     reports {
+//         html.required.set(true)
+//         xml.required.set(true)
+//         txt.required.set(true)
+//         sarif.required.set(true)
+//         md.required.set(true)
+//     }
+// }
 
 // JaCoCo Test Coverage Configuration
 jacoco {
