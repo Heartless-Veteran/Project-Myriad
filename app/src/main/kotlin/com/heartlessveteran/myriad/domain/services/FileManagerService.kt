@@ -43,7 +43,7 @@ interface FileManagerService {
      */
     suspend fun extractPagesFromArchive(
         archivePath: String, 
-        extractPath: String
+        extractPath: String,
     ): Result<List<String>>
     
     /**
