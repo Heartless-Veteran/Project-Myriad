@@ -15,6 +15,7 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
     - name: Checkout code
@@ -27,7 +28,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
 
     - name: Make Gradle wrapper executable
       run: chmod +x ./gradlew
@@ -39,7 +40,7 @@ jobs:
       run: ./gradlew test --no-daemon
       
     - name: Generate test report
-      uses: dorny/test-reporter@v2
+      uses: dorny/test-reporter@v3
       if: success() || failure()
       with:
         name: Gradle Test Results
@@ -59,6 +60,7 @@ jobs:
   dependency-submission:
     name: Submit Dependency Graph
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 
@@ -73,4 +75,4 @@ jobs:
         distribution: 'temurin'
 
     - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@v4
+      uses: gradle/actions/dependency-submission@v5

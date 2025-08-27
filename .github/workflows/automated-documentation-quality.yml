@@ -24,6 +24,7 @@ jobs:
   code-quality-checks:
     name: 🔍 Code Quality Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       has-violations: ${{ steps.check-results.outputs.has-violations }}
       coverage-percentage: ${{ steps.coverage.outputs.percentage }}
@@ -61,7 +62,7 @@ jobs:
       run: npm install
 
     - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v3
+      uses: gradle/actions/wrapper-validation@v5
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
@@ -167,6 +168,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: code-quality-checks
     
     steps:
@@ -197,6 +199,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     needs: [code-quality-checks, architecture-validation]
     
     steps:
@@ -309,6 +312,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: code-quality-checks
     if: needs.code-quality-checks.outputs.has-violations == 'true'
     
@@ -374,6 +378,10 @@ jobs:
   create-improvement-pr:
     name: 🚀 Create Improvement PR
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
     needs: [code-quality-checks, architecture-validation, documentation-generation]
     if: |
       always() && 

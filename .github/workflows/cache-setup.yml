@@ -1,0 +1,61 @@
+name: Cache Setup - Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      cache-gradle:
+        description: 'Enable Gradle caching'
+        required: false
+        default: true
+        type: boolean
+      cache-npm:
+        description: 'Enable npm caching'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  setup-cache:
+    name: Setup Build Caches
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        
+      - name: Setup Gradle Cache
+        if: inputs.cache-gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            .gradle
+            /home/runner/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            
+      - name: Setup Node.js Cache
+        if: inputs.cache-npm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            node_modules
+            ~/.cache/npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', 'package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
+      - name: Verify cache setup
+        env:
+          CACHE_GRADLE: ${{ inputs.cache-gradle }}
+          CACHE_NPM: ${{ inputs.cache-npm }}
+        run: |
+          echo "✅ Gradle cache: $CACHE_GRADLE"
+          echo "✅ npm cache: $CACHE_NPM"
+          echo "Cache keys created successfully"

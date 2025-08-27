@@ -14,6 +14,9 @@ on:
         - beta
         - production
 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+
 permissions:
   contents: write
   packages: write
@@ -22,6 +25,7 @@ jobs:
   build-android:
     name: Build Android APK
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     
     steps:
     - name: Checkout code
@@ -43,7 +47,19 @@ jobs:
       run: npm install --legacy-peer-deps
       
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v5
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          .gradle
+          /home/runner/.konan
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
       
     - name: Make Gradle wrapper executable
       run: chmod +x ./gradlew
@@ -70,18 +86,15 @@ jobs:
         
     - name: Upload to release
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: app/build/outputs/apk/release/app-release.apk
-        asset_name: Project-Myriad-${{ github.event.release.tag_name }}.apk
-        asset_content_type: application/vnd.android.package-archive
+        files: app/build/outputs/apk/release/app-release.apk
+        name: Project-Myriad-${{ github.event.release.tag_name }}.apk
 
   create-release-notes:
     name: Generate Release Notes
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name == 'release'
     
     steps:
