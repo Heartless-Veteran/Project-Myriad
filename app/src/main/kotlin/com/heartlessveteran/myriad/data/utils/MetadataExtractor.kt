@@ -418,28 +418,44 @@ object MetadataExtractor {
      * Extract text content from an XML tag using `XmlPullParser`.
      * This implementation is case-insensitive and returns the first non-empty text content found for the given tag.
      */
-    private fun extractXmlTag(xmlContent: String, tagName: String): String? {
+    /**
+     * Extract text content for multiple XML tags in a single pass.
+     * Returns a map of tag names to their text content (or null if not found).
+     */
+    private fun extractXmlTags(xmlContent: String, tagNames: Set<String>): Map<String, String?> {
+        val results = mutableMapOf<String, String?>()
         try {
             val parser: XmlPullParser = Xml.newPullParser()
             parser.setInput(xmlContent.reader())
             var eventType = parser.eventType
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG && parser.name.equals(tagName, ignoreCase = true)) {
-                    // Move to text event
-                    eventType = parser.next()
-                    if (eventType == XmlPullParser.TEXT) {
-                        val text = parser.text?.trim()
-                        if (!text.isNullOrEmpty()) {
-                            return text
+                if (eventType == XmlPullParser.START_TAG) {
+                    val name = parser.name
+                    if (name != null && tagNames.any { it.equals(name, ignoreCase = true) }) {
+                        // Move to text event
+                        val nextEvent = parser.next()
+                        if (nextEvent == XmlPullParser.TEXT) {
+                            val text = parser.text?.trim()
+                            if (!text.isNullOrEmpty()) {
+                                results[name] = text
+                            } else {
+                                results[name] = null
+                            }
                         }
                     }
                 }
                 eventType = parser.next()
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Error extracting XML tag <$tagName>", e)
+            Log.w(TAG, "Error extracting XML tags $tagNames", e)
         }
-        return null
+        // Ensure all requested tags are present in the result map
+        for (tag in tagNames) {
+            if (!results.containsKey(tag)) {
+                results[tag] = null
+            }
+        }
+        return results
     }
     
     /**
