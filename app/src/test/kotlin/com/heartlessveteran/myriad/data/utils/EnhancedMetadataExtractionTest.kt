@@ -29,13 +29,8 @@ class EnhancedMetadataExtractionTest {
                 <LanguageISO>en</LanguageISO>
             </ComicInfo>""".trimIndent()
         
-        // Use reflection to access private parseComicInfoXml method
-        val metadataExtractor = MetadataExtractor
-        val method = metadataExtractor::class.java.getDeclaredMethod("parseComicInfoXml", String::class.java)
-        method.isAccessible = true
-        
-        @Suppress("UNCHECKED_CAST")
-        val result = method.invoke(metadataExtractor, sampleXml) as Map<String, Any>
+        // Directly call the parseComicInfoXml method (now internal)
+        val result = MetadataExtractor.parseComicInfoXml(sampleXml)
         
         // Verify parsed metadata
         assertEquals("Sample Manga", result["title"])
