@@ -52,7 +52,10 @@ jobs:
             ${{ runner.os }}-node-
             
       - name: Verify cache setup
+        env:
+          CACHE_GRADLE: ${{ inputs.cache-gradle }}
+          CACHE_NPM: ${{ inputs.cache-npm }}
         run: |
-          echo "✅ Gradle cache: ${{ inputs.cache-gradle }}"
-          echo "✅ npm cache: ${{ inputs.cache-npm }}"
+          echo "✅ Gradle cache: $CACHE_GRADLE"
+          echo "✅ npm cache: $CACHE_NPM"
           echo "Cache keys created successfully"
