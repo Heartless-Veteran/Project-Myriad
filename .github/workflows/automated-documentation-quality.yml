@@ -61,7 +61,7 @@ jobs:
       run: npm install
 
     - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
+      uses: gradle/wrapper-validation-action@v3
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
