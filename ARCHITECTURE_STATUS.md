@@ -185,7 +185,7 @@ enum class ReadingMode {
 
 **Planned Features**:
 - OCR Translation
-- Art Style Recognition  
+Art Style Recognition
 - Smart Recommendations
 - Scene Analysis
 - Mood Tracking
