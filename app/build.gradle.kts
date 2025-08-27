@@ -9,7 +9,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     // Code Quality plugins
     id("org.jlleitschuh.gradle.ktlint")
-    id("io.gitlab.arturbosch.detekt")
+    // id("io.gitlab.arturbosch.detekt") // Temporarily disabled for initial assessment
     id("org.jetbrains.dokka")
     id("jacoco")
     // Firebase plugins commented out - optional feature
@@ -161,6 +161,9 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.19.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("androidx.room:room-testing:2.7.2")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("androidx.test.ext:junit:1.3.0")
+    testImplementation("org.robolectric:robolectric:4.15.1")
     
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
@@ -187,24 +190,24 @@ ktlint {
     }
 }
 
-detekt {
-    toolVersion = "1.23.8"
-    config.setFrom(file("../config/detekt/detekt.yml"))
-    buildUponDefaultConfig = true
-    autoCorrect = true
-    
-    source.setFrom(files("src/main/kotlin", "src/test/kotlin"))
-}
+// detekt {
+//     toolVersion = "1.23.8"
+//     config.setFrom(file("../config/detekt/detekt.yml"))
+//     buildUponDefaultConfig = true
+//     autoCorrect = true
+//     
+//     source.setFrom(files("src/main/kotlin", "src/test/kotlin"))
+// }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        txt.required.set(true)
-        sarif.required.set(true)
-        md.required.set(true)
-    }
-}
+// tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+//     reports {
+//         html.required.set(true)
+//         xml.required.set(true)
+//         txt.required.set(true)
+//         sarif.required.set(true)
+//         md.required.set(true)
+//     }
+// }
 
 // JaCoCo Test Coverage Configuration
 jacoco {

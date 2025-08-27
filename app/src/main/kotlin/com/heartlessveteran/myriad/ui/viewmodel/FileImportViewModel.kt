@@ -6,7 +6,8 @@ import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.heartlessveteran.myriad.data.services.FileManagerServiceImpl
+import com.heartlessveteran.myriad.di.LibraryDiContainer
+import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.ui.components.ImportStatus
@@ -30,7 +31,7 @@ class FileImportViewModel(
     private val context: Context
 ) : ViewModel() {
     
-    private val fileManagerService = FileManagerServiceImpl(context)
+    private val mangaRepository = LibraryDiContainer.getMangaRepository(context)
     
     private val _importStatus = MutableStateFlow(ImportStatus())
     val importStatus: StateFlow<ImportStatus> = _importStatus.asStateFlow()
@@ -66,7 +67,7 @@ class FileImportViewModel(
                 
                 Log.i(TAG, "Importing file: $filePath")
                 
-                val result = fileManagerService.importMangaFromFile(filePath)
+                val result = mangaRepository.importMangaFromFile(filePath)
                 
                 when (result) {
                     is Result.Success -> {
@@ -132,7 +133,7 @@ class FileImportViewModel(
                     message = "Importing manga files..."
                 )
                 
-                val result = fileManagerService.scanDirectoryForManga(directoryPath, recursive = true)
+                val result = mangaRepository.scanLocalMangaDirectory(directoryPath)
                 
                 when (result) {
                     is Result.Success -> {

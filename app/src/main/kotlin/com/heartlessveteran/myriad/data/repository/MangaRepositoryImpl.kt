@@ -18,8 +18,8 @@ import java.util.*
  */
 class MangaRepositoryImpl(
     private val mangaDao: MangaDao,
+    private val fileManagerService: FileManagerService,
     // Service dependencies - will be implemented in next phase
-    // private val fileManagerService: FileManagerService,
     // private val sourceService: SourceService,
     // private val downloadService: DownloadService,
 ) : MangaRepository {
@@ -93,21 +93,36 @@ class MangaRepositoryImpl(
     
     // File operations - Delegate to FileManagerService
     override suspend fun importMangaFromFile(filePath: String): Result<Manga> {
-        // TODO: Implement with FileManagerService integration
-        // return fileManagerService.importMangaFromFile(filePath)
-        return Result.Error(
-            NotImplementedError("File import not yet implemented - FileManagerService integration needed"),
-            "File import functionality is under development. Next phase: implement FileManagerService"
-        )
+        return when (val result = fileManagerService.importMangaFromFile(filePath)) {
+            is Result.Success -> {
+                // Save the imported manga to database
+                try {
+                    mangaDao.insertManga(result.data)
+                    Result.Success(result.data)
+                } catch (e: Exception) {
+                    Result.Error(e, "Failed to save imported manga to database: ${e.message}")
+                }
+            }
+            is Result.Error -> result
+            is Result.Loading -> result
+        }
     }
     
     override suspend fun scanLocalMangaDirectory(directoryPath: String): Result<List<Manga>> {
-        // TODO: Implement with FileManagerService integration
-        // return fileManagerService.scanDirectoryForManga(directoryPath)
-        return Result.Error(
-            NotImplementedError("Directory scan not yet implemented - FileManagerService integration needed"),
-            "Directory scanning functionality is under development. Next phase: implement FileManagerService"
-        )
+        return when (val result = fileManagerService.scanDirectoryForManga(directoryPath)) {
+            is Result.Success -> {
+                // Save all imported manga to database
+                try {
+                    val mangaList = result.data
+                    mangaDao.insertAll(mangaList)
+                    Result.Success(mangaList)
+                } catch (e: Exception) {
+                    Result.Error(e, "Failed to save scanned manga to database: ${e.message}")
+                }
+            }
+            is Result.Error -> result
+            is Result.Loading -> result
+        }
     }
     
     // Online source operations - Delegate to SourceService

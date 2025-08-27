@@ -19,11 +19,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.heartlessveteran.myriad.domain.entities.Manga
+import com.heartlessveteran.myriad.di.LibraryDiContainer
 import com.heartlessveteran.myriad.ui.theme.MangaAccent
 import com.heartlessveteran.myriad.ui.viewmodel.MangaFilter
 import com.heartlessveteran.myriad.ui.viewmodel.MangaLibraryViewModel
@@ -35,7 +36,10 @@ import com.heartlessveteran.myriad.ui.viewmodel.MangaLibraryViewModel
 @Composable
 fun MangaLibraryScreen(
     onMangaClick: (String) -> Unit,
-    viewModel: MangaLibraryViewModel = hiltViewModel()
+    viewModel: MangaLibraryViewModel = run {
+        val context = LocalContext.current
+        viewModel { MangaLibraryViewModel(LibraryDiContainer.getMangaRepository(context)) }
+    }
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showFilterMenu by remember { mutableStateOf(false) }
@@ -95,6 +99,25 @@ fun MangaLibraryScreen(
                     label = { Text(getFilterDisplayName(filter)) },
                     selected = uiState.selectedFilter == filter
                 )
+            }
+        }
+        
+        // Library Statistics (Phase 1 Enhancement)
+        if (uiState.totalCount > 0) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    StatisticItem("Total", uiState.totalCount)
+                    StatisticItem("Favorites", uiState.favoriteCount)
+                    StatisticItem("Reading", uiState.readingCount)
+                    StatisticItem("Completed", uiState.completedCount)
+                }
             }
         }
         
@@ -271,4 +294,26 @@ private fun getFilterDisplayName(filter: MangaFilter): String = when (filter) {
     MangaFilter.ON_HOLD -> "On Hold"
     MangaFilter.DROPPED -> "Dropped"
     MangaFilter.UNREAD -> "Unread"
+}
+
+/**
+ * Small composable to display library statistics
+ */
+@Composable
+private fun StatisticItem(label: String, count: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = count.toString(),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MangaAccent
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 }

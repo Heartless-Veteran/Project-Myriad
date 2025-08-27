@@ -1,5 +1,6 @@
 package com.heartlessveteran.myriad.data.cache
 
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
