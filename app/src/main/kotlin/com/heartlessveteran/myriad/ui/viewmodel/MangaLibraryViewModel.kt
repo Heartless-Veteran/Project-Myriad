@@ -213,8 +213,8 @@ class MangaLibraryViewModel(
         return MangaLibraryStatistics(
             totalCount = mangaList.size,
             favoriteCount = mangaList.count { it.isFavorite },
-            readingCount = mangaList.count { it.readChapters > 0 && it.status != MangaStatus.COMPLETED },
-            completedCount = mangaList.count { it.status == MangaStatus.COMPLETED }
+            readingCount = mangaList.count { it.readChapters > 0 && it.totalChapters > 0 && it.readChapters < it.totalChapters },
+            completedCount = mangaList.count { it.totalChapters > 0 && it.readChapters >= it.totalChapters }
         )
     }
     /**
