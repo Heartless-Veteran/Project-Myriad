@@ -4,8 +4,8 @@ import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.services.FileManagerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
+
+
 
 /**
  * Use case for importing manga from local files.
@@ -13,8 +13,8 @@ import javax.inject.Singleton
  * This use case handles the business logic for importing manga from
  * .cbz/.cbr archive files, including validation and error handling.
  */
-@Singleton
-class ImportMangaFromFileUseCase @Inject constructor(
+
+class ImportMangaFromFileUseCase constructor(
     // TODO: Inject FileManagerService when implemented
     // private val fileManagerService: FileManagerService
 ) {
