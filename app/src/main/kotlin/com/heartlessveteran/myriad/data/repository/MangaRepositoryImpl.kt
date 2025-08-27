@@ -114,7 +114,7 @@ class MangaRepositoryImpl(
                 // Save all imported manga to database
                 try {
                     val mangaList = result.data
-                    mangaDao.insertAll(mangaList)
+                    mangaDao.insertMangaList(mangaList)
                     Result.Success(mangaList)
                 } catch (e: Exception) {
                     Result.Error(e, "Failed to save scanned manga to database: ${e.message}")
