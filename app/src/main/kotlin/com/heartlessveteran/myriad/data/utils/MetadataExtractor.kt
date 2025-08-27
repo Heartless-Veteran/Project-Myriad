@@ -420,15 +420,27 @@ object MetadataExtractor {
      * This is a basic implementation - for complex XML, consider using a proper parser.
      */
     private fun extractXmlTag(xmlContent: String, tagName: String): String? {
-        return try {
-            val pattern = Pattern.compile("<$tagName(?:\\s[^>]*)?>([^<]*)</$tagName>", Pattern.CASE_INSENSITIVE)
-            val matcher = pattern.matcher(xmlContent)
-            if (matcher.find()) {
-                matcher.group(1)?.trim()?.takeIf { it.isNotEmpty() }
-            } else null
+        try {
+            val parser: XmlPullParser = Xml.newPullParser()
+            parser.setInput(xmlContent.reader())
+            var eventType = parser.eventType
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (eventType == XmlPullParser.START_TAG && parser.name.equals(tagName, ignoreCase = true)) {
+                    // Move to text event
+                    eventType = parser.next()
+                    if (eventType == XmlPullParser.TEXT) {
+                        val text = parser.text?.trim()
+                        if (!text.isNullOrEmpty()) {
+                            return text
+                        }
+                    }
+                }
+                eventType = parser.next()
+            }
         } catch (e: Exception) {
-            null
+            Log.w(TAG, "Error extracting XML tag <$tagName>", e)
         }
+        return null
     }
     
     /**
