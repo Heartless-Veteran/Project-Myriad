@@ -22,7 +22,12 @@ data class MangaLibraryUiState(
     val searchQuery: String = "",
     val selectedFilter: MangaFilter = MangaFilter.ALL,
     val errorMessage: String? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    // Phase 1 Enhancement: Library statistics
+    val totalCount: Int = 0,
+    val favoriteCount: Int = 0,
+    val readingCount: Int = 0,
+    val completedCount: Int = 0
 )
 
 /**
@@ -67,10 +72,15 @@ class MangaLibraryViewModel(
                     )
                 }
                 .collect { mangaList ->
+                    val statistics = calculateStatistics(mangaList)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         mangaList = mangaList,
-                        filteredMangaList = applyFilters(mangaList)
+                        filteredMangaList = applyFilters(mangaList),
+                        totalCount = statistics.totalCount,
+                        favoriteCount = statistics.favoriteCount,
+                        readingCount = statistics.readingCount,
+                        completedCount = statistics.completedCount
                     )
                 }
         }
@@ -195,4 +205,26 @@ class MangaLibraryViewModel(
             }
         }
     }
+    
+    /**
+     * Calculate library statistics for display
+     */
+    private fun calculateStatistics(mangaList: List<Manga>): MangaLibraryStatistics {
+        return MangaLibraryStatistics(
+            totalCount = mangaList.size,
+            favoriteCount = mangaList.count { it.isFavorite },
+            readingCount = mangaList.count { it.readChapters > 0 && it.status != MangaStatus.COMPLETED },
+            completedCount = mangaList.count { it.status == MangaStatus.COMPLETED }
+        )
+    }
 }
+
+/**
+ * Data class for library statistics
+ */
+private data class MangaLibraryStatistics(
+    val totalCount: Int,
+    val favoriteCount: Int,
+    val readingCount: Int,
+    val completedCount: Int
+)
