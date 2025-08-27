@@ -14,8 +14,7 @@ import kotlinx.coroutines.withContext
  * .cbz/.cbr archive files, including validation and error handling.
  */
 class ImportMangaFromFileUseCase(
-    // TODO: Inject FileManagerService when implemented
-    // private val fileManagerService: FileManagerService
+    private val fileManagerService: FileManagerService
 ) {
     
     /**
@@ -35,14 +34,9 @@ class ImportMangaFromFileUseCase(
                     )
                 }
                 
-                // TODO: Validate file exists and is supported format
-                // TODO: Delegate to FileManagerService
-                // fileManagerService.importMangaFromFile(filePath)
+                // Delegate to FileManagerService for actual import
+                fileManagerService.importMangaFromFile(filePath)
                 
-                Result.Error(
-                    NotImplementedError("File import use case not yet implemented"),
-                    "File import functionality requires FileManagerService implementation"
-                )
             } catch (e: Exception) {
                 Result.Error(e, "Failed to import manga from file: ${e.message}")
             }
