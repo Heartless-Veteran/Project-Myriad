@@ -5,8 +5,8 @@ import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
+
+
 
 /**
  * Use case for downloading manga content.
@@ -14,8 +14,7 @@ import javax.inject.Singleton
  * This use case handles the business logic for downloading manga chapters
  * from online sources, including queue management and validation.
  */
-@Singleton
-class DownloadMangaUseCase @Inject constructor(
+class DownloadMangaUseCase(
     // TODO: Inject DownloadService when implemented
     // private val downloadService: DownloadService
 ) {
