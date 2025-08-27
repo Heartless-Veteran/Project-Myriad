@@ -98,7 +98,7 @@ interface SourceService {
      */
     suspend fun configureSource(
         sourceId: String, 
-        settings: Map<String, Any>
+        settings: Map<String, Any>,
     ): Result<Unit>
     
     /**
