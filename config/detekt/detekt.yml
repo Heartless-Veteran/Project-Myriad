@@ -341,7 +341,7 @@ naming:
     excludeClassPattern: '$^'
   InvalidPackageDeclaration:
     active: true
-    rootPackage: *rootPackageName
+    rootPackage: 'com.heartlessveteran.myriad'
     requireRootInDeclaration: false
   LambdaParameterNaming:
     active: false
@@ -461,15 +461,10 @@ potential-bugs:
   MissingPackageDeclaration:
     active: false
     excludes: ['**/*.kts']
-  MissingWhenCase:
-    active: true
-    allowElseExpression: true
   NullCheckOnMutableProperty:
     active: false
   NullableToStringCall:
     active: false
-  RedundantElseInWhen:
-    active: true
   UnconditionalJumpStatementInLoop:
     active: false
   UnnecessaryNotNullOperator:
@@ -513,8 +508,6 @@ style:
     active: false
   CollapsibleIfStatements:
     active: false
-  DataClassContainsFunction:
-    active: false
   DataClassShouldBeImmutable:
     active: false
   DestructuringDeclarationWithTooManyEntries:
@@ -522,8 +515,6 @@ style:
     maxDestructuringEntries: 3
   EqualsNullCall:
     active: true
-  EqualsOnSignificantLine:
-    active: false
   ExplicitCollectionElementAccessMethod:
     active: false
   ExplicitItLambdaParameter:
@@ -532,15 +523,9 @@ style:
   ExpressionBodySyntax:
     active: false
     includeLineWrapping: false
-  ForbiddenAnnotation:
-    active: false
-    annotations:
-      - 'kotlin.jvm.JvmName'
-      - 'kotlin.Suppress'
-    forbiddenPatterns: ''
   ForbiddenComment:
     active: true
-    values:
+    comments:
       - 'FIXME:'
       - 'STOPSHIP:'
       - 'TODO:'
@@ -554,12 +539,6 @@ style:
     methods:
       - 'kotlin.io.print'
       - 'kotlin.io.println'
-  ForbiddenPublicDataClass:
-    active: true
-    excludes: ['**']
-    ignorePackages:
-      - '*.internal'
-      - '*.internal.*'
   ForbiddenSuppress:
     active: false
     rules: []
