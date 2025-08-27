@@ -217,14 +217,13 @@ class MangaLibraryViewModel(
             completedCount = mangaList.count { it.status == MangaStatus.COMPLETED }
         )
     }
+    /**
+     * Data class for library statistics
+     */
+    private data class MangaLibraryStatistics(
+        val totalCount: Int,
+        val favoriteCount: Int,
+        val readingCount: Int,
+        val completedCount: Int
+    )
 }
-
-/**
- * Data class for library statistics
- */
-private data class MangaLibraryStatistics(
-    val totalCount: Int,
-    val favoriteCount: Int,
-    val readingCount: Int,
-    val completedCount: Int
-)
