@@ -309,8 +309,7 @@ object MetadataExtractor {
             
             // Look for ComicInfo.xml (case-insensitive)
             val comicInfoHeader = zipFile.fileHeaders.find { header ->
-                header.fileName.equals("ComicInfo.xml", ignoreCase = true) ||
-                header.fileName.equals("comicinfo.xml", ignoreCase = true)
+                header.fileName.equals("ComicInfo.xml", ignoreCase = true)
             }
             
             if (comicInfoHeader != null) {
