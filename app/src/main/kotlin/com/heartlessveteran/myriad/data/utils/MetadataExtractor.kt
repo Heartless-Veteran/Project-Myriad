@@ -301,7 +301,7 @@ object MetadataExtractor {
         
         try {
             // Use zip4j to read ComicInfo.xml from archive
-            val zipFile = net.lingala.zip4j.ZipFile(archivePath)
+            val zipFile = zipFileCache.computeIfAbsent(archivePath) { path -> net.lingala.zip4j.ZipFile(path) }
             
             if (!zipFile.isValidZipFile) {
                 return@withContext metadata
