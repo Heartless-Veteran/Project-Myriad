@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
@@ -68,7 +68,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
@@ -164,7 +164,7 @@ jobs:
           fi
 
       - name: Post enhanced status comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const status = '${{ steps.gemini_auto.outputs.status }}';
@@ -250,7 +250,7 @@ jobs:
     
     steps:
       - name: Post enhanced no issues comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = "## 🤖 Gemini Auto Enhanced\n\n" +
