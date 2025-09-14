@@ -5,25 +5,25 @@
 
 | Metric | Value |
 |--------|-------|
-| **Kotlin Files** | 56 |
-| **Test Files** | 9 |
-| **Lines of Code** | 6,511 |
-| **Dependencies** | 49 |
+| **Kotlin Files** | 62 |
+| **Test Files** | 11 |
+| **Lines of Code** | 8,474 |
+| **Dependencies** | 52 |
 | **Target SDK** | 35 |
 | **Min SDK** | 24 |
 | **Version** | 1.0.0 |
-| **Commits** | 5 |
+| **Commits** | 823 |
 | **Contributors** | 0 |
 
-*Last updated: 2025-08-27*
+*Last updated: 2025-09-14*
 
 ### Dependency Breakdown
 - **Implementation**: 41 dependencies
-- **Test**: 4 dependencies  
+- **Test**: 7 dependencies  
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
-- Latest commit: a523e72 Phase 2 Progress: Enhanced caching, timeouts, and fixed detekt configuration
+- Latest commit: 4fdbc7d Merge pull request #225 from Heartless-Veteran/copilot/fix-224
 
 <!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
@@ -32,7 +32,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Android](https://img.shields.io/badge/platform-Android-green.svg)
-![Kotlin](https://img.shields.io/badge/kotlin-56%20files-purple)
+![Kotlin](https://img.shields.io/badge/kotlin-62%20files-purple)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Build Status](https://img.shields.io/badge/build-in%20progress-yellow.svg)
 
