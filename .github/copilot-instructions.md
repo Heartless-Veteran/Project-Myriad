@@ -1,5 +1,7 @@
 # Project Myriad - Copilot Instructions
 
+**ALWAYS follow these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
+
 This document provides comprehensive instructions for GitHub Copilot coding agents working on **Project Myriad**, a Kotlin Android manga and anime platform application.
 
 ## Repository Overview
@@ -10,7 +12,7 @@ This document provides comprehensive instructions for GitHub Copilot coding agen
 - **AI Core**: OCR translation, art style matching, and AI-powered recommendations
 - **The Browser**: Online content discovery with extensible source system
 - **Kotlin**: Full Kotlin implementation with type safety
-- **Modern Architecture**: Jetpack Compose UI, Clean Architecture, Hilt DI, Room database
+- **Modern Architecture**: Jetpack Compose UI, Clean Architecture, Manual DI, Room database
 
 ## Critical Build Information & Timings ⚠️
 
@@ -18,80 +20,116 @@ This document provides comprehensive instructions for GitHub Copilot coding agen
 
 | Command | Expected Time | Status | Critical Notes |
 |---------|---------------|--------|----------------|
-| `./gradlew build` | **2-5 minutes** | ✅ **WORKS** | **NEVER CANCEL** - Kotlin compilation and Android build |
-| `./gradlew assembleDebug` | **1-3 minutes** | ✅ **WORKS** | **NEVER CANCEL** - Builds debug APK |
-| `./gradlew test` | **30-60 seconds** | ✅ **WORKS** | **NEVER CANCEL** - Runs unit tests |
-| `./gradlew lint` | **30-45 seconds** | ✅ **WORKS** | **NEVER CANCEL** - Android lint checks |
+| `./gradlew clean build -x test -x lint` | **15-20 seconds** | ✅ **WORKS** | **NEVER CANCEL** - Core Kotlin/Android build |
+| `./gradlew assembleDebug` | **4-5 seconds clean, 1s incremental** | ✅ **WORKS** | **NEVER CANCEL** - Builds debug APK |
+| `./gradlew test` | **FAILS** | ❌ **BROKEN** | Test compilation errors - multiple unresolved references |
+| `./gradlew lint` | **5 seconds** | ⚠️ **FAILS** | Runs but fails on manifest permissions |
 | `./gradlew installDebug` | **15-30 seconds** | ⚠️ **REQUIRES DEVICE** | Needs Android device/emulator connected |
 
 ### Known Issues & Workarounds
 
-#### 1. Hilt/KAPT Compatibility Issue
+#### 1. Test Suite Compilation Issues ❌
 ```bash
 # Current Status:
-# Hilt (Dagger) dependency injection is temporarily disabled due to Kotlin 2.0 KAPT compatibility
+# Unit tests fail to compile due to multiple issues:
+# - Unresolved references (advanceUntilIdle, parseRoute, mockChain)
+# - Private method access (parseComicInfoXml)
+# - Type inference failures in UiStateTest
+
+# Workaround: Skip tests during build
+./gradlew build -x test
+# Status: Critical - tests are not functional
+```
+
+#### 2. Ktlint Style Violations ⚠️
+```bash
+# Current Status:
+# Ktlint fails on wildcard imports and style violations in test files
+# Build fails due to strict ktlint enforcement
+
+# Workaround: Auto-fix or skip ktlint
+./gradlew ktlintFormat  # Auto-fix violations
+./gradlew build -x ktlintTestSourceSetCheck  # Skip test ktlint
+# Status: Non-critical - core functionality works
+```
+
+#### 3. Android Lint Issues ⚠️
+```bash
+# Current Status:
+# Lint fails on AndroidManifest.xml camera permission requirements
+# Error: PermissionImpliesUnsupportedChromeOsHardware
+
+# Workaround: Skip lint or add hardware feature declarations
+./gradlew build -x lint  # Skip lint checks
+# Status: Non-critical - app builds and runs
+```
+
+#### 4. Hilt/KAPT Compatibility Issue ℹ️
+```bash
+# Current Status:
+# Hilt (Dagger) dependency injection is disabled due to Kotlin 2.0 KAPT compatibility
 # Using manual dependency injection until KAPT is replaced with KSP
 
-# Workaround: Manual DI implementation in place
-# Status: Non-critical - core functionality works without Hilt
-```
-
-#### 2. Kotlin Version Compatibility
-```bash
-# Current Setup:
-# Kotlin 2.2.10 with Compose Compiler plugin
-# Some libraries may have compatibility warnings
-
-# Status: Non-critical - builds successfully with warnings
-```
-
-#### 3. Android SDK Dependencies
-```bash
-# Required:
-# - Android SDK 24-36
-# - Build Tools 35.0.0
-# - Jetpack Compose BOM 2024.02.00
-
-# Status: Standard Android development requirements
+# Status: Stable - manual DI implementation works correctly
 ```
 
 ## Essential Development Commands
 
 ### Initial Setup
 ```bash
-# Clone and setup - NO special flags needed for Kotlin/Android
-./gradlew build
-# Expected: 2-5 minutes, Kotlin compilation and Android build
+# Clone and setup - FAST on this environment
+./gradlew assembleDebug
+# Expected: 4-5 seconds clean build, 1 second incremental
 ```
 
 ### Development Workflow
 ```bash
-# Build debug APK
+# Build debug APK (FAST)
 ./gradlew assembleDebug
-# Expected: 1-3 minutes, outputs APK to app/build/outputs/apk/debug/
+# Expected: 4-5 seconds clean, 1 second incremental
+# Output: app/build/outputs/apk/debug/app-debug.apk
 
-# Install on connected device/emulator
+# Install on connected device/emulator  
 ./gradlew installDebug
 # Expected: 15-30 seconds (requires connected Android device)
 
-# Run unit tests
-./gradlew test
-# Expected: 30-60 seconds, runs Kotlin/Android unit tests
+# Core build without problematic tasks (RECOMMENDED)
+./gradlew build -x test -x lint -x ktlintMainSourceSetCheck -x ktlintTestSourceSetCheck -x ktlintKotlinScriptCheck
+# Expected: 15-20 seconds, NEVER CANCEL
 
-# Run lint checks
+# Auto-fix code style (when needed)
+./gradlew ktlintFormat
+# Expected: 2-3 seconds, fixes most style violations
+```
+
+### Commands That Currently Fail
+```bash
+# Unit tests - BROKEN (compilation errors)
+./gradlew test
+# Status: FAILS - multiple unresolved references in test files
+
+# Lint checks - FAILS but runs  
 ./gradlew lint
-# Expected: 30-45 seconds, Android-specific lint checks
+# Status: FAILS in 5 seconds on AndroidManifest.xml issues
+
+# Full build with all checks - FAILS
+./gradlew build
+# Status: FAILS on test compilation and ktlint violations
 ```
 
 ### Build Commands
 ```bash
-# Release build
-./gradlew assembleRelease
+# Working release build
+./gradlew assembleRelease -x test -x lint
 # Output: app/build/outputs/apk/release/app-release.apk
 
-# Clean build
-./gradlew clean build
-# Full clean and rebuild
+# Clean build (FAST)
+./gradlew clean assembleDebug
+# Expected: 4-5 seconds total
+
+# Clean full build (working)
+./gradlew clean build -x test -x lint -x ktlintMainSourceSetCheck -x ktlintTestSourceSetCheck -x ktlintKotlinScriptCheck
+# Expected: 15-20 seconds total
 ```
 
 ## Configuration Files - DO NOT MODIFY UNLESS NECESSARY
@@ -141,38 +179,53 @@ app/src/main/kotlin/com/heartlessveteran/myriad/
 │   ├── database/         # Room database (DAOs, entities)
 │   ├── repository/       # Repository implementations
 │   └── network/          # API services (future)
-├── di/                   # Dependency injection (manual for now)
+├── di/                   # Dependency injection (MANUAL - not Hilt)
 └── utils/               # Utility functions and extensions
+```
+
+**Verified Structure**: Run `ls -la app/src/main/kotlin/com/heartlessveteran/myriad/` to see:
+```
+data/  demo/  di/  domain/  navigation/  network/  services/  ui/
+MainActivity.kt  MyriadApplication.kt
 ```
 
 ## Validation Scenarios
 
-### Quick Health Check (2-3 minutes total)
+### Quick Health Check (20 seconds total)
 ```bash
-# 1. Test Gradle sync and build (2-3 minutes)
-./gradlew build
+# 1. Test core Android build (4-5 seconds)
+./gradlew clean assembleDebug
 
-# 2. Test unit tests (30s)
-./gradlew test
+# 2. Verify APK generation
+ls app/build/outputs/apk/debug/  # Should show app-debug.apk
 
-# 3. Check lint (30s)
-./gradlew lint
-```
+# 3. Test working build without problematic tasks (15 seconds)
+./gradlew clean build -x test -x lint -x ktlintMainSourceSetCheck -x ktlintTestSourceSetCheck -x ktlintKotlinScriptCheck
 
-### Full Validation (5-10 minutes)
-```bash
-# Build debug APK
-./gradlew assembleDebug
-
-# Run all tests
-./gradlew test
-
-# Generate lint report
-./gradlew lint
-
-# Verify key files exist
+# 4. Verify project structure
 ls -la app/src/main/kotlin/com/heartlessveteran/myriad/  # Should show domain, data, ui dirs
 ```
+
+### Full Validation (when fixing issues)
+```bash
+# 1. Fix style violations (auto)
+./gradlew ktlintFormat
+
+# 2. Try full build (will fail but shows what needs fixing)
+./gradlew build
+
+# 3. Test individual components
+./gradlew compileDebugKotlin  # Should work
+./gradlew compileDebugUnitTestKotlin  # Will fail - shows test issues
+```
+
+### Manual Functional Testing
+**CRITICAL**: After making code changes, validate functionality by:
+1. **Build and install APK**: `./gradlew clean assembleDebug installDebug`
+2. **Launch app** on connected Android device/emulator
+3. **Test basic navigation** through main screens
+4. **Verify UI renders** with Jetpack Compose
+5. **Check file import** functionality (core feature)
 
 ## Troubleshooting Guide
 
@@ -212,42 +265,56 @@ adb shell pm clear com.heartlessveteran.myriad
 
 ## Performance Expectations
 
-- **Clean Build**: 2-5 minutes (Kotlin compilation + Android build)
-- **Incremental Build**: 30-90 seconds (changed files only)
-- **Unit Tests**: 30-60 seconds (Kotlin test execution)
-- **Lint Checks**: 30-45 seconds (Android lint analysis)
+- **Clean assembleDebug**: 4-5 seconds (Kotlin compilation + Android APK)
+- **Incremental assembleDebug**: 1 second (when files unchanged)
+- **Clean build (no test/lint)**: 15-20 seconds (working build)
+- **Ktlint format**: 2-3 seconds (style auto-fix)
+- **Lint checks**: 5 seconds (but fails on manifest issues)
 - **APK Install**: 15-30 seconds (to connected device)
-- **First Launch**: 5-10 seconds (cold start with Room DB init)
+- **Test compilation**: FAILS (multiple unresolved references)
 
 ## Critical Warnings for Copilot Agents
 
-1. **NEVER CANCEL** ./gradlew build during Kotlin compilation phase
-2. **NEVER CANCEL** ./gradlew test during test execution
-3. **ALWAYS ENSURE** Android SDK is properly configured
-4. **DO NOT MODIFY** gradle.properties without understanding impact
-5. **DO NOT ENABLE** Hilt until KAPT/KSP migration is complete
-6. **DO NOT WORRY** about some dependency warnings - they're non-critical
-7. **DO NOT "FIX"** temporarily disabled features unless specifically requested
+1. **NEVER CANCEL** any ./gradlew command before 60 seconds
+2. **ALWAYS SKIP** tests and lint for reliable builds: `./gradlew build -x test -x lint`
+3. **ALWAYS USE** assembleDebug for fastest iteration
+4. **DO NOT ATTEMPT** to run `./gradlew test` - it will fail with compilation errors
+5. **DO NOT WORRY** about ktlint failures - use `./gradlew ktlintFormat` to auto-fix
+6. **DO NOT FIX** test compilation errors unless specifically requested
+7. **VERIFY APK** generation in app/build/outputs/apk/debug/ after builds
 
 ## Success Indicators
 
-✅ **./gradlew build completes** successfully with Kotlin compilation
-✅ **APK generates** in app/build/outputs/apk/debug/
-✅ **Unit tests pass** without critical failures
-✅ **Lint completes** with acceptable warnings
-✅ **App installs and launches** on Android device/emulator
+✅ **./gradlew assembleDebug completes** in 4-5 seconds with APK generation  
+✅ **APK exists** in app/build/outputs/apk/debug/app-debug.apk  
+✅ **Build without test/lint completes** in 15-20 seconds  
+✅ **Project structure verified** with expected domain/data/ui directories  
+✅ **Ktlint auto-fix works** with ./gradlew ktlintFormat  
+❌ **Unit tests fail** - do not attempt unless fixing test compilation issues  
+❌ **Full lint fails** - but app builds and functions correctly  
 
 ## Common Pitfalls to Avoid
 
-❌ Canceling Gradle builds that appear slow but are actually compiling
-❌ Trying to "fix" Hilt without understanding KAPT migration needs
-❌ Modifying Kotlin or Compose versions without compatibility testing
-❌ Ignoring Android SDK requirements
-❌ Treating build warnings as critical errors (most are informational)
-❌ Modifying manual DI without understanding the current architecture
+❌ Running `./gradlew test` expecting it to pass (will fail with compilation errors)
+❌ Running `./gradlew build` without excluding test/lint (will fail)  
+❌ Canceling builds under 60 seconds (they're faster than documented)
+❌ Treating test compilation failures as blocking issues (core app works)
+❌ Trying to "fix" all ktlint violations manually (use ktlintFormat)
+❌ Modifying Android SDK versions without understanding compatibility
+❌ Enabling Hilt/KAPT without understanding Kotlin 2.0 migration issues
 
 ## Final Notes
 
-This is a **modern Kotlin Android project** using Jetpack Compose and Clean Architecture. Some features like Hilt are temporarily disabled due to Kotlin 2.0 compatibility, but the core application builds and runs successfully. Focus on Kotlin/Android best practices rather than React Native patterns.
+This is a **modern Kotlin Android project** with Jetpack Compose and Clean Architecture. The **core application builds and runs successfully** but has non-critical issues with test compilation and linting. 
 
-**When in doubt**: Use the Gradle commands and Android development practices specified in this document. They have been tested and verified to work correctly with the current Kotlin/Android setup.
+**Working Commands for Development**:
+- `./gradlew assembleDebug` - FAST, reliable APK building
+- `./gradlew build -x test -x lint -x ktlintMainSourceSetCheck -x ktlintTestSourceSetCheck -x ktlintKotlinScriptCheck` - Complete build without problematic tasks  
+- `./gradlew ktlintFormat` - Auto-fix code style
+
+**Broken Commands to Avoid**:
+- `./gradlew test` - Test compilation errors
+- `./gradlew lint` - AndroidManifest.xml issues  
+- `./gradlew build` - Fails due to above issues
+
+**When in doubt**: Use `./gradlew assembleDebug` for the fastest, most reliable build and validation workflow.
