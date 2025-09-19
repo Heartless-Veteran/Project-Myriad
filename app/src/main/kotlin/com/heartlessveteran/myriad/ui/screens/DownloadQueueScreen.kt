@@ -24,7 +24,7 @@ import java.util.*
 
 /**
  * Download queue management screen.
- * 
+ *
  * This screen provides:
  * - View of all active and completed downloads
  * - Download progress tracking with visual indicators
@@ -42,94 +42,96 @@ fun DownloadQueueScreen(
     onCancelDownload: (String) -> Unit,
     onRetryDownload: (String) -> Unit,
     onClearCompleted: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         // Header section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             ) {
                 Text(
                     text = "Download Queue",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // Overall progress
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "Overall Progress",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
                         text = "${(overallProgress * 100).toInt()}%",
                         style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(4.dp))
-                
+
                 LinearProgressIndicator(
                     progress = { overallProgress },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 // Queue statistics
-                val activeTasks = downloadQueue.filter { 
-                    it.status == DownloadStatus.IN_PROGRESS || it.status == DownloadStatus.QUEUED 
-                }
+                val activeTasks =
+                    downloadQueue.filter {
+                        it.status == DownloadStatus.IN_PROGRESS || it.status == DownloadStatus.QUEUED
+                    }
                 val completedTasks = downloadQueue.filter { it.status == DownloadStatus.COMPLETED }
                 val failedTasks = downloadQueue.filter { it.status == DownloadStatus.FAILED }
-                
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     StatisticChip(
                         label = "Active",
                         value = activeTasks.size.toString(),
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     StatisticChip(
                         label = "Completed",
                         value = completedTasks.size.toString(),
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = MaterialTheme.colorScheme.tertiary,
                     )
                     StatisticChip(
                         label = "Failed",
                         value = failedTasks.size.toString(),
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.height(12.dp))
-                
+
                 // Action buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     if (completedTasks.isNotEmpty()) {
                         OutlinedButton(
                             onClick = onClearCompleted,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             Text("Clear Completed")
                         }
@@ -137,44 +139,46 @@ fun DownloadQueueScreen(
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // Download list
         if (downloadQueue.isEmpty()) {
             // Empty state
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(32.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = "No downloads in queue",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Start downloading manga to see them here",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
             }
         } else {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(downloadQueue) { task ->
                     DownloadTaskCard(
@@ -182,7 +186,7 @@ fun DownloadQueueScreen(
                         onPauseDownload = onPauseDownload,
                         onResumeDownload = onResumeDownload,
                         onCancelDownload = onCancelDownload,
-                        onRetryDownload = onRetryDownload
+                        onRetryDownload = onRetryDownload,
                     )
                 }
             }
@@ -195,27 +199,27 @@ private fun StatisticChip(
     label: String,
     value: String,
     color: androidx.compose.ui.graphics.Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.small,
-        color = color.copy(alpha = 0.1f)
+        color = color.copy(alpha = 0.1f),
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
                 color = color,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = color
+                color = color,
             )
         }
     }
@@ -229,89 +233,89 @@ private fun DownloadTaskCard(
     onResumeDownload: (String) -> Unit,
     onCancelDownload: (String) -> Unit,
     onRetryDownload: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             // Title and status
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.Top,
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         text = task.mangaTitle,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = "${task.chapterIds.size} chapters",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 // Status chip
                 Surface(
                     shape = MaterialTheme.shapes.small,
-                    color = getStatusColor(task.status).copy(alpha = 0.2f)
+                    color = getStatusColor(task.status).copy(alpha = 0.2f),
                 ) {
                     Text(
                         text = task.status.name.replace("_", " "),
                         style = MaterialTheme.typography.labelSmall,
                         color = getStatusColor(task.status),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             // Progress section
             when (task.status) {
                 DownloadStatus.IN_PROGRESS, DownloadStatus.QUEUED -> {
                     Column {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
                                 text = if (task.status == DownloadStatus.QUEUED) "Waiting..." else "Downloading...",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Text(
                                 text = "${(task.progress * 100).toInt()}%",
                                 style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
                             )
                         }
-                        
+
                         Spacer(modifier = Modifier.height(4.dp))
-                        
+
                         LinearProgressIndicator(
                             progress = { if (task.status == DownloadStatus.QUEUED) 0f else task.progress },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         )
-                        
+
                         if (task.totalBytes > 0) {
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = formatFileSize(task.downloadedBytes, task.totalBytes),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
@@ -321,7 +325,7 @@ private fun DownloadTaskCard(
                         Text(
                             text = "Error: $error",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -329,7 +333,7 @@ private fun DownloadTaskCard(
                     Text(
                         text = "Completed ${formatTimestamp(task.completedAt)}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 else -> {
@@ -337,35 +341,35 @@ private fun DownloadTaskCard(
                     Text(
                         text = task.status.name.replace("_", " "),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             // Action buttons
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 when (task.status) {
                     DownloadStatus.IN_PROGRESS -> {
                         IconButton(
-                            onClick = { onPauseDownload(task.id) }
+                            onClick = { onPauseDownload(task.id) },
                         ) {
                             Icon(Icons.Default.Pause, contentDescription = "Pause")
                         }
                     }
                     DownloadStatus.PAUSED, DownloadStatus.QUEUED -> {
                         IconButton(
-                            onClick = { onResumeDownload(task.id) }
+                            onClick = { onResumeDownload(task.id) },
                         ) {
                             Icon(Icons.Default.PlayArrow, contentDescription = "Resume")
                         }
                     }
                     DownloadStatus.FAILED -> {
                         IconButton(
-                            onClick = { onRetryDownload(task.id) }
+                            onClick = { onRetryDownload(task.id) },
                         ) {
                             Icon(Icons.Default.Refresh, contentDescription = "Retry")
                         }
@@ -374,16 +378,16 @@ private fun DownloadTaskCard(
                         // No primary action for completed/cancelled
                     }
                 }
-                
+
                 // Cancel button (available for most states)
                 if (task.status != DownloadStatus.COMPLETED && task.status != DownloadStatus.CANCELLED) {
                     IconButton(
-                        onClick = { onCancelDownload(task.id) }
+                        onClick = { onCancelDownload(task.id) },
                     ) {
                         Icon(
                             Icons.Default.Cancel,
                             contentDescription = "Cancel",
-                            tint = MaterialTheme.colorScheme.error
+                            tint = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -393,8 +397,8 @@ private fun DownloadTaskCard(
 }
 
 @Composable
-private fun getStatusColor(status: DownloadStatus): androidx.compose.ui.graphics.Color {
-    return when (status) {
+private fun getStatusColor(status: DownloadStatus): androidx.compose.ui.graphics.Color =
+    when (status) {
         DownloadStatus.QUEUED -> MaterialTheme.colorScheme.primary
         DownloadStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary
         DownloadStatus.PAUSED -> MaterialTheme.colorScheme.outline
@@ -402,23 +406,27 @@ private fun getStatusColor(status: DownloadStatus): androidx.compose.ui.graphics
         DownloadStatus.FAILED -> MaterialTheme.colorScheme.error
         DownloadStatus.CANCELLED -> MaterialTheme.colorScheme.outlineVariant
     }
-}
 
-private fun formatFileSize(downloaded: Long, total: Long): String {
-    val downloadedStr = when {
-        downloaded >= 1024 * 1024 * 1024 -> "%.1f GB".format(downloaded / (1024.0 * 1024.0 * 1024.0))
-        downloaded >= 1024 * 1024 -> "%.1f MB".format(downloaded / (1024.0 * 1024.0))
-        downloaded >= 1024 -> "%.1f KB".format(downloaded / 1024.0)
-        else -> "$downloaded B"
-    }
-    
-    val totalStr = when {
-        total >= 1024 * 1024 * 1024 -> "%.1f GB".format(total / (1024.0 * 1024.0 * 1024.0))
-        total >= 1024 * 1024 -> "%.1f MB".format(total / (1024.0 * 1024.0))
-        total >= 1024 -> "%.1f KB".format(total / 1024.0)
-        else -> "$total B"
-    }
-    
+private fun formatFileSize(
+    downloaded: Long,
+    total: Long,
+): String {
+    val downloadedStr =
+        when {
+            downloaded >= 1024 * 1024 * 1024 -> "%.1f GB".format(downloaded / (1024.0 * 1024.0 * 1024.0))
+            downloaded >= 1024 * 1024 -> "%.1f MB".format(downloaded / (1024.0 * 1024.0))
+            downloaded >= 1024 -> "%.1f KB".format(downloaded / 1024.0)
+            else -> "$downloaded B"
+        }
+
+    val totalStr =
+        when {
+            total >= 1024 * 1024 * 1024 -> "%.1f GB".format(total / (1024.0 * 1024.0 * 1024.0))
+            total >= 1024 * 1024 -> "%.1f MB".format(total / (1024.0 * 1024.0))
+            total >= 1024 -> "%.1f KB".format(total / 1024.0)
+            else -> "$total B"
+        }
+
     return "$downloadedStr / $totalStr"
 }
 
@@ -432,36 +440,37 @@ private fun formatTimestamp(timestamp: Long?): String {
 @Composable
 private fun DownloadQueueScreenPreview() {
     MyriadTheme {
-        val sampleTasks = listOf(
-            DownloadTask(
-                id = "1",
-                mangaId = "manga1",
-                mangaTitle = "One Piece",
-                chapterIds = listOf("ch1", "ch2", "ch3"),
-                status = DownloadStatus.IN_PROGRESS,
-                progress = 0.65f,
-                downloadedBytes = 45 * 1024 * 1024,
-                totalBytes = 70 * 1024 * 1024
-            ),
-            DownloadTask(
-                id = "2", 
-                mangaId = "manga2",
-                mangaTitle = "Attack on Titan",
-                chapterIds = listOf("ch1"),
-                status = DownloadStatus.COMPLETED,
-                progress = 1.0f,
-                completedAt = System.currentTimeMillis() - 3600000
-            ),
-            DownloadTask(
-                id = "3",
-                mangaId = "manga3", 
-                mangaTitle = "Demon Slayer",
-                chapterIds = listOf("ch1", "ch2"),
-                status = DownloadStatus.FAILED,
-                errorMessage = "Network connection failed"
+        val sampleTasks =
+            listOf(
+                DownloadTask(
+                    id = "1",
+                    mangaId = "manga1",
+                    mangaTitle = "One Piece",
+                    chapterIds = listOf("ch1", "ch2", "ch3"),
+                    status = DownloadStatus.IN_PROGRESS,
+                    progress = 0.65f,
+                    downloadedBytes = 45 * 1024 * 1024,
+                    totalBytes = 70 * 1024 * 1024,
+                ),
+                DownloadTask(
+                    id = "2",
+                    mangaId = "manga2",
+                    mangaTitle = "Attack on Titan",
+                    chapterIds = listOf("ch1"),
+                    status = DownloadStatus.COMPLETED,
+                    progress = 1.0f,
+                    completedAt = System.currentTimeMillis() - 3600000,
+                ),
+                DownloadTask(
+                    id = "3",
+                    mangaId = "manga3",
+                    mangaTitle = "Demon Slayer",
+                    chapterIds = listOf("ch1", "ch2"),
+                    status = DownloadStatus.FAILED,
+                    errorMessage = "Network connection failed",
+                ),
             )
-        )
-        
+
         DownloadQueueScreen(
             downloadQueue = sampleTasks,
             overallProgress = 0.4f,
@@ -470,7 +479,7 @@ private fun DownloadQueueScreenPreview() {
             onResumeDownload = {},
             onCancelDownload = {},
             onRetryDownload = {},
-            onClearCompleted = {}
+            onClearCompleted = {},
         )
     }
 }

@@ -22,56 +22,54 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    
     /**
      * Qualifier annotation for Gemini-specific OkHttpClient.
      */
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class GeminiClient
-    
+
     /**
      * Qualifier annotation for Gemini-specific Retrofit instance.
      */
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class GeminiRetrofit
-    
+
     /**
      * Provides a JSON serializer instance configured for API communication.
      */
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-    }
-    
+    fun provideJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            encodeDefaults = true
+        }
+
     /**
      * Provides an HTTP logging interceptor for debugging network requests.
      */
     @Provides
     @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
-            level = if (com.heartlessveteran.myriad.BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                if (com.heartlessveteran.myriad.BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
         }
-    }
-    
+
     /**
      * Provides the Gemini authentication interceptor.
      */
     @Provides
     @Singleton
-    fun provideGeminiAuthInterceptor(): GeminiAuthInterceptor {
-        return GeminiAuthInterceptor()
-    }
-    
+    fun provideGeminiAuthInterceptor(): GeminiAuthInterceptor = GeminiAuthInterceptor()
+
     /**
      * Provides an OkHttpClient configured specifically for Gemini API calls.
      */
@@ -80,17 +78,17 @@ object NetworkModule {
     @GeminiClient
     fun provideGeminiOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
-        geminiAuthInterceptor: GeminiAuthInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+        geminiAuthInterceptor: GeminiAuthInterceptor,
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(geminiAuthInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .build()
-    }
-    
+
     /**
      * Provides a Retrofit instance configured for Gemini API with Kotlinx Serialization.
      */
@@ -99,22 +97,23 @@ object NetworkModule {
     @GeminiRetrofit
     fun provideGeminiRetrofit(
         @GeminiClient okHttpClient: OkHttpClient,
-        json: Json
+        json: Json,
     ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
+        return Retrofit
+            .Builder()
             .baseUrl("https://generativelanguage.googleapis.com/")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
-    
+
     /**
      * Provides the GeminiService as a singleton.
      */
     @Provides
     @Singleton
-    fun provideGeminiService(@GeminiRetrofit retrofit: Retrofit): GeminiService {
-        return retrofit.create(GeminiService::class.java)
-    }
+    fun provideGeminiService(
+        @GeminiRetrofit retrofit: Retrofit,
+    ): GeminiService = retrofit.create(GeminiService::class.java)
 }

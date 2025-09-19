@@ -5,21 +5,18 @@ import com.heartlessveteran.myriad.domain.services.FileManagerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-
-
 /**
  * Use case for importing manga from local files.
- * 
+ *
  * This use case handles the business logic for importing manga from
  * .cbz/.cbr archive files, including validation and error handling.
  */
 class ImportMangaFromFileUseCase(
-    private val fileManagerService: FileManagerService
+    private val fileManagerService: FileManagerService,
 ) {
-    
     /**
      * Import a manga from a local file.
-     * 
+     *
      * @param filePath Path to the manga archive file
      * @return Result containing the imported manga or error
      */
@@ -30,13 +27,12 @@ class ImportMangaFromFileUseCase(
                 if (filePath.isBlank()) {
                     return@withContext Result.Error(
                         IllegalArgumentException("File path cannot be empty"),
-                        "Please provide a valid file path"
+                        "Please provide a valid file path",
                     )
                 }
-                
+
                 // Delegate to FileManagerService for actual import
                 fileManagerService.importMangaFromFile(filePath)
-                
             } catch (e: Exception) {
                 Result.Error(e, "Failed to import manga from file: ${e.message}")
             }

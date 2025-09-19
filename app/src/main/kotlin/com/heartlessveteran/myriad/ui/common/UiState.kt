@@ -5,12 +5,14 @@ package com.heartlessveteran.myriad.ui.common
  */
 sealed interface UiState<out T> {
     data object Loading : UiState<Nothing>
-    
-    data class Success<T>(val data: T) : UiState<T>
-    
+
+    data class Success<T>(
+        val data: T,
+    ) : UiState<T>
+
     data class Error(
         val exception: Throwable,
-        val message: String = exception.message ?: "Unknown error occurred"
+        val message: String = exception.message ?: "Unknown error occurred",
     ) : UiState<Nothing>
 }
 
@@ -61,13 +63,12 @@ inline fun <T> UiState<T>.onLoading(action: () -> Unit): UiState<T> {
  * @param transform Function to convert the contained success value from `T` to `R`.
  * @return A `UiState<R>` reflecting the mapped success value or the original non-success state.
  */
-inline fun <T, R> UiState<T>.map(transform: (value: T) -> R): UiState<R> {
-    return when (this) {
+inline fun <T, R> UiState<T>.map(transform: (value: T) -> R): UiState<R> =
+    when (this) {
         is UiState.Loading -> UiState.Loading
         is UiState.Success -> UiState.Success(transform(data))
         is UiState.Error -> this
     }
-}
 
 /**
  * Combines two UiState values into a single UiState by applying `transform` to both successes.
@@ -87,9 +88,9 @@ inline fun <T, R> UiState<T>.map(transform: (value: T) -> R): UiState<R> {
 inline fun <T1, T2, R> combineUiStates(
     state1: UiState<T1>,
     state2: UiState<T2>,
-    transform: (T1, T2) -> R
-): UiState<R> {
-    return when {
+    transform: (T1, T2) -> R,
+): UiState<R> =
+    when {
         state1 is UiState.Loading || state2 is UiState.Loading -> UiState.Loading
         state1 is UiState.Error -> state1
         state2 is UiState.Error -> state2
@@ -98,4 +99,3 @@ inline fun <T1, T2, R> combineUiStates(
         }
         else -> UiState.Error(IllegalStateException("Invalid state combination"))
     }
-}

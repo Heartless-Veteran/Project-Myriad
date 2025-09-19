@@ -1,7 +1,6 @@
 package com.heartlessveteran.myriad.navigation
 
 import android.net.Uri
-import androidx.navigation.NavController
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,29 +8,27 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class Destination {
-    
     @Serializable
     data object Home : Destination()
-    
+
     @Serializable
     data object MangaLibrary : Destination()
-    
+
     @Serializable
     data object AnimeLibrary : Destination()
-    
+
     @Serializable
     data object Browse : Destination()
-    
+
     @Serializable
     data object AICore : Destination()
-    
+
     @Serializable
     data class Reading(
         val mangaId: String,
         val chapterId: String? = null,
-        val page: Int = 0
+        val page: Int = 0,
     ) : Destination() {
-        
         companion object {
             /**
              * Build a navigation route for the Reading destination.
@@ -47,7 +44,11 @@ sealed class Destination {
              * @param page Zero-based page index to include as the `page` query parameter (default 0).
              * @return A route string suitable for navigation to the Reading destination.
              */
-            fun createRoute(mangaId: String, chapterId: String? = null, page: Int = 0): String {
+            fun createRoute(
+                mangaId: String,
+                chapterId: String? = null,
+                page: Int = 0,
+            ): String {
                 val encodedMangaId = Uri.encode(mangaId)
                 val encodedChapterId = chapterId?.let { Uri.encode(it) }
                 return if (encodedChapterId != null) {
@@ -58,14 +59,13 @@ sealed class Destination {
             }
         }
     }
-    
+
     @Serializable
     data class Watching(
         val animeId: String,
         val episodeId: String? = null,
-        val timestamp: Long = 0
+        val timestamp: Long = 0,
     ) : Destination() {
-        
         companion object {
             /**
              * Build a navigation route for the Watching destination.
@@ -77,7 +77,11 @@ sealed class Destination {
              * @param timestamp Playback timestamp to include as the `timestamp` query parameter (default 0).
              * @return A route string like `watching/{animeId}/{episodeId}?timestamp={timestamp}` or `watching/{animeId}?timestamp={timestamp}` when `episodeId` is null.
              */
-            fun createRoute(animeId: String, episodeId: String? = null, timestamp: Long = 0): String {
+            fun createRoute(
+                animeId: String,
+                episodeId: String? = null,
+                timestamp: Long = 0,
+            ): String {
                 val encodedAnimeId = Uri.encode(animeId)
                 val encodedEpisodeId = episodeId?.let { Uri.encode(it) }
                 return if (encodedEpisodeId != null) {
@@ -88,13 +92,12 @@ sealed class Destination {
             }
         }
     }
-    
+
     @Serializable
     data class MangaDetail(
         val mangaId: String,
-        val sourceId: String? = null
+        val sourceId: String? = null,
     ) : Destination() {
-        
         companion object {
             /**
              * Builds the navigation route for the MangaDetail destination.
@@ -105,7 +108,10 @@ sealed class Destination {
              * @param sourceId Optional source identifier to include as the `sourceId` query parameter; will be URL-encoded if present.
              * @return A route string of the form `manga_detail/{encodedMangaId}` with an optional `?sourceId={encodedSourceId}` query parameter.
              */
-            fun createRoute(mangaId: String, sourceId: String? = null): String {
+            fun createRoute(
+                mangaId: String,
+                sourceId: String? = null,
+            ): String {
                 val encodedMangaId = Uri.encode(mangaId)
                 return if (sourceId != null) {
                     "manga_detail/$encodedMangaId?sourceId=${Uri.encode(sourceId)}"
@@ -115,13 +121,12 @@ sealed class Destination {
             }
         }
     }
-    
+
     @Serializable
     data class AnimeDetail(
         val animeId: String,
-        val sourceId: String? = null
+        val sourceId: String? = null,
     ) : Destination() {
-        
         companion object {
             /**
              * Builds the navigation route for the AnimeDetail destination.
@@ -134,7 +139,10 @@ sealed class Destination {
              * @return A route string like `anime_detail/{encodedAnimeId}` or
              * `anime_detail/{encodedAnimeId}?sourceId={encodedSourceId}`.
              */
-            fun createRoute(animeId: String, sourceId: String? = null): String {
+            fun createRoute(
+                animeId: String,
+                sourceId: String? = null,
+            ): String {
                 val encodedAnimeId = Uri.encode(animeId)
                 return if (sourceId != null) {
                     "anime_detail/$encodedAnimeId?sourceId=${Uri.encode(sourceId)}"
@@ -144,14 +152,13 @@ sealed class Destination {
             }
         }
     }
-    
+
     @Serializable
     data class Search(
         val query: String = "",
         val type: ContentType = ContentType.ALL,
-        val source: String? = null
+        val source: String? = null,
     ) : Destination() {
-        
         companion object {
             /**
              * Build a navigation route string for the Search destination.
@@ -164,7 +171,11 @@ sealed class Destination {
              * @param source Optional source identifier to filter results.
              * @return A route string of the form `search?query={encodedQuery}&type={TYPE}` with an optional `&source={encodedSource}`.
              */
-            fun createRoute(query: String = "", type: ContentType = ContentType.ALL, source: String? = null): String {
+            fun createRoute(
+                query: String = "",
+                type: ContentType = ContentType.ALL,
+                source: String? = null,
+            ): String {
                 val encodedQuery = if (query.isNotEmpty()) Uri.encode(query) else ""
                 return if (source != null) {
                     "search?query=$encodedQuery&type=${type.name}&source=${Uri.encode(source)}"
@@ -174,12 +185,11 @@ sealed class Destination {
             }
         }
     }
-    
+
     @Serializable
     data class Settings(
-        val section: SettingsSection = SettingsSection.GENERAL
+        val section: SettingsSection = SettingsSection.GENERAL,
     ) : Destination() {
-        
         companion object {
             /**
              * Builds a navigation route for the given settings section.
@@ -187,9 +197,7 @@ sealed class Destination {
              * @param section The settings section to navigate to; defaults to GENERAL.
              * @return The route path "settings/{section}" where `{section}` is the section name in lowercase.
              */
-            fun createRoute(section: SettingsSection = SettingsSection.GENERAL): String {
-                return "settings/${section.name.lowercase()}"
-            }
+            fun createRoute(section: SettingsSection = SettingsSection.GENERAL): String = "settings/${section.name.lowercase()}"
         }
     }
 }
@@ -198,14 +206,22 @@ sealed class Destination {
  * Content type for search and filtering
  */
 enum class ContentType {
-    ALL, MANGA, ANIME
+    ALL,
+    MANGA,
+    ANIME,
 }
 
 /**
  * Settings sections
  */
 enum class SettingsSection {
-    GENERAL, READING, WATCHING, SOURCES, STORAGE, AI, ABOUT
+    GENERAL,
+    READING,
+    WATCHING,
+    SOURCES,
+    STORAGE,
+    AI,
+    ABOUT,
 }
 
 /**
@@ -248,7 +264,7 @@ object NavigationParams {
 object DeepLinks {
     const val SCHEME = "myriad"
     const val HOST = "app"
-    
+
     const val MANGA_DETAIL = "$SCHEME://$HOST/manga/{mangaId}"
     const val ANIME_DETAIL = "$SCHEME://$HOST/anime/{animeId}"
     const val READING = "$SCHEME://$HOST/read/{mangaId}/{chapterId}"
@@ -260,17 +276,14 @@ object DeepLinks {
  * Navigation validation
  */
 object NavigationValidator {
-    
     /**
      * Returns true when the provided mangaId is non-null, non-blank, and no longer than 255 characters.
      *
      * @param mangaId The manga identifier to validate.
      * @return `true` if `mangaId` is non-null, not blank, and its length is <= 255; otherwise `false`.
      */
-    fun validateMangaId(mangaId: String?): Boolean {
-        return !mangaId.isNullOrBlank() && mangaId.length <= 255
-    }
-    
+    fun validateMangaId(mangaId: String?): Boolean = !mangaId.isNullOrBlank() && mangaId.length <= 255
+
     /**
      * Validates an anime identifier for navigation use.
      *
@@ -279,10 +292,8 @@ object NavigationValidator {
      * @param animeId The anime identifier to validate.
      * @return `true` when `animeId` is non-null, non-blank, and length <= 255; otherwise `false`.
      */
-    fun validateAnimeId(animeId: String?): Boolean {
-        return !animeId.isNullOrBlank() && animeId.length <= 255
-    }
-    
+    fun validateAnimeId(animeId: String?): Boolean = !animeId.isNullOrBlank() && animeId.length <= 255
+
     /**
      * Validates that a page query parameter represents a non-negative integer.
      *
@@ -291,20 +302,16 @@ object NavigationValidator {
      * @param page The page value as a string (may be null).
      * @return True when [page] parses to an integer >= 0, false otherwise.
      */
-    fun validatePage(page: String?): Boolean {
-        return page?.toIntOrNull()?.let { it >= 0 } ?: false
-    }
-    
+    fun validatePage(page: String?): Boolean = page?.toIntOrNull()?.let { it >= 0 } ?: false
+
     /**
      * Validates that a timestamp string represents a non-negative millisecond value.
      *
      * @param timestamp A nullable string expected to contain a numeric timestamp (milliseconds). Null, blank, or non-numeric values are considered invalid.
      * @return `true` if `timestamp` can be parsed as a `Long` and is >= 0; otherwise `false`.
      */
-    fun validateTimestamp(timestamp: String?): Boolean {
-        return timestamp?.toLongOrNull()?.let { it >= 0 } ?: false
-    }
-    
+    fun validateTimestamp(timestamp: String?): Boolean = timestamp?.toLongOrNull()?.let { it >= 0 } ?: false
+
     /**
      * Validates a search query string.
      *
@@ -316,7 +323,7 @@ object NavigationValidator {
     fun validateSearchQuery(query: String?): Boolean {
         return query?.length?.let { it <= 500 } ?: true // Allow empty queries
     }
-    
+
     /**
      * Validates whether the provided string represents a valid ContentType.
      *
@@ -327,7 +334,7 @@ object NavigationValidator {
      * @return `true` if `type` is null or matches one of the ContentType enum names (case-insensitive); `false` otherwise.
      */
     fun validateContentType(type: String?): Boolean {
-        return type?.let { 
+        return type?.let {
             try {
                 ContentType.valueOf(it.uppercase())
                 true
@@ -336,7 +343,7 @@ object NavigationValidator {
             }
         } ?: true // Allow null
     }
-    
+
     /**
      * Validates whether a provided settings section name corresponds to a known SettingsSection.
      *

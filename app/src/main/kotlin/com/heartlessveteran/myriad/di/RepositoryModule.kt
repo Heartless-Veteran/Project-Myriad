@@ -14,13 +14,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
-    
     @Binds
     @Singleton
-    abstract fun bindMangaRepository(
-        mangaRepositoryImpl: MangaRepositoryImpl
-    ): MangaRepository
-    
+    abstract fun bindMangaRepository(mangaRepositoryImpl: MangaRepositoryImpl): MangaRepository
+
     // TODO: Add AnimeRepository binding when implemented
     // TODO: Add AIRepository binding when implemented
     // TODO: Add UserRepository binding when implemented

@@ -18,14 +18,13 @@ data class BrowseUiState(
     val error: String? = null,
     val page: Int = 1,
     val searchQuery: String = "",
-    val isSearching: Boolean = false
+    val isSearching: Boolean = false,
 )
 
 class BrowseViewModel(
     private val getLatestMangaUseCase: GetLatestMangaUseCase,
-    private val searchMangaUseCase: SearchMangaUseCase
+    private val searchMangaUseCase: SearchMangaUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(BrowseUiState())
     val uiState: StateFlow<BrowseUiState> = _uiState.asStateFlow()
 
@@ -44,11 +43,10 @@ class BrowseViewModel(
                         },
                         onFailure = { throwable ->
                             currentState.copy(isLoading = false, error = throwable.localizedMessage ?: "An unexpected error occurred")
-                        }
+                        },
                     )
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     fun searchManga(query: String) {
@@ -56,7 +54,7 @@ class BrowseViewModel(
             loadLatestManga()
             return
         }
-        
+
         _uiState.update { it.copy(isLoading = true, error = null, searchQuery = query, isSearching = true) }
         searchMangaUseCase(query, 1)
             .onEach { result ->
@@ -67,11 +65,10 @@ class BrowseViewModel(
                         },
                         onFailure = { throwable ->
                             currentState.copy(isLoading = false, error = throwable.localizedMessage ?: "An unexpected error occurred")
-                        }
+                        },
                     )
                 }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     fun retry() {

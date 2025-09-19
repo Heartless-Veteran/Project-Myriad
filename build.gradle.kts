@@ -6,7 +6,7 @@ buildscript {
         set("minSdkVersion", 24)
         set("compileSdkVersion", 35)
         set("targetSdkVersion", 35)
-        set("kotlinVersion", "2.0.21")
+        set("kotlinVersion", "2.2.20")
         set("composeVersion", "2024.02.00")
         set("hiltVersion", "2.48")
         set("roomVersion", "2.6.1")

@@ -9,7 +9,6 @@ import dagger.hilt.android.HiltAndroidApp
  */
 @HiltAndroidApp
 class MyriadApplication : Application() {
-    
     override fun onCreate() {
         super.onCreate()
     }

@@ -1,7 +1,5 @@
 package com.heartlessveteran.myriad.ui.components
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,12 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.launch
 
 /**
  * File import dialog for selecting local manga files.
- * 
+ *
  * Provides options to:
  * - Import individual .cbz/.cbr files
  * - Import from a directory
@@ -37,62 +34,67 @@ fun FileImportDialog(
     onDismiss: () -> Unit,
     onFileSelected: (Uri) -> Unit,
     onDirectorySelected: (Uri) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    
+
     // File picker launcher
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        uri?.let { onFileSelected(it) }
-    }
-    
-    // Directory picker launcher  
-    val directoryPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree()
-    ) { uri: Uri? ->
-        uri?.let { onDirectorySelected(it) }
-    }
-    
+    val filePickerLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument(),
+        ) { uri: Uri? ->
+            uri?.let { onFileSelected(it) }
+        }
+
+    // Directory picker launcher
+    val directoryPickerLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocumentTree(),
+        ) { uri: Uri? ->
+            uri?.let { onDirectorySelected(it) }
+        }
+
     if (isVisible) {
         Dialog(
             onDismissRequest = onDismiss,
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                usePlatformDefaultWidth = false
-            )
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    usePlatformDefaultWidth = false,
+                ),
         ) {
             Card(
-                modifier = modifier
-                    .fillMaxWidth(0.9f)
-                    .wrapContentHeight(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                modifier =
+                    modifier
+                        .fillMaxWidth(0.9f)
+                        .wrapContentHeight(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier =
+                        Modifier
+                            .padding(24.dp)
+                            .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     // Dialog Title
                     Text(
                         text = "Import Manga",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                    
+
                     Text(
                         text = "Choose how to import your local manga files:",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     // Import single file option
                     ImportOptionCard(
                         icon = Icons.Default.FileOpen,
@@ -104,16 +106,16 @@ fun FileImportDialog(
                                 filePickerLauncher.launch(
                                     arrayOf(
                                         "application/zip",
-                                        "application/x-cbz", 
+                                        "application/x-cbz",
                                         "application/x-cbr",
-                                        "application/x-rar-compressed"
-                                    )
+                                        "application/x-rar-compressed",
+                                    ),
                                 )
                             }
                             onDismiss()
-                        }
+                        },
                     )
-                    
+
                     // Import directory option
                     ImportOptionCard(
                         icon = Icons.Default.FolderOpen,
@@ -125,15 +127,15 @@ fun FileImportDialog(
                                 directoryPickerLauncher.launch(null)
                             }
                             onDismiss()
-                        }
+                        },
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     // Dialog actions
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         TextButton(onClick = onDismiss) {
                             Text("Cancel")
@@ -153,49 +155,50 @@ private fun ImportOptionCard(
     description: String,
     supportedFormats: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = title,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
-            
+
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
-                
+
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                
+
                 Text(
                     text = supportedFormats,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 )
             }
         }
@@ -210,52 +213,54 @@ fun ImportProgressDialog(
     isVisible: Boolean,
     onDismiss: () -> Unit,
     importStatus: ImportStatus,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (isVisible) {
         Dialog(
             onDismissRequest = { if (importStatus.isComplete) onDismiss() },
-            properties = DialogProperties(
-                dismissOnBackPress = importStatus.isComplete,
-                dismissOnClickOutside = importStatus.isComplete
-            )
+            properties =
+                DialogProperties(
+                    dismissOnBackPress = importStatus.isComplete,
+                    dismissOnClickOutside = importStatus.isComplete,
+                ),
         ) {
             Card(
-                modifier = modifier
-                    .fillMaxWidth(0.9f)
-                    .wrapContentHeight(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                modifier =
+                    modifier
+                        .fillMaxWidth(0.9f)
+                        .wrapContentHeight(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = "Importing Manga",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
-                    
+
                     when {
                         importStatus.isLoading -> {
                             CircularProgressIndicator()
                             Text(
                                 text = importStatus.message,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                         importStatus.isError -> {
                             Text(
                                 text = "Import Failed",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
                             )
                             Text(
                                 text = importStatus.message,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Button(onClick = onDismiss) {
                                 Text("Close")
@@ -265,12 +270,12 @@ fun ImportProgressDialog(
                             Text(
                                 text = "Import Successful!",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             )
                             Text(
                                 text = importStatus.message,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Button(onClick = onDismiss) {
                                 Text("Close")
@@ -290,7 +295,7 @@ data class ImportStatus(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
     val isError: Boolean = false,
-    val message: String = ""
+    val message: String = "",
 ) {
     val isComplete: Boolean get() = isSuccess || isError
 }
