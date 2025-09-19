@@ -18,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.heartlessveteran.myriad.domain.model.Manga
-import com.heartlessveteran.myriad.ui.viewmodel.BrowseUiState
 import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +25,7 @@ import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
 fun BrowseScreen(
     viewModel: BrowseViewModel,
     onMangaClick: (mangaUrl: String) -> Unit = {},
-    onImportClick: () -> Unit = {}
+    onImportClick: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -34,51 +33,53 @@ fun BrowseScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     if (uiState.isSearching) {
                         Text("Search Results: \"${uiState.searchQuery}\"")
                     } else {
                         Text("Browse MangaDex")
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onImportClick,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Import local manga",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 placeholder = { Text("Search manga...") },
-                leadingIcon = { 
-                    IconButton(onClick = { 
-                        viewModel.searchManga(searchQuery) 
+                leadingIcon = {
+                    IconButton(onClick = {
+                        viewModel.searchManga(searchQuery)
                     }) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { 
+                        IconButton(onClick = {
                             searchQuery = ""
                             viewModel.loadLatestManga()
                         }) {
@@ -86,13 +87,13 @@ fun BrowseScreen(
                         }
                     }
                 },
-                singleLine = true
+                singleLine = true,
             )
 
             // Content
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 when {
                     uiState.isLoading -> {
@@ -102,13 +103,13 @@ fun BrowseScreen(
                         uiState.error?.let { errorMsg ->
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 Text(
                                     text = errorMsg,
                                     color = MaterialTheme.colorScheme.error,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(16.dp)
+                                    modifier = Modifier.padding(16.dp),
                                 )
                                 Button(onClick = { viewModel.retry() }) {
                                     Text("Retry")
@@ -120,13 +121,13 @@ fun BrowseScreen(
                         Text(
                             text = if (uiState.isSearching) "No results found" else "No manga available",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     else -> {
                         MangaGrid(
                             mangaList = uiState.manga,
-                            onMangaClick = onMangaClick
+                            onMangaClick = onMangaClick,
                         )
                     }
                 }
@@ -138,13 +139,13 @@ fun BrowseScreen(
 @Composable
 private fun MangaGrid(
     mangaList: List<Manga>,
-    onMangaClick: (mangaUrl: String) -> Unit
+    onMangaClick: (mangaUrl: String) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 120.dp),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(mangaList, key = { it.url }) { manga ->
             MangaGridItem(manga = manga, onClick = { onMangaClick(manga.url) })
@@ -156,7 +157,7 @@ private fun MangaGrid(
 @Composable
 private fun MangaGridItem(
     manga: Manga,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(onClick = onClick) {
         Column {
@@ -164,17 +165,18 @@ private fun MangaGridItem(
                 model = manga.thumbnailUrl,
                 contentDescription = manga.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(0.7f)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(0.7f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
             )
             Text(
                 text = manga.title,
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
             )
         }
     }

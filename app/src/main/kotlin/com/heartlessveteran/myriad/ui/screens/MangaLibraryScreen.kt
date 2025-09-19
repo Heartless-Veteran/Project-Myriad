@@ -23,8 +23,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.di.LibraryDiContainer
+import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.ui.theme.MangaAccent
 import com.heartlessveteran.myriad.ui.viewmodel.MangaFilter
 import com.heartlessveteran.myriad.ui.viewmodel.MangaLibraryViewModel
@@ -36,45 +36,46 @@ import com.heartlessveteran.myriad.ui.viewmodel.MangaLibraryViewModel
 @Composable
 fun MangaLibraryScreen(
     onMangaClick: (String) -> Unit,
-    viewModel: MangaLibraryViewModel = run {
-        val context = LocalContext.current
-        viewModel { MangaLibraryViewModel(LibraryDiContainer.getMangaRepository(context)) }
-    }
+    viewModel: MangaLibraryViewModel =
+        run {
+            val context = LocalContext.current
+            viewModel { MangaLibraryViewModel(LibraryDiContainer.getMangaRepository(context)) }
+        },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showFilterMenu by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
-    
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Top App Bar
         TopAppBar(
-            title = { 
+            title = {
                 Text(
                     text = "Manga Library",
                     color = MangaAccent,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             },
             actions = {
                 IconButton(onClick = { showFilterMenu = true }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter"
+                        contentDescription = "Filter",
                     )
                 }
                 IconButton(onClick = { /* TODO: Add new manga */ }) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add Manga"
+                        contentDescription = "Add Manga",
                     )
                 }
-            }
+            },
         )
-        
+
         // Search Bar
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = { 
+            onValueChange = {
                 searchQuery = it
                 viewModel.searchManga(it)
             },
@@ -82,36 +83,38 @@ fun MangaLibraryScreen(
             leadingIcon = {
                 Icon(Icons.Default.Search, contentDescription = "Search")
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            singleLine = true
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            singleLine = true,
         )
-        
+
         // Filter Chips
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(MangaFilter.values()) { filter ->
                 FilterChip(
                     onClick = { viewModel.applyFilter(filter) },
                     label = { Text(getFilterDisplayName(filter)) },
-                    selected = uiState.selectedFilter == filter
+                    selected = uiState.selectedFilter == filter,
                 )
             }
         }
-        
+
         // Library Statistics (Phase 1 Enhancement)
         if (uiState.totalCount > 0) {
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     StatisticItem("Total", uiState.totalCount)
                     StatisticItem("Favorites", uiState.favoriteCount)
@@ -120,37 +123,37 @@ fun MangaLibraryScreen(
                 }
             }
         }
-        
+
         // Content
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             CircularProgressIndicator()
                             Text("Loading manga library...")
                         }
                     }
                 }
-                
+
                 uiState.errorMessage != null -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Text(
                                 text = uiState.errorMessage ?: "An unexpected error occurred. Please try again.",
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
                             )
                             Button(onClick = { viewModel.refresh() }) {
                                 Text("Retry")
@@ -158,42 +161,48 @@ fun MangaLibraryScreen(
                         }
                     }
                 }
-                
+
                 uiState.filteredMangaList.isEmpty() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Text(
-                                text = if (uiState.searchQuery.isNotBlank()) 
-                                    "No manga found for \"${uiState.searchQuery}\"" 
-                                else "Your manga library is empty",
-                                style = MaterialTheme.typography.headlineSmall
+                                text =
+                                    if (uiState.searchQuery.isNotBlank()) {
+                                        "No manga found for \"${uiState.searchQuery}\""
+                                    } else {
+                                        "Your manga library is empty"
+                                    },
+                                style = MaterialTheme.typography.headlineSmall,
                             )
                             Text(
-                                text = if (uiState.searchQuery.isNotBlank()) 
-                                    "Try a different search term" 
-                                else "Add manga to get started",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text =
+                                    if (uiState.searchQuery.isNotBlank()) {
+                                        "Try a different search term"
+                                    } else {
+                                        "Add manga to get started"
+                                    },
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
                 }
-                
+
                 else -> {
                     LazyColumn(
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(uiState.filteredMangaList) { manga ->
                             MangaListItem(
                                 manga = manga,
                                 onClick = { onMangaClick(manga.id) },
-                                onToggleFavorite = { viewModel.toggleFavorite(manga.id) }
+                                onToggleFavorite = { viewModel.toggleFavorite(manga.id) },
                             )
                         }
                     }
@@ -201,7 +210,7 @@ fun MangaLibraryScreen(
             }
         }
     }
-    
+
     // Error snackbar
     uiState.errorMessage?.let { error ->
         LaunchedEffect(error) {
@@ -215,105 +224,112 @@ fun MangaLibraryScreen(
 private fun MangaListItem(
     manga: Manga,
     onClick: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Cover Image
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(manga.coverImageUrl ?: manga.localCoverPath)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(manga.coverImageUrl ?: manga.localCoverPath)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = "Cover for ${manga.title}",
-                modifier = Modifier
-                    .width(60.dp)
-                    .height(90.dp),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .width(60.dp)
+                        .height(90.dp),
+                contentScale = ContentScale.Crop,
             )
-            
+
             // Content
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = manga.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
-                
+
                 if (manga.author.isNotBlank()) {
                     Text(
                         text = "by ${manga.author}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                
+
                 Text(
                     text = "${manga.readChapters}/${if (manga.totalChapters > 0) manga.totalChapters else "?"} chapters",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
-                
+
                 // Progress bar
                 if (manga.totalChapters > 0) {
                     LinearProgressIndicator(
                         progress = manga.readChapters.toFloat() / manga.totalChapters,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
-            
+
             // Favorite button
             IconButton(onClick = onToggleFavorite) {
                 Icon(
                     imageVector = if (manga.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = if (manga.isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (manga.isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = if (manga.isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
     }
 }
 
-private fun getFilterDisplayName(filter: MangaFilter): String = when (filter) {
-    MangaFilter.ALL -> "All"
-    MangaFilter.FAVORITES -> "Favorites"
-    MangaFilter.READING -> "Reading"
-    MangaFilter.COMPLETED -> "Completed"
-    MangaFilter.ON_HOLD -> "On Hold"
-    MangaFilter.DROPPED -> "Dropped"
-    MangaFilter.UNREAD -> "Unread"
-}
+private fun getFilterDisplayName(filter: MangaFilter): String =
+    when (filter) {
+        MangaFilter.ALL -> "All"
+        MangaFilter.FAVORITES -> "Favorites"
+        MangaFilter.READING -> "Reading"
+        MangaFilter.COMPLETED -> "Completed"
+        MangaFilter.ON_HOLD -> "On Hold"
+        MangaFilter.DROPPED -> "Dropped"
+        MangaFilter.UNREAD -> "Unread"
+    }
 
 /**
  * Small composable to display library statistics
  */
 @Composable
-private fun StatisticItem(label: String, count: Int) {
+private fun StatisticItem(
+    label: String,
+    count: Int,
+) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = count.toString(),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MangaAccent
+            color = MangaAccent,
         )
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

@@ -12,25 +12,25 @@ import kotlinx.coroutines.launch
  * Base ViewModel with common state management patterns
  */
 abstract class BaseViewModel<UiStateType>(
-    initialState: UiStateType
+    initialState: UiStateType,
 ) : ViewModel() {
-    
     protected val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<UiStateType> = _uiState.asStateFlow()
-    
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-    
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-    
+
     /**
      * Global error handler for coroutines
      */
-    protected val errorHandler = CoroutineExceptionHandler { _, exception ->
-        handleError(exception)
-    }
-    
+    protected val errorHandler =
+        CoroutineExceptionHandler { _, exception ->
+            handleError(exception)
+        }
+
     /**
      * Launches a coroutine in the ViewModel scope to run a suspending block with standardized
      * loading and error handling.
@@ -47,7 +47,7 @@ abstract class BaseViewModel<UiStateType>(
      */
     protected fun launchWithErrorHandling(
         showLoading: Boolean = true,
-        block: suspend () -> Unit
+        block: suspend () -> Unit,
     ) {
         viewModelScope.launch(errorHandler) {
             if (showLoading) _isLoading.value = true
@@ -60,7 +60,7 @@ abstract class BaseViewModel<UiStateType>(
             }
         }
     }
-    
+
     /**
      * Map an exception to a user-facing error message and publish it to the ViewModel's error state.
      *
@@ -73,14 +73,15 @@ abstract class BaseViewModel<UiStateType>(
      * @param exception The throwable to map to a user-facing message.
      */
     protected open fun handleError(exception: Throwable) {
-        _errorMessage.value = when (exception) {
-            is java.net.UnknownHostException -> "No internet connection"
-            is java.net.SocketTimeoutException -> "Request timed out"
-            is java.net.ConnectException -> "Failed to connect to server"
-            else -> exception.message ?: "An unknown error occurred"
-        }
+        _errorMessage.value =
+            when (exception) {
+                is java.net.UnknownHostException -> "No internet connection"
+                is java.net.SocketTimeoutException -> "Request timed out"
+                is java.net.ConnectException -> "Failed to connect to server"
+                else -> exception.message ?: "An unknown error occurred"
+            }
     }
-    
+
     /**
      * Clears the current error message.
      *
@@ -89,7 +90,7 @@ abstract class BaseViewModel<UiStateType>(
     fun clearError() {
         _errorMessage.value = null
     }
-    
+
     /**
      * Applies a transformation to the current UI state and updates the internal StateFlow.
      *
@@ -100,7 +101,7 @@ abstract class BaseViewModel<UiStateType>(
     protected fun updateUiState(update: (UiStateType) -> UiStateType) {
         _uiState.value = update(_uiState.value)
     }
-    
+
     /**
      * Get current UI state value
      */

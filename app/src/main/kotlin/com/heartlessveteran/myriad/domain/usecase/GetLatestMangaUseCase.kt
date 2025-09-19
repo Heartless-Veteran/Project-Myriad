@@ -10,14 +10,12 @@ import kotlinx.coroutines.flow.Flow
  * simplifying the ViewModel's responsibilities.
  */
 class GetLatestMangaUseCase(
-    private val sourceRepository: SourceRepository
+    private val sourceRepository: SourceRepository,
 ) {
     /**
      * Invokes the use case.
      * @param page The page number to fetch.
      * @return A Flow emitting the result of the operation.
      */
-    operator fun invoke(page: Int): Flow<Result<List<Manga>>> {
-        return sourceRepository.getLatestManga(page)
-    }
+    operator fun invoke(page: Int): Flow<Result<List<Manga>>> = sourceRepository.getLatestManga(page)
 }

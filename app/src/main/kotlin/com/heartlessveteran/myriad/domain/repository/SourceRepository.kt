@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
  * unaware of the specific source (MangaDex, etc.) being used.
  */
 interface SourceRepository {
-
     /**
      * Fetches the latest updated manga from the source.
      *
@@ -25,5 +24,8 @@ interface SourceRepository {
      * @param page The page number to retrieve.
      * @return A Flow emitting a Result containing a list of [Manga] on success, or an error.
      */
-    fun searchManga(query: String, page: Int): Flow<Result<List<Manga>>>
+    fun searchManga(
+        query: String,
+        page: Int,
+    ): Flow<Result<List<Manga>>>
 }
