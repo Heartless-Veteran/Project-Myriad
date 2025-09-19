@@ -12,15 +12,15 @@ import javax.inject.Singleton
 data class CacheEntry<T>(
     val data: T,
     val timestamp: Long,
-    val ttl: Long = DEFAULT_TTL
+    val ttl: Long = DEFAULT_TTL,
 ) {
     /**
- * Whether this entry's time-to-live has elapsed.
- *
- * @return true if the current system time is past the entry's timestamp plus its TTL; false otherwise.
- */
-fun isExpired(): Boolean = System.currentTimeMillis() - timestamp > ttl
-    
+     * Whether this entry's time-to-live has elapsed.
+     *
+     * @return true if the current system time is past the entry's timestamp plus its TTL; false otherwise.
+     */
+    fun isExpired(): Boolean = System.currentTimeMillis() - timestamp > ttl
+
     companion object {
         const val DEFAULT_TTL = 5 * 60 * 1000L // 5 minutes
     }
@@ -32,7 +32,7 @@ fun isExpired(): Boolean = System.currentTimeMillis() - timestamp > ttl
 data class CacheConfig(
     val maxSize: Int = 1000,
     val ttl: Long = CacheEntry.DEFAULT_TTL,
-    val enableMetrics: Boolean = true
+    val enableMetrics: Boolean = true,
 )
 
 /**
@@ -42,7 +42,7 @@ data class CacheMetrics(
     val hits: Long = 0,
     val misses: Long = 0,
     val evictions: Long = 0,
-    val size: Int = 0
+    val size: Int = 0,
 ) {
     val hitRate: Float = if (hits + misses > 0) hits.toFloat() / (hits + misses) else 0f
 }
@@ -51,72 +51,81 @@ data class CacheMetrics(
  * Generic memory cache with LRU eviction and TTL support
  */
 @Singleton
-class MemoryCache @Inject constructor() {
-    
-    private val caches = ConcurrentHashMap<String, Cache<Any>>()
-    private val mutex = Mutex()
-    
-    /**
-     * Retrieve an existing named cache or create a new one with the given configuration.
-     *
-     * If a cache for `cacheKey` already exists it is returned; otherwise a new Cache is created
-     * using `config` and stored. This function is suspendable and performs the operation under a mutex
-     * so it is safe for concurrent callers.
-     *
-     * Note: the cache is stored without runtime type information — callers are responsible for
-     * using a consistent `T` for a given `cacheKey`; the implementation performs an unchecked cast.
-     *
-     * @param cacheKey Unique key identifying the cache.
-     * @param config Configuration to use when creating a new cache (ignored if the cache already exists).
-     * @return The Cache instance associated with `cacheKey`, typed as `Cache<T>`.
-     */
-    suspend fun <T> getCache(cacheKey: String, config: CacheConfig = CacheConfig()): Cache<T> {
-        return mutex.withLock {
-            @Suppress("UNCHECKED_CAST")
-            caches.getOrPut(cacheKey) { Cache<Any>(config) } as Cache<T>
+class MemoryCache
+    @Inject
+    constructor() {
+        private val caches = ConcurrentHashMap<String, Cache<Any>>()
+        private val mutex = Mutex()
+
+        /**
+         * Retrieve an existing named cache or create a new one with the given configuration.
+         *
+         * If a cache for `cacheKey` already exists it is returned; otherwise a new Cache is created
+         * using `config` and stored. This function is suspendable and performs the operation under a mutex
+         * so it is safe for concurrent callers.
+         *
+         * Note: the cache is stored without runtime type information — callers are responsible for
+         * using a consistent `T` for a given `cacheKey`; the implementation performs an unchecked cast.
+         *
+         * @param cacheKey Unique key identifying the cache.
+         * @param config Configuration to use when creating a new cache (ignored if the cache already exists).
+         * @return The Cache instance associated with `cacheKey`, typed as `Cache<T>`.
+         */
+        suspend fun <T> getCache(
+            cacheKey: String,
+            config: CacheConfig = CacheConfig(),
+        ): Cache<T> =
+            mutex.withLock {
+                @Suppress("UNCHECKED_CAST")
+                caches.getOrPut(cacheKey) { Cache<Any>(config) } as Cache<T>
+            }
+
+        /**
+         * Clears every managed cache and removes them from the global registry.
+         *
+         * This is a suspending operation that synchronizes access internally; it calls `clear()` on each
+         * per-type cache and then removes all cache entries from the manager.
+         */
+        suspend fun clearAll() {
+            mutex.withLock {
+                caches.values.forEach { it.clear() }
+                caches.clear()
+            }
         }
+
+        /**
+         * Return a snapshot of runtime metrics for the named cache.
+         *
+         * Looks up the cache identified by `cacheKey` and returns its current CacheMetrics, or null if no cache exists for that key.
+         *
+         * @param cacheKey The identifier of the cache whose metrics are requested.
+         * @return A snapshot of the cache's metrics, or `null` if the cache is not present.
+         */
+        suspend fun getMetrics(cacheKey: String): CacheMetrics? =
+            mutex.withLock {
+                caches[cacheKey]?.getMetrics()
+            }
     }
-    
-    /**
-     * Clears every managed cache and removes them from the global registry.
-     *
-     * This is a suspending operation that synchronizes access internally; it calls `clear()` on each
-     * per-type cache and then removes all cache entries from the manager.
-     */
-    suspend fun clearAll() {
-        mutex.withLock {
-            caches.values.forEach { it.clear() }
-            caches.clear()
-        }
-    }
-    
-    /**
-     * Return a snapshot of runtime metrics for the named cache.
-     *
-     * Looks up the cache identified by `cacheKey` and returns its current CacheMetrics, or null if no cache exists for that key.
-     *
-     * @param cacheKey The identifier of the cache whose metrics are requested.
-     * @return A snapshot of the cache's metrics, or `null` if the cache is not present.
-     */
-    suspend fun getMetrics(cacheKey: String): CacheMetrics? {
-        return mutex.withLock {
-            caches[cacheKey]?.getMetrics()
-        }
-    }
-}
 
 /**
  * Individual cache implementation with LRU eviction
  */
-class Cache<T>(private val config: CacheConfig) {
-    
+class Cache<T>(
+    private val config: CacheConfig,
+) {
     private val cache = LinkedHashMap<String, CacheEntry<T>>(config.maxSize + 1, 0.75f, true)
     private val mutex = Mutex()
-    
-    private val hits = java.util.concurrent.atomic.AtomicLong(0L)
-    private val misses = java.util.concurrent.atomic.AtomicLong(0L)
-    private val evictions = java.util.concurrent.atomic.AtomicLong(0L)
-    
+
+    private val hits =
+        java.util.concurrent.atomic
+            .AtomicLong(0L)
+    private val misses =
+        java.util.concurrent.atomic
+            .AtomicLong(0L)
+    private val evictions =
+        java.util.concurrent.atomic
+            .AtomicLong(0L)
+
     /**
      * Retrieves the value for the given cache key if present and not expired.
      *
@@ -130,7 +139,7 @@ class Cache<T>(private val config: CacheConfig) {
     suspend fun get(key: String): T? {
         return mutex.withLock {
             val entry = cache[key]
-            
+
             if (entry == null || entry.isExpired()) {
                 if (entry != null) {
                     cache.remove(key) // Remove expired entry
@@ -138,12 +147,12 @@ class Cache<T>(private val config: CacheConfig) {
                 if (config.enableMetrics) misses.incrementAndGet()
                 return null
             }
-            
+
             if (config.enableMetrics) hits.incrementAndGet()
             entry.data
         }
     }
-    
+
     /**
      * Inserts or replaces an entry in the cache.
      *
@@ -153,7 +162,11 @@ class Cache<T>(private val config: CacheConfig) {
      *
      * @param ttl Time-to-live for this entry in milliseconds. Defaults to the cache's configured TTL.
      */
-    suspend fun put(key: String, value: T, ttl: Long = config.ttl) {
+    suspend fun put(
+        key: String,
+        value: T,
+        ttl: Long = config.ttl,
+    ) {
         mutex.withLock {
             // Remove oldest entries if cache is full
             while (cache.size >= config.maxSize) {
@@ -161,11 +174,11 @@ class Cache<T>(private val config: CacheConfig) {
                 cache.remove(oldest.key)
                 if (config.enableMetrics) evictions.incrementAndGet()
             }
-            
+
             cache[key] = CacheEntry(value, System.currentTimeMillis(), ttl)
         }
     }
-    
+
     /**
      * Removes and returns the value associated with the given key from the cache.
      *
@@ -174,12 +187,11 @@ class Cache<T>(private val config: CacheConfig) {
      * @param key The cache key to remove.
      * @return The removed value, or `null` if the key was not present.
      */
-    suspend fun remove(key: String): T? {
-        return mutex.withLock {
+    suspend fun remove(key: String): T? =
+        mutex.withLock {
             cache.remove(key)?.data
         }
-    }
-    
+
     /**
      * Removes all entries from this cache and resets its metrics.
      *
@@ -194,7 +206,7 @@ class Cache<T>(private val config: CacheConfig) {
             evictions.set(0)
         }
     }
-    
+
     /**
      * Returns a snapshot of the cache's current metrics.
      *
@@ -202,12 +214,11 @@ class Cache<T>(private val config: CacheConfig) {
      *
      * @return a snapshot of current cache metrics
      */
-    suspend fun getMetrics(): CacheMetrics {
-        return mutex.withLock {
+    suspend fun getMetrics(): CacheMetrics =
+        mutex.withLock {
             CacheMetrics(hits.get(), misses.get(), evictions.get(), cache.size)
         }
-    }
-    
+
     /**
      * Return a thread-safe snapshot of all keys currently stored in this cache.
      *
@@ -215,12 +226,11 @@ class Cache<T>(private val config: CacheConfig) {
      *
      * @return A snapshot Set containing all cache keys.
      */
-    suspend fun getKeys(): Set<String> {
-        return mutex.withLock {
+    suspend fun getKeys(): Set<String> =
+        mutex.withLock {
             cache.keys.toSet()
         }
-    }
-    
+
     /**
      * Remove all expired entries from this cache.
      *
@@ -256,23 +266,27 @@ object CacheKeys {
  * Predefined cache configurations
  */
 object CacheConfigs {
-    val MANGA = CacheConfig(
-        maxSize = 500,
-        ttl = 10 * 60 * 1000L // 10 minutes
-    )
-    
-    val SEARCH_RESULTS = CacheConfig(
-        maxSize = 100,
-        ttl = 5 * 60 * 1000L // 5 minutes
-    )
-    
-    val METADATA = CacheConfig(
-        maxSize = 1000,
-        ttl = 60 * 60 * 1000L // 1 hour
-    )
-    
-    val ONLINE_CONTENT = CacheConfig(
-        maxSize = 200,
-        ttl = 30 * 60 * 1000L // 30 minutes
-    )
+    val MANGA =
+        CacheConfig(
+            maxSize = 500,
+            ttl = 10 * 60 * 1000L, // 10 minutes
+        )
+
+    val SEARCH_RESULTS =
+        CacheConfig(
+            maxSize = 100,
+            ttl = 5 * 60 * 1000L, // 5 minutes
+        )
+
+    val METADATA =
+        CacheConfig(
+            maxSize = 1000,
+            ttl = 60 * 60 * 1000L, // 1 hour
+        )
+
+    val ONLINE_CONTENT =
+        CacheConfig(
+            maxSize = 200,
+            ttl = 30 * 60 * 1000L, // 30 minutes
+        )
 }

@@ -26,131 +26,134 @@ import androidx.compose.ui.unit.sp
 fun HomeScreen(
     onNavigateToManga: () -> Unit,
     onNavigateToAnime: () -> Unit,
-    onNavigateToAI: () -> Unit
+    onNavigateToAI: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         // Header
         Text(
             text = "Project Myriad",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            style =
+                MaterialTheme.typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                ),
         )
-        
+
         Text(
             text = "The Definitive Manga and Anime Platform",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        
+
         // Quick Stats Cards
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             StatsCard(
                 title = "Manga",
                 count = "0",
                 subtitle = "In Library",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             StatsCard(
                 title = "Anime",
-                count = "0", 
+                count = "0",
                 subtitle = "In Library",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
-        
+
         // Quick Actions
         Text(
             text = "Quick Actions",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
         )
-        
+
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 4.dp)
+            contentPadding = PaddingValues(horizontal = 4.dp),
         ) {
             items(
                 listOf(
                     Triple("Manga Library", Icons.Default.AutoStories, onNavigateToManga),
                     Triple("Anime Library", Icons.Default.PlayArrow, onNavigateToAnime),
-                    Triple("AI Features", Icons.Default.Psychology, onNavigateToAI)
-                )
+                    Triple("AI Features", Icons.Default.Psychology, onNavigateToAI),
+                ),
             ) { (title, icon, action) ->
                 QuickActionCard(
                     title = title,
                     icon = icon,
-                    onClick = action
+                    onClick = action,
                 )
             }
         }
-        
+
         // Recent Activity
         Text(
             text = "Development Status",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
         )
-        
+
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
                         text = "🚀 Phase 2: Core Features Active",
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
                         text = "Enhanced Settings, Basic Reader, and File Management features are now being implemented",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
         }
-        
+
         // AI Features Preview
         Text(
             text = "Phase 2: Core Features ✨",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
         )
-        
+
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(horizontal = 4.dp)
+            contentPadding = PaddingValues(horizontal = 4.dp),
         ) {
             items(
                 listOf(
                     "Enhanced Settings" to "✅",
-                    "Basic Reader" to "✅", 
+                    "Basic Reader" to "✅",
                     "File Management" to "🚧",
                     "Local Import" to "🚧",
                     "Reading Progress" to "🚧",
-                    "OCR Translation" to "📋"
-                )
+                    "OCR Translation" to "📋",
+                ),
             ) { (feature, status) ->
                 PhaseFeatureCard(feature = feature, status = status)
             }
@@ -163,33 +166,34 @@ private fun StatsCard(
     title: String,
     count: String,
     subtitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             Text(
                 text = count,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.primary
+                style =
+                    MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                color = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -199,54 +203,57 @@ private fun StatsCard(
 private fun QuickActionCard(
     title: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.width(120.dp)
+        modifier = Modifier.width(120.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = title,
                 modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
 
 @Composable
-private fun PhaseFeatureCard(feature: String, status: String) {
+private fun PhaseFeatureCard(
+    feature: String,
+    status: String,
+) {
     Card(
-        modifier = Modifier.width(140.dp)
+        modifier = Modifier.width(140.dp),
     ) {
         Box(
             modifier = Modifier.padding(12.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = status,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
                 )
                 Text(
                     text = feature,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
         }

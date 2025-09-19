@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MangaListDto(
-    val data: List<MangaDataDto>
+    val data: List<MangaDataDto>,
 )
 
 @Serializable
 data class MangaDataDto(
     val id: String,
     val attributes: MangaAttributesDto,
-    val relationships: List<RelationshipDto>
+    val relationships: List<RelationshipDto>,
 ) {
     fun toDomainModel(): Manga {
         val coverFileName = relationships.firstOrNull { it.type == "cover_art" }?.attributes?.fileName
@@ -28,7 +28,7 @@ data class MangaDataDto(
             author = null,
             status = attributes.status,
             genre = attributes.tags.mapNotNull { it.attributes.name["en"] },
-            thumbnailUrl = coverUrl
+            thumbnailUrl = coverUrl,
         )
     }
 }
@@ -38,27 +38,27 @@ data class MangaAttributesDto(
     val title: Map<String, String>,
     val description: Map<String, String> = emptyMap(),
     val status: String?,
-    val tags: List<TagDto>
+    val tags: List<TagDto>,
 )
 
 @Serializable
 data class RelationshipDto(
     val id: String,
     val type: String,
-    val attributes: CoverAttributesDto? = null
+    val attributes: CoverAttributesDto? = null,
 )
 
 @Serializable
 data class CoverAttributesDto(
-    val fileName: String
+    val fileName: String,
 )
 
 @Serializable
 data class TagDto(
-    val attributes: TagAttributesDto
+    val attributes: TagAttributesDto,
 )
 
 @Serializable
 data class TagAttributesDto(
-    val name: Map<String, String>
+    val name: Map<String, String>,
 )

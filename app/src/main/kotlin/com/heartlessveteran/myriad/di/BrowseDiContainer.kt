@@ -18,39 +18,45 @@ import java.util.concurrent.TimeUnit
  * (Temporary solution until Hilt is fully enabled)
  */
 object BrowseDiContainer {
-    
-    private val json = Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        encodeDefaults = true
-    }
-    
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (com.heartlessveteran.myriad.BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            encodeDefaults = true
         }
-    }
-    
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
-        .build()
-    
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(MangaDxApi.BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        .build()
-    
+
+    private val loggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                if (com.heartlessveteran.myriad.BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
+        }
+
+    private val okHttpClient =
+        OkHttpClient
+            .Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+
+    private val retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(MangaDxApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+
     val mangaDxApi: MangaDxApi = retrofit.create(MangaDxApi::class.java)
-    
+
     val sourceRepository: SourceRepository = MangaDxSourceRepositoryImpl(mangaDxApi)
-    
+
     val getLatestMangaUseCase: GetLatestMangaUseCase = GetLatestMangaUseCase(sourceRepository)
-    
+
     val searchMangaUseCase: SearchMangaUseCase = SearchMangaUseCase(sourceRepository)
 }

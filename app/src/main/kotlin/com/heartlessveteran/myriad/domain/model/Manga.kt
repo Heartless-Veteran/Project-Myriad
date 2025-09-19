@@ -21,5 +21,5 @@ data class Manga(
     val description: String?,
     val genre: List<String>?,
     val status: String?,
-    val thumbnailUrl: String
+    val thumbnailUrl: String,
 )

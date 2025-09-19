@@ -31,7 +31,7 @@ data class Manga(
     val source: String = "local", // local, mangadex, etc.
     val sourceId: String? = null,
     val isLocal: Boolean = true,
-    val localPath: String? = null
+    val localPath: String? = null,
 )
 
 /**
@@ -42,7 +42,7 @@ enum class MangaStatus {
     COMPLETED,
     HIATUS,
     CANCELLED,
-    UNKNOWN
+    UNKNOWN,
 }
 
 /**
@@ -62,5 +62,5 @@ data class MangaChapter(
     val dateAdded: Date = Date(),
     val dateRead: Date? = null,
     val source: String = "local",
-    val sourceChapterId: String? = null
+    val sourceChapterId: String? = null,
 )

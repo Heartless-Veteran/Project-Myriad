@@ -34,7 +34,7 @@ data class Anime(
     val sourceId: String? = null,
     val isLocal: Boolean = true,
     val localPath: String? = null,
-    val duration: Int = 24 // Episode duration in minutes
+    val duration: Int = 24, // Episode duration in minutes
 )
 
 /**
@@ -45,7 +45,7 @@ enum class AnimeStatus {
     COMPLETED,
     NOT_YET_AIRED,
     CANCELLED,
-    UNKNOWN
+    UNKNOWN,
 }
 
 /**
@@ -55,7 +55,7 @@ enum class AnimeSeason {
     WINTER,
     SPRING,
     SUMMER,
-    FALL
+    FALL,
 }
 
 /**
@@ -67,7 +67,7 @@ enum class AnimeType {
     OVA,
     ONA,
     SPECIAL,
-    MUSIC
+    MUSIC,
 }
 
 /**
@@ -90,5 +90,5 @@ data class AnimeEpisode(
     val dateWatched: Date? = null,
     val source: String = "local",
     val sourceEpisodeId: String? = null,
-    val airDate: Date? = null
+    val airDate: Date? = null,
 )

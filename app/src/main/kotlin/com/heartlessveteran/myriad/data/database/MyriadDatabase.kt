@@ -1,10 +1,10 @@
 package com.heartlessveteran.myriad.data.database
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import android.content.Context
 import com.heartlessveteran.myriad.data.database.dao.AnimeDao
 import com.heartlessveteran.myriad.data.database.dao.MangaDao
 import com.heartlessveteran.myriad.domain.entities.Anime
@@ -21,35 +21,35 @@ import com.heartlessveteran.myriad.domain.entities.MangaChapter
         Manga::class,
         MangaChapter::class,
         Anime::class,
-        AnimeEpisode::class
+        AnimeEpisode::class,
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(Converters::class)
 abstract class MyriadDatabase : RoomDatabase() {
-    
     abstract fun mangaDao(): MangaDao
+
     abstract fun animeDao(): AnimeDao
-    
+
     companion object {
         const val DATABASE_NAME = "myriad_database"
-        
+
         @Volatile
-        private var INSTANCE: MyriadDatabase? = null
-        
-        fun getDatabase(context: Context): MyriadDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    MyriadDatabase::class.java,
-                    DATABASE_NAME
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = instance
-                instance
+        private var instance: MyriadDatabase? = null
+
+        fun getDatabase(context: Context): MyriadDatabase =
+            instance ?: synchronized(this) {
+                val dbInstance =
+                    Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            MyriadDatabase::class.java,
+                            DATABASE_NAME,
+                        ).fallbackToDestructiveMigration()
+                        .build()
+                instance = dbInstance
+                dbInstance
             }
-        }
     }
 }
