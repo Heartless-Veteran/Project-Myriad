@@ -17,14 +17,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.heartlessveteran.myriad.domain.model.Manga
+import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowseScreen(
     viewModel: BrowseViewModel,
-    onMangaClick: (mangaUrl: String) -> Unit = {},
+    onMangaClick: (manga: Manga) -> Unit = {},
     onImportClick: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -139,7 +139,7 @@ fun BrowseScreen(
 @Composable
 private fun MangaGrid(
     mangaList: List<Manga>,
-    onMangaClick: (mangaUrl: String) -> Unit,
+    onMangaClick: (manga: Manga) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 120.dp),
@@ -147,8 +147,8 @@ private fun MangaGrid(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        items(mangaList, key = { it.url }) { manga ->
-            MangaGridItem(manga = manga, onClick = { onMangaClick(manga.url) })
+        items(mangaList, key = { it.id }) { manga ->
+            MangaGridItem(manga = manga, onClick = { onMangaClick(manga) })
         }
     }
 }
@@ -162,7 +162,7 @@ private fun MangaGridItem(
     Card(onClick = onClick) {
         Column {
             AsyncImage(
-                model = manga.thumbnailUrl,
+                model = manga.coverImageUrl,
                 contentDescription = manga.title,
                 contentScale = ContentScale.Crop,
                 modifier =

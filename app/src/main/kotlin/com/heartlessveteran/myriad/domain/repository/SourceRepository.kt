@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.domain.repository
 
-import com.heartlessveteran.myriad.domain.model.Manga
+import com.heartlessveteran.myriad.domain.entities.Manga
+import com.heartlessveteran.myriad.domain.models.Result
 import kotlinx.coroutines.flow.Flow
 
 /**
