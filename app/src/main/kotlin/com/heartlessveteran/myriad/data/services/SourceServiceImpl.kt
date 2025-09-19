@@ -5,10 +5,7 @@ import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.entities.MangaChapter
 import com.heartlessveteran.myriad.domain.entities.MangaStatus
 import com.heartlessveteran.myriad.domain.models.Result
-import com.heartlessveteran.myriad.domain.services.SourceService
-import com.heartlessveteran.myriad.domain.services.SourceUpdateInfo
-import com.heartlessveteran.myriad.services.ContentSource
-import com.heartlessveteran.myriad.services.SourceFeature
+import com.heartlessveteran.myriad.domain.services.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf

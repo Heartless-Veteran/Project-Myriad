@@ -188,6 +188,10 @@ ktlint {
         exclude("**/build/**")
         exclude("**/generated/**")
     }
+
+    // Disable some rules that conflict with Compose conventions
+    additionalEditorconfig.put("ktlint_standard_function-naming", "disabled")
+    additionalEditorconfig.put("ktlint_standard_no-wildcard-imports", "disabled")
 }
 
 // detekt {
@@ -264,7 +268,9 @@ tasks.dokkaHtml.configure {
 
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
-                remoteUrl.set(uri("https://github.com/Heartless-Veteran/Project-Myriad/tree/main/app/src/main/kotlin").toURL())
+                remoteUrl.set(
+                    uri("https://github.com/Heartless-Veteran/Project-Myriad/tree/main/app/src/main/kotlin").toURL(),
+                )
                 remoteLineSuffix.set("#L")
             }
         }
