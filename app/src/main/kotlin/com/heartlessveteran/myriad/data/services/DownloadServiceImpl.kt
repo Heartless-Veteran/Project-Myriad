@@ -7,8 +7,19 @@ import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import com.heartlessveteran.myriad.domain.services.DownloadStatus
 import com.heartlessveteran.myriad.domain.services.DownloadTask
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -49,7 +60,7 @@ class DownloadServiceImpl(
     private val activeDownloads = ConcurrentHashMap<String, Job>()
     private val _downloadQueue = MutableStateFlow<List<DownloadTask>>(emptyList())
     private val _overallProgress = MutableStateFlow(0f)
-    private val _areDownloadsActive = MutableStateFlow(false)
+    private val areDownloadsActiveFlow = MutableStateFlow(false)
 
     // Download storage directory
     private val downloadBaseDir: File
@@ -172,7 +183,7 @@ class DownloadServiceImpl(
 
     override fun getOverallProgress(): Flow<Float> = _overallProgress.asStateFlow()
 
-    override fun areDownloadsActive(): Flow<Boolean> = _areDownloadsActive.asStateFlow()
+    override fun areDownloadsActive(): Flow<Boolean> = areDownloadsActiveFlow.asStateFlow()
 
     override suspend fun setDownloadPreferences(
         maxConcurrent: Int,
@@ -328,7 +339,7 @@ class DownloadServiceImpl(
         val activeTasks = currentTasks.filter { it.status == DownloadStatus.IN_PROGRESS }
 
         // Update active status
-        _areDownloadsActive.value = activeTasks.isNotEmpty()
+        areDownloadsActiveFlow.value = activeTasks.isNotEmpty()
 
         // Calculate overall progress
         if (activeTasks.isNotEmpty()) {

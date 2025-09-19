@@ -1,6 +1,11 @@
 package com.heartlessveteran.myriad.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.heartlessveteran.myriad.domain.entities.Anime
 import com.heartlessveteran.myriad.domain.entities.AnimeStatus
 import kotlinx.coroutines.flow.Flow

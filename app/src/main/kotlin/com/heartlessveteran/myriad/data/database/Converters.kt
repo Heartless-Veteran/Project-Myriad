@@ -3,7 +3,7 @@ package com.heartlessveteran.myriad.data.database
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.*
+import java.util.Date
 
 /**
  * Type converters for Room database to handle complex data types

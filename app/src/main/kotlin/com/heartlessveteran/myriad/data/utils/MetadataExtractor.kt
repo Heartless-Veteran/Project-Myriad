@@ -5,7 +5,6 @@ import com.heartlessveteran.myriad.domain.models.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 import java.util.regex.Pattern
 
 /**

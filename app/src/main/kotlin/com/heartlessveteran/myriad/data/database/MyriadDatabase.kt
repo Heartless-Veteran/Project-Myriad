@@ -36,11 +36,11 @@ abstract class MyriadDatabase : RoomDatabase() {
         const val DATABASE_NAME = "myriad_database"
 
         @Volatile
-        private var INSTANCE: MyriadDatabase? = null
+        private var instance: MyriadDatabase? = null
 
         fun getDatabase(context: Context): MyriadDatabase =
-            INSTANCE ?: synchronized(this) {
-                val instance =
+            instance ?: synchronized(this) {
+                val dbInstance =
                     Room
                         .databaseBuilder(
                             context.applicationContext,
@@ -48,8 +48,8 @@ abstract class MyriadDatabase : RoomDatabase() {
                             DATABASE_NAME,
                         ).fallbackToDestructiveMigration()
                         .build()
-                INSTANCE = instance
-                instance
+                instance = dbInstance
+                dbInstance
             }
     }
 }
