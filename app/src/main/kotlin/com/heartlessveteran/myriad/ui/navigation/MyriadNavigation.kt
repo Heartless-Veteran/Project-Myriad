@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -69,7 +70,10 @@ val bottomNavItems =
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyriadNavigation(navController: NavHostController) {
+fun MyriadNavigation(
+    navController: NavHostController,
+    context: android.content.Context = androidx.compose.ui.platform.LocalContext.current
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -131,12 +135,14 @@ fun MyriadNavigation(navController: NavHostController) {
                     viewModel =
                         viewModel {
                             BrowseViewModel(
-                                com.heartlessveteran.myriad.di.BrowseDiContainer.getLatestMangaUseCase,
-                                com.heartlessveteran.myriad.di.BrowseDiContainer.searchMangaUseCase,
+                                com.heartlessveteran.myriad.di.AppDiContainer.getGetLatestMangaUseCase(),
+                                com.heartlessveteran.myriad.di.AppDiContainer.getSearchMangaUseCase(),
                             )
                         },
-                    onMangaClick = { mangaUrl ->
+                    onMangaClick = { manga ->
                         // TODO: Navigate to manga detail screen when implemented
+                        // For now, we can navigate to reading screen using manga ID
+                        navController.navigate(Screen.Reading.createRoute(manga.id))
                     },
                 )
             }

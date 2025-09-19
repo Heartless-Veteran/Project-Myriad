@@ -14,11 +14,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.heartlessveteran.myriad.domain.entities.Manga
+import com.heartlessveteran.myriad.ui.components.FileImportDialog
+import com.heartlessveteran.myriad.ui.components.ImportProgressDialog
 import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
+import com.heartlessveteran.myriad.ui.viewmodel.FileImportViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,8 +32,25 @@ fun BrowseScreen(
     onMangaClick: (manga: Manga) -> Unit = {},
     onImportClick: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    
+    // File import functionality
+    var showImportDialog by remember { mutableStateOf(false) }
+    var showProgressDialog by remember { mutableStateOf(false) }
+    val fileImportViewModel = remember { FileImportViewModel(context) }
+    val importStatus by fileImportViewModel.importStatus.collectAsState()
+    
+    // Handle import status changes
+    LaunchedEffect(importStatus) {
+        if (importStatus.isLoading) {
+            showImportDialog = false
+            showProgressDialog = true
+        } else if (importStatus.isComplete) {
+            // Keep progress dialog open until user dismisses
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -44,7 +66,7 @@ fun BrowseScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onImportClick,
+                onClick = { showImportDialog = true },
                 containerColor = MaterialTheme.colorScheme.primary,
             ) {
                 Icon(
@@ -134,6 +156,27 @@ fun BrowseScreen(
             }
         }
     }
+
+    // File import dialogs
+    FileImportDialog(
+        isVisible = showImportDialog,
+        onDismiss = { showImportDialog = false },
+        onFileSelected = { uri ->
+            fileImportViewModel.importFile(uri)
+        },
+        onDirectorySelected = { uri ->
+            fileImportViewModel.importDirectory(uri)
+        }
+    )
+
+    ImportProgressDialog(
+        isVisible = showProgressDialog,
+        onDismiss = { 
+            showProgressDialog = false
+            fileImportViewModel.clearImportStatus()
+        },
+        importStatus = importStatus
+    )
 }
 
 @Composable
@@ -159,18 +202,49 @@ private fun MangaGridItem(
     manga: Manga,
     onClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    
     Card(onClick = onClick) {
         Column {
-            AsyncImage(
-                model = manga.coverImageUrl,
-                contentDescription = manga.title,
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(0.7f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-            )
+            Box {
+                AsyncImage(
+                    model = manga.coverImageUrl,
+                    contentDescription = manga.title,
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(0.7f)
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                )
+                
+                // Download button overlay for online manga
+                if (!manga.isLocal) {
+                    FloatingActionButton(
+                        onClick = {
+                            // Demo: Start download using the download service
+                            // In a real app, this would be handled by a ViewModel
+                            val downloadService = com.heartlessveteran.myriad.di.AppDiContainer.getDownloadService(context)
+                            coroutineScope.launch {
+                                downloadService.enqueueMangaDownload(manga, null)
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(8.dp)
+                            .size(36.dp),
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Download",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+            
             Text(
                 text = manga.title,
                 style = MaterialTheme.typography.titleSmall,
