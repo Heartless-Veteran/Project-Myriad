@@ -151,7 +151,7 @@ dependencies {
     // implementation("io.github.sceneview:arsceneview:0.10.2")
     
     // JSON parsing
-    implementation("com.google.code.gson:gson:2.13.1")
+    implementation("com.google.code.gson:gson:2.13.2")
     
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
