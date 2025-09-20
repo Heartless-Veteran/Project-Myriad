@@ -121,6 +121,17 @@ private fun OnlineBrowseContent() {
     }
 }
 
+/**
+ * Composable that renders the "Local Files" tab content for the Browse screen.
+ *
+ * Displays a scrollable column containing:
+ * - A section header ("Local Library").
+ * - A "Library Statistics" card showing placeholder counts for manga, anime, and total storage.
+ * - A "File Management" card describing current progress and planned import/scan capabilities.
+ *
+ * All content is currently informational/placeholders (non-interactive) and reflects the app's
+ * local library status and development notes for file import/scanning features.
+ */
 @Composable
 private fun LocalFilesContent() {
     LazyColumn(

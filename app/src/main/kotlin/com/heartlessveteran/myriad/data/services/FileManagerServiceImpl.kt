@@ -160,6 +160,16 @@ class FileManagerServiceImpl(
         }
     }
 
+    /**
+     * Extracts pages from a manga archive into a target directory and returns the list of extracted file paths.
+     *
+     * Validates the archive size against the service's MAX_EXTRACTION_SIZE before extracting. If the archive
+     * exceeds the limit or extraction fails, returns a Result.Error with the underlying exception and a message.
+     *
+     * @param archivePath Filesystem path to the archive to extract (e.g., .cbz, .cbr).
+     * @param extractPath Destination directory where pages will be extracted; the method delegates creation to the extractor.
+     * @return Result.Success containing a list of extracted page file paths on success, or Result.Error on failure.
+     */
     override suspend fun extractPagesFromArchive(
         archivePath: String,
         extractPath: String,
@@ -184,10 +194,27 @@ class FileManagerServiceImpl(
         }
     }
 
-    override suspend fun extractMetadata(filePath: String): Result<Map<String, Any>> =
+    /**
+         * Extracts metadata from a local manga archive file.
+         *
+         * Delegates to MetadataExtractor to parse and return metadata found in the file at [filePath].
+         *
+         * Common metadata keys produced by the extractor include (when available): `title`, `fileSize`,
+         * `groups`, `additionalInfo`, `chapter`, and `volume`.
+         *
+         * @param filePath Absolute or relative path to the archive file to inspect.
+         * @return A [Result] containing a map of metadata on success or an error on failure.
+         */
+        override suspend fun extractMetadata(filePath: String): Result<Map<String, Any>> =
         MetadataExtractor.extractMetadata(filePath)
 
-    override fun isSupportedMangaFile(filePath: String): Boolean = ArchiveUtils.isSupportedArchive(filePath)
+    /**
+ * Returns true if the given file path refers to a supported manga archive (e.g. `.cbz`, `.cbr`).
+ *
+ * @param filePath Path to the file to check.
+ * @return `true` if the file is a supported archive format; otherwise `false`.
+ */
+override fun isSupportedMangaFile(filePath: String): Boolean = ArchiveUtils.isSupportedArchive(filePath)
 
     override suspend fun getDirectorySize(directoryPath: String): Result<Long> {
         return withContext(Dispatchers.IO) {

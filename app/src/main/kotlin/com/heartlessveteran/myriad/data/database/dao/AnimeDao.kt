@@ -33,9 +33,27 @@ interface AnimeDao {
     @Query("SELECT * FROM anime WHERE status = :status")
     fun getAnimeByStatus(status: AnimeStatus): Flow<List<Anime>>
 
+    /**
+     * Returns a flow that emits lists of anime whose `genres` column contains the given genre.
+     *
+     * The match is performed using a SQL `LIKE` substring match (i.e., any row where `genres` contains `genre`).
+     *
+     * @param genre The genre substring to search for (matched anywhere within the `genres` column).
+     * @return A Flow that emits lists of matching Anime entities.
+     */
     @Query("SELECT * FROM anime WHERE genres LIKE '%' || :genre || '%'")
     fun getAnimeByGenre(genre: String): Flow<List<Anime>>
 
+    /**
+     * Update the watch progress for a specific anime record.
+     *
+     * Suspends and updates the stored `watchedEpisodes` count and `lastWatchedDate` for the anime with the given `animeId`.
+     * If no record matches `animeId`, the call completes without affecting any rows.
+     *
+     * @param animeId The unique identifier of the anime to update.
+     * @param watchedEpisodes The new number of watched episodes to store.
+     * @param lastWatchedDate The timestamp of the last watched episode.
+     */
     @Query(
         "UPDATE anime SET watchedEpisodes = :watchedEpisodes, lastWatchedDate = :lastWatchedDate WHERE id = :animeId",
     )

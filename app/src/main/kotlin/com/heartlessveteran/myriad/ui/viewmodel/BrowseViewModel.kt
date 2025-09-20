@@ -33,6 +33,18 @@ class BrowseViewModel(
         loadLatestManga()
     }
 
+    /**
+     * Loads the latest manga (page 1) and updates the browse UI state.
+     *
+     * Prepares the UI for a non-search load (clears search query and marks not searching), sets loading,
+     * then collects the flow returned by getLatestMangaUseCase(1) in the ViewModel scope. While collecting:
+     * - On Success: sets isLoading = false, replaces the manga list, clears error, and sets page = 1.
+     * - On Error: sets isLoading = false and updates the error message with the result message, the exception
+     *   message, or a default fallback.
+     * - On Loading: keeps isLoading = true and clears any error.
+     *
+     * This function has the side effect of updating the internal _uiState and launching a coroutine in viewModelScope.
+     */
     fun loadLatestManga() {
         _uiState.update { it.copy(isLoading = true, error = null, searchQuery = "", isSearching = false) }
         getLatestMangaUseCase(1)
@@ -56,6 +68,17 @@ class BrowseViewModel(
             }.launchIn(viewModelScope)
     }
 
+    /**
+     * Performs a manga search for the given query and updates the browse UI state with the results.
+     *
+     * If the query is blank this delegates to [loadLatestManga]. Otherwise it starts a search (page 1),
+     * sets the UI into a searching/loading state, and collects results from [searchMangaUseCase] in
+     * the ViewModel scope. On success it replaces the displayed manga and resets paging; on error it
+     * sets a human-readable error message (preferring the result message, then the exception message,
+     * then a default); while loading it keeps the UI in a loading state.
+     *
+     * @param query The search string; a blank value will reload the latest manga instead of searching.
+     */
     fun searchManga(query: String) {
         if (query.isBlank()) {
             loadLatestManga()
