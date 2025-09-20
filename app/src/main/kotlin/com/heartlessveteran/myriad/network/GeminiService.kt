@@ -10,8 +10,8 @@ import retrofit2.http.POST
 private const val GEMINI_GENERATE_CONTENT_ENDPOINT = "v1/models/gemini-pro:generateContent"
 private const val DEFAULT_TEMPERATURE = 0.7f
 private const val DEFAULT_TOP_K = 40
-private const val DEFAULT_TOP_P = 0.9f
-private const val DEFAULT_MAX_OUTPUT_TOKENS = 1000
+private const val DEFAULT_TOP_P = 0.95f
+private const val DEFAULT_MAX_OUTPUT_TOKENS = 1024
 
 /**
  * Retrofit service interface for Google Gemini API chat endpoints.

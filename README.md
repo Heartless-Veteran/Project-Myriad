@@ -21,7 +21,7 @@
 ## 🌟 Features
 
 ### 📚 **The Vault** - Local Media Management
-- **Multi-format Support**: .cbz/.cbr manga archives and .mp4/.mkv/.avi anime files
+- **Multi-format Support**: .cbz/.cbr manga archives and .mp4/.mkv anime files (.avi legacy support)
 - **Smart Organization**: Automatic metadata extraction and library organization
 - **Offline First**: Full functionality without internet connection
 - **Advanced Search**: Powerful filtering and discovery within your collection
@@ -53,7 +53,7 @@
 <td valign="top" width="33%">
 
 ### **Core**
-- **Kotlin** - Modern, expressive language
+- **Kotlin 2.2.20** - Modern, expressive language
 - **Android SDK 36** - Latest Android capabilities
 - **Material 3** - Cutting-edge design system
 - **Jetpack Compose** - Declarative UI toolkit
@@ -84,11 +84,7 @@
 
 ## 🔄 Development Workflow
 
-Project Myriad includes automated code quality checks and documentation:
-
-**Quality Tools**: ktlint, Detekt, Android Lint, JaCoCo test coverage  
-**Documentation**: Automated API docs, README statistics, architecture validation  
-**CI/CD**: Runs on every push, PR, and weekly schedule
+**Automated Quality**: ktlint, Detekt, Android Lint, JaCoCo coverage with CI/CD on every push.
 
 📖 **[Complete Workflow Documentation](docs/AUTOMATED_WORKFLOW.md)**
 
@@ -157,9 +153,7 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern, buil
 
 ## 🤖 AI-Powered Development
 
-**Project Myriad** includes **Gemini Auto Enhanced** - an advanced AI-powered code fixing system that automatically identifies and resolves code issues in pull requests with language-specific intelligence.
-
-**Key Features**: Language-specific analysis, smart AI model selection, configurable rules, rich reporting, and direct commit integration.
+**Gemini Auto Enhanced**: AI-powered code fixing system with language-specific analysis and automated issue resolution.
 
 📖 **[Complete Setup Guide & Documentation](docs/GEMINI_AUTO.md)**
 

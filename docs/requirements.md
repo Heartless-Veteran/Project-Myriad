@@ -9,7 +9,7 @@ Project Myriad is a comprehensive Android application for manga and anime enthus
 #### Requirements:
 - Implement offline-first management with smart caching
 - Support for `.cbz`, `.cbr` manga formats
-- Support for `.mp4`, `.mkv`, `.avi` anime formats
+- Support for `.mp4`, `.mkv` anime formats (`.avi` supported for compatibility)
 - Provide metadata scraping and organization
 - Enable local library management
 - Create a file system structure for organizing content
@@ -42,7 +42,7 @@ Project Myriad is a comprehensive Android application for manga and anime enthus
 
 ### Platform Support
 - Target Android API 24-36 (Android 7.0 to Android 15)
-- Support ARM, ARM64, x86, x86_64 architectures
+- Primary support for ARM, ARM64 architectures (x86/x86_64 for development only)
 - Optimize for various screen sizes and resolutions
 - Leverage Android's ART runtime for performance
 

@@ -19,6 +19,7 @@ build/
 captures/
 .externalNativeBuild
 .cxx/
+.kotlin/
 
 # VS Code
 .vscode/

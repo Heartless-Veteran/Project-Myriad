@@ -51,7 +51,8 @@ class MangaRepository @Inject constructor(
 
 - **Component Structure**:
   - Use MVVM architecture with ViewModels and Repository pattern.
-  - Keep Activities and Fragments lightweight, delegate business logic to ViewModels.
+  - Use Jetpack Compose for pure declarative UI (no Activities/Fragments for UI)
+  - Keep Activities lightweight as entry points, delegate business logic to ViewModels.
   - Use dependency injection with Hilt for better testability.
 - **State Management**:
   - Use StateFlow for reactive UI updates.
