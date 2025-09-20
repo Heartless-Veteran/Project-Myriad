@@ -124,7 +124,7 @@ function matchesPattern(filePath, patterns) {
       .replace(/\./g, '\\.')               // Escape dots
       .replace(/\//g, '\\/');              // Escape forward slashes
     
-    const regex = new RegExp('^' + regex_pattern + '$');
+    const regex = new RegExp('^' + regexPattern + '$');
     return regex.test(filePath);
   });
 }
@@ -297,21 +297,22 @@ function detectBasicCodeIssues(filePath, content) {
       // Detect potential null pointer exceptions
       lines.forEach((line, index) => {
         if (/(?<!\?)\.[a-zA-Z]/.test(line) && !/^\s*import/.test(line)) {
-        // 1. Ignore lines using safe call operator (?.)
-        if (line.includes('?.')) return;
-        // 2. Ignore lines using scope functions (let, also, run, apply, with)
-        if (/\b(let|also|run|apply|with)\b/.test(line)) return;
-        // 3. Match chained access like: object.property.method
-        //    This regex matches a dot, followed by an identifier, followed by another dot
-        const chainedAccessPattern = /\.[a-zA-Z_$][a-zA-Z0-9_$]*\./;
-        if (chainedAccessPattern.test(line)) {
-          issues.push({
-            line: index + 1,
-            message: 'Potential null pointer exception - consider using safe call operator',
-            severity: 'warning',
-            category: 'security',
-            ruleId: 'null-safety'
-          });
+          // 1. Ignore lines using safe call operator (?.)
+          if (line.includes('?.')) return;
+          // 2. Ignore lines using scope functions (let, also, run, apply, with)
+          if (/\b(let|also|run|apply|with)\b/.test(line)) return;
+          // 3. Match chained access like: object.property.method
+          //    This regex matches a dot, followed by an identifier, followed by another dot
+          const chainedAccessPattern = /\.[a-zA-Z_$][a-zA-Z0-9_$]*\./;
+          if (chainedAccessPattern.test(line)) {
+            issues.push({
+              line: index + 1,
+              message: 'Potential null pointer exception - consider using safe call operator',
+              severity: 'warning',
+              category: 'security',
+              ruleId: 'null-safety'
+            });
+          }
         }
       });
     }
@@ -331,7 +332,7 @@ function detectBasicCodeIssues(filePath, content) {
         }
       }
     }
-            line: lines.findIndex(l => l.includes('data class')) + 1 || 1,
+    
     if (config.kotlin.rules['data-class-conventions']) {
       // Check for data class best practices
       if (content.includes('data class')) {
