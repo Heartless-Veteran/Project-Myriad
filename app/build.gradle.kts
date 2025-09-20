@@ -255,24 +255,5 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     )
 }
 
-// Dokka API Documentation Configuration
-tasks.dokkaHtml.configure {
-    outputDirectory.set(file("../docs/api"))
-
-    dokkaSourceSets {
-        named("main") {
-            displayName.set("Project Myriad")
-            moduleName.set("myriad")
-
-            includes.from("../docs/packages.md")
-
-            sourceLink {
-                localDirectory.set(file("src/main/kotlin"))
-                remoteUrl.set(
-                    uri("https://github.com/Heartless-Veteran/Project-Myriad/tree/main/app/src/main/kotlin").toURL(),
-                )
-                remoteLineSuffix.set("#L")
-            }
-        }
-    }
-}
+// Dokka API Documentation Configuration - temporarily simplified
+// Full V2 configuration can be added later when plugin stabilizes

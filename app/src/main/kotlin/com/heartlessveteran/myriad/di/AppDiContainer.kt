@@ -16,43 +16,37 @@ import com.heartlessveteran.myriad.domain.usecase.SearchMangaUseCase
  * This centralized container simplifies dependency access across the app.
  */
 object AppDiContainer {
-    
     /**
      * Get FileManagerService for local file operations.
      */
-    fun getFileManagerService(context: Context): FileManagerService =
-        LibraryDiContainer.getFileManagerService(context)
+    fun getFileManagerService(context: Context): FileManagerService = LibraryDiContainer.getFileManagerService(context)
 
     /**
      * Get DownloadService for background downloads.
      */
-    fun getDownloadService(context: Context): DownloadService =
-        DownloadDiContainer.getDownloadService(context)
+    fun getDownloadService(context: Context): DownloadService = DownloadDiContainer.getDownloadService(context)
 
     /**
      * Get SourceService for online content discovery.
      */
-    fun getSourceService(): SourceService =
-        DownloadDiContainer.getSourceService()
+    fun getSourceService(): SourceService = DownloadDiContainer.getSourceService()
 
     /**
      * Get MangaRepository for manga data operations.
      */
-    fun getMangaRepository(context: Context): MangaRepository =
-        LibraryDiContainer.getMangaRepository(context)
+    fun getMangaRepository(context: Context): MangaRepository = LibraryDiContainer.getMangaRepository(context)
 
     /**
      * Get SourceRepository for online manga data.
      */
-    fun getSourceRepository(): SourceRepository =
-        BrowseDiContainer.sourceRepository
+    fun getSourceRepository(): SourceRepository = BrowseDiContainer.sourceRepository
 
     /**
      * Get ImportMangaFromFileUseCase for file import operations.
      */
     fun getImportMangaFromFileUseCase(context: Context): ImportMangaFromFileUseCase =
         ImportMangaFromFileUseCase(
-            fileManagerService = getFileManagerService(context)
+            fileManagerService = getFileManagerService(context),
         )
 
     /**
@@ -60,20 +54,18 @@ object AppDiContainer {
      */
     fun getDownloadMangaUseCase(context: Context): DownloadMangaUseCase =
         DownloadMangaUseCase(
-            downloadService = getDownloadService(context)
+            downloadService = getDownloadService(context),
         )
 
     /**
      * Get GetLatestMangaUseCase for fetching latest manga.
      */
-    fun getGetLatestMangaUseCase(): GetLatestMangaUseCase =
-        BrowseDiContainer.getLatestMangaUseCase
+    fun getGetLatestMangaUseCase(): GetLatestMangaUseCase = BrowseDiContainer.getLatestMangaUseCase
 
     /**
      * Get SearchMangaUseCase for searching manga.
      */
-    fun getSearchMangaUseCase(): SearchMangaUseCase =
-        BrowseDiContainer.searchMangaUseCase
+    fun getSearchMangaUseCase(): SearchMangaUseCase = BrowseDiContainer.searchMangaUseCase
 
     /**
      * Clear all cached instances (useful for testing).

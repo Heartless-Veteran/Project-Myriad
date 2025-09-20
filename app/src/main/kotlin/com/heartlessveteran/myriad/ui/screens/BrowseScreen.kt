@@ -35,13 +35,13 @@ fun BrowseScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
-    
+
     // File import functionality
     var showImportDialog by remember { mutableStateOf(false) }
     var showProgressDialog by remember { mutableStateOf(false) }
     val fileImportViewModel = remember { FileImportViewModel(context) }
     val importStatus by fileImportViewModel.importStatus.collectAsState()
-    
+
     // Handle import status changes
     LaunchedEffect(importStatus) {
         if (importStatus.isLoading) {
@@ -166,16 +166,16 @@ fun BrowseScreen(
         },
         onDirectorySelected = { uri ->
             fileImportViewModel.importDirectory(uri)
-        }
+        },
     )
 
     ImportProgressDialog(
         isVisible = showProgressDialog,
-        onDismiss = { 
+        onDismiss = {
             showProgressDialog = false
             fileImportViewModel.clearImportStatus()
         },
-        importStatus = importStatus
+        importStatus = importStatus,
     )
 }
 
@@ -204,7 +204,7 @@ private fun MangaGridItem(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    
+
     Card(onClick = onClick) {
         Column {
             Box {
@@ -218,33 +218,37 @@ private fun MangaGridItem(
                             .aspectRatio(0.7f)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                 )
-                
+
                 // Download button overlay for online manga
                 if (!manga.isLocal) {
                     FloatingActionButton(
                         onClick = {
                             // Demo: Start download using the download service
                             // In a real app, this would be handled by a ViewModel
-                            val downloadService = com.heartlessveteran.myriad.di.AppDiContainer.getDownloadService(context)
+                            val downloadService =
+                                com.heartlessveteran.myriad.di.AppDiContainer.getDownloadService(
+                                    context,
+                                )
                             coroutineScope.launch {
                                 downloadService.enqueueMangaDownload(manga, null)
                             }
                         },
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(8.dp)
-                            .size(36.dp),
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp)
+                                .size(36.dp),
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Download",
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(16.dp),
                         )
                     }
                 }
             }
-            
+
             Text(
                 text = manga.title,
                 style = MaterialTheme.typography.titleSmall,

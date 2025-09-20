@@ -44,7 +44,8 @@ class GeminiAuthInterceptorTest {
                     object : okhttp3.Call {
                         override fun request(): Request = request()
 
-                        override fun execute(): okhttp3.Response = throw UnsupportedOperationException("Not implemented in mock")
+                        override fun execute(): okhttp3.Response =
+                            throw UnsupportedOperationException("Not implemented in mock")
 
                         override fun enqueue(responseCallback: okhttp3.Callback): Unit =
                             throw UnsupportedOperationException("Not implemented in mock")

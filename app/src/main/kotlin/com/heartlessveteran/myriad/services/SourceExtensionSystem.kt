@@ -440,7 +440,8 @@ class SourceExtensionSystem
                     totalRequests = stats.totalRequests + 1,
                     successfulRequests = if (success) stats.successfulRequests + 1 else stats.successfulRequests,
                     failedRequests = if (!success) stats.failedRequests + 1 else stats.failedRequests,
-                    averageResponseTime = ((stats.averageResponseTime * (stats.totalRequests - 1)) + responseTime) / stats.totalRequests,
+                    averageResponseTime =
+                        ((stats.averageResponseTime * (stats.totalRequests - 1)) + responseTime) / stats.totalRequests,
                     lastUsed = System.currentTimeMillis(),
                 )
         }
