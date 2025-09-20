@@ -2,7 +2,7 @@
 # Static code analysis rules for Kotlin
 
 build:
-  maxIssues: 1000  # Increased to allow more issues during initial setup
+  maxIssues: 100  # Reduced threshold to encourage addressing critical issues
   excludeCorrectable: false
   weights:
     complexity: 2
