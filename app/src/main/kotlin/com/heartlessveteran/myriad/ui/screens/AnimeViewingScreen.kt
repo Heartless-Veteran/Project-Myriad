@@ -139,7 +139,7 @@ fun AnimeViewingScreen(
         LaunchedEffect(errorMessage) {
             // Show error snackbar or dialog
             // For now, just clear the error after showing
-            kotlinx.coroutines.delay(3000)
+            delay(3000)
             error = null
         }
     }
