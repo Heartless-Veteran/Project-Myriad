@@ -7,10 +7,10 @@
 This roadmap consolidates all development plans, tasks, and timelines for Project Myriad. It serves as the single source of truth for project direction, feature development, and implementation priorities.
 
 ### Project Vision
-- **The Vault**: Advanced local media management with .cbz/.cbr manga and .mp4/.mkv/.avi anime support
+- **The Vault**: Advanced local media management with .cbz/.cbr manga and .mp4/.mkv anime support (.avi legacy compatibility)
 - **AI Core**: OCR translation, art style analysis, and intelligent recommendations
 - **The Browser**: Extensible online content discovery and download system
-- **Modern Stack**: Kotlin 2.2, Android SDK 24-36, Jetpack Compose, Clean Architecture, Room Database
+- **Modern Stack**: Kotlin 2.2.20, Android SDK 24-36, Jetpack Compose, Clean Architecture, Room Database
 
 ---
 

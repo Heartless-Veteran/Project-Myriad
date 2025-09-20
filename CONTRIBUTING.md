@@ -8,9 +8,9 @@ Welcome to **Project Myriad** - The Definitive Manga and Anime Platform! We're e
 
 - **Android Studio** Arctic Fox (2020.3.1) or later
 - **JDK 11** or higher
-- **Android SDK** with API level 36 or higher
+- **Android SDK** with API levels 24-36
 - **Git** for version control
-- **Kotlin** 2.0.21 knowledge
+- **Kotlin** 2.2.20 knowledge
 
 ### Development Environment Setup
 
