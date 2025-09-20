@@ -346,12 +346,14 @@ class TrackingServiceImpl(
 
     private fun buildMalAuthUrl(state: String): String {
         // TODO: Use proper OAuth2 parameters
-        return "$MAL_AUTH_URL?client_id=your_client_id&response_type=code&state=$state&redirect_uri=myriad://auth/callback"
+        return "$MAL_AUTH_URL?client_id=your_client_id&response_type=code&state=$state" +
+            "&redirect_uri=myriad://auth/callback"
     }
 
     private fun buildAniListAuthUrl(state: String): String {
         // TODO: Use proper OAuth2 parameters
-        return "$ANILIST_AUTH_URL?client_id=your_client_id&response_type=code&state=$state&redirect_uri=myriad://auth/callback"
+        return "$ANILIST_AUTH_URL?client_id=your_client_id&response_type=code&state=$state" +
+            "&redirect_uri=myriad://auth/callback"
     }
 
     private fun generateSampleTrackingEntries(

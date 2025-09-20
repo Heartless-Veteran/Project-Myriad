@@ -62,7 +62,9 @@ class BrowseViewModel
                             is Result.Error -> {
                                 currentState.copy(
                                     isLoading = false,
-                                    error = result.message ?: result.exception.message ?: "An unexpected error occurred",
+                                    error =
+                                        result.message ?: result.exception.message
+                                            ?: "An unexpected error occurred",
                                 )
                             }
                             is Result.Loading -> {
@@ -101,7 +103,9 @@ class BrowseViewModel
                             is Result.Error -> {
                                 currentState.copy(
                                     isLoading = false,
-                                    error = result.message ?: result.exception.message ?: "An unexpected error occurred",
+                                    error =
+                                        result.message ?: result.exception.message
+                                            ?: "An unexpected error occurred",
                                 )
                             }
                             is Result.Loading -> {

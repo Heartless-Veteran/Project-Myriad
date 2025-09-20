@@ -18,10 +18,8 @@ import com.heartlessveteran.myriad.ui.screens.TapZoneConfiguration
  *
  * This component provides customizable tap zones that can trigger different actions
  * based on where the user taps on the screen. Useful for page navigation in manga readers.
- */
-
-/**
- * Represents a tap zone area and its associated action
+ *
+ * @see TapZone Represents a tap zone area and its associated action
  */
 data class TapZone(
     val action: TapAction,

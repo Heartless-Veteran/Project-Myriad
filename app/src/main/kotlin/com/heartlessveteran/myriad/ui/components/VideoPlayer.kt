@@ -32,10 +32,8 @@ import kotlinx.coroutines.delay
  * - Progress tracking and seeking
  * - Volume and brightness controls
  * - Full-screen support
- */
-
-/**
- * Video player configuration options
+ *
+ * @see VideoPlayerConfiguration Video player configuration options
  */
 data class VideoPlayerConfiguration(
     val autoPlay: Boolean = false,

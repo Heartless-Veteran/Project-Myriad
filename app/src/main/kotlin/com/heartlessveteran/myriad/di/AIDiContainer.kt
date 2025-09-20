@@ -47,10 +47,6 @@ object AIDiContainer {
         }
 
     /**
-     * Get GetRecommendationsUseCase instance.
-     */
-
-    /**
      * Get GetRecommendationsUseCase with context.
      */
     fun getRecommendationsUseCase(context: android.content.Context): GetRecommendationsUseCase =

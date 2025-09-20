@@ -23,10 +23,8 @@ import kotlinx.coroutines.delay
  * - Episode navigation and tracking
  * - Playback settings and controls
  * - Progress tracking and resume functionality
- */
-
-/**
- * Anime episode information
+ *
+ * @see AnimeEpisode Anime episode information
  */
 data class AnimeEpisode(
     val id: String,

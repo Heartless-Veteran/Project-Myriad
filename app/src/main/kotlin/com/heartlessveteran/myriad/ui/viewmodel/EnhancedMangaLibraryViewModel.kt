@@ -56,10 +56,8 @@ enum class MangaFilter(val displayName: String) {
 
 /**
  * Enhanced filter options - Using basic MangaFilter to avoid duplication
- */
-
-/**
- * Sort order options
+ *
+ * @see SortOrder Sort order options
  */
 enum class SortOrder(
     val displayName: String,

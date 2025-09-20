@@ -157,8 +157,11 @@ fun BackupRestoreScreen(onBackClick: () -> Unit = {}) {
                                             when (result) {
                                                 is com.heartlessveteran.myriad.domain.models.Result.Success -> {
                                                     val backupsResult = backupService.getLocalBackups()
-                                                    if (backupsResult is com.heartlessveteran.myriad.domain.models.Result.Success) {
-                                                        backups = backupsResult.data
+                                                    val successResult =
+                                                        backupsResult as?
+                                                            com.heartlessveteran.myriad.domain.models.Result.Success
+                                                    if (successResult != null) {
+                                                        backups = successResult.data
                                                     }
                                                 }
                                                 is com.heartlessveteran.myriad.domain.models.Result.Error -> {
@@ -252,8 +255,11 @@ fun BackupRestoreScreen(onBackClick: () -> Unit = {}) {
                                             try {
                                                 backupService.deleteBackup(backupToDelete.id)
                                                 val backupsResult = backupService.getLocalBackups()
-                                                if (backupsResult is com.heartlessveteran.myriad.domain.models.Result.Success) {
-                                                    backups = backupsResult.data
+                                                val successResult =
+                                                    backupsResult as?
+                                                        com.heartlessveteran.myriad.domain.models.Result.Success
+                                                if (successResult != null) {
+                                                    backups = successResult.data
                                                 }
                                             } catch (e: Exception) {
                                                 errorMessage = "Failed to delete backup: ${e.message}"
