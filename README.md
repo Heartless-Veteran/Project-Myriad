@@ -1,31 +1,5 @@
 # Project Myriad 🚀
 
-<!-- PROJECT_STATS -->
-## 📊 Project Statistics
-
-| Metric | Value |
-|--------|-------|
-| **Kotlin Files** | 65 |
-| **Test Files** | 11 |
-| **Lines of Code** | 9,217 |
-| **Dependencies** | 52 |
-| **Target SDK** | 35 |
-| **Min SDK** | 24 |
-| **Version** | 1.0.0 |
-| **Commits** | 4 |
-| **Contributors** | 0 |
-
-*Last updated: 2025-09-20*
-
-### Dependency Breakdown
-- **Implementation**: 41 dependencies
-- **Test**: 7 dependencies  
-- **Android Test**: 4 dependencies
-
-### Recent Activity
-- Latest commit: 909759e Fix most ktlint formatting issues - compilation successful
-
-<!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
 
 <div align="center">
@@ -136,40 +110,15 @@ Project Myriad features a comprehensive **Automated Documentation & Code Quality
 
 ## 🏗️ Architecture
 
-Project Myriad follows **Clean Architecture** principles with clear separation between layers:
+Project Myriad follows **Clean Architecture** principles with MVVM pattern, built using:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    🎨 Presentation Layer                    │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
-│  │   Compose   │ │  ViewModels │ │   Navigation        │   │
-│  │   Screens   │ │   (MVVM)    │ │   (Type-safe)       │   │
-│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                               │
-┌─────────────────────────────────────────────────────────────┐
-│                   🧠 Domain Layer                           │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
-│  │  Use Cases  │ │ Repositories│ │   Domain Models     │   │
-│  │ (Business)  │ │(Interfaces) │ │   (Pure Kotlin)     │   │
-│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                               │
-┌─────────────────────────────────────────────────────────────┐
-│                    💾 Data Layer                            │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐   │
-│  │    Room     │ │   Retrofit  │ │   File System       │   │
-│  │  Database   │ │  API Client │ │   (.cbz/.cbr)       │   │
-│  └─────────────┘ └─────────────┘ └─────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+- **Presentation Layer**: Jetpack Compose + ViewModels + Type-safe Navigation
+- **Domain Layer**: Use Cases + Repository Interfaces + Domain Models  
+- **Data Layer**: Room Database + Retrofit API + File System
 
-### Key Architectural Principles
+**Key Principles**: Single Source of Truth, Unidirectional Data Flow, Separation of Concerns
 
-- **Single Source of Truth** - Room database as the authoritative data source
-- **Unidirectional Data Flow** - Clear data flow from UI to data layer
-- **Separation of Concerns** - Each layer has distinct responsibilities
-- **Dependency Inversion** - Abstractions don't depend on concretions
+📖 **[Detailed Architecture Documentation](DEVELOPMENT.md#architecture-details)**
 
 ---
 
@@ -179,105 +128,54 @@ Project Myriad follows **Clean Architecture** principles with clear separation b
 
 - **Android Studio** Hedgehog (2023.1.1) or later
 - **JDK 11** or higher  
-- **Android SDK** with API 36+
-- **4GB+ RAM** recommended for smooth development
+- **Android SDK** with API 24-36
+- **4GB+ RAM** recommended
 
-### Quick Setup
+### Setup & Run
 
-1. **Clone the Repository**
+1. **Clone and Build**
    ```bash
    git clone https://github.com/Heartless-Veteran/Project-Myriad.git
    cd Project-Myriad
-   ```
-
-2. **Configure API Keys** (Optional - for AI features)
-   ```bash
-   # Copy and edit local properties
-   cp local.properties.example local.properties
-   # Add your Gemini API key
-   echo "geminiApiKey=YOUR_API_KEY_HERE" >> local.properties
-   ```
-
-3. **Build & Run**
-   ```bash
-   # Build the project
    ./gradlew build
-   
-   # Run on device/emulator
+   ```
+
+2. **Install and Run**
+   ```bash
    ./gradlew installDebug
    ```
 
-### Development Setup
+3. **Optional: Configure AI Features**
+   ```bash
+   cp local.properties.example local.properties
+   echo "geminiApiKey=YOUR_API_KEY_HERE" >> local.properties
+   ```
 
-For detailed development setup instructions, see our [Contributing Guide](CONTRIBUTING.md).
+📖 **[Complete Development Setup Guide](DEVELOPMENT.md)**
 
 ---
 
 ## 📈 Roadmap
 
-For detailed development plans, timelines, and implementation roadmap, see our comprehensive **[🗺️ ROADMAP.md](ROADMAP.md)**.
+**Current Status**: Early development phase focusing on core architecture and foundation.
 
-**Quick Overview:**
-- **Phase 1 (Q1 2024)**: 🏗️ Foundation - Core architecture and basic functionality *(In Progress)*
-- **Phase 2 (Q2 2024)**: 🚀 Core Features - Media management and reader capabilities *(Planned)*
-- **Phase 3 (Q3 2024)**: 🤖 AI Integration - OCR translation and intelligent features *(Planned)*
-- **Phase 4 (Q4 2024)**: ✨ Polish & UX - Accessibility and user experience *(Planned)*
-- **Phase 5 (Q1 2025)**: 🔒 Security & Stability - Production readiness *(Planned)*
+**Development Priorities**:
+- 🏗️ **Foundation**: Core architecture and basic functionality *(In Progress)*
+- 📚 **Core Features**: Media management and reader capabilities *(Planned)*
+- 🤖 **AI Integration**: OCR translation and intelligent features *(Future)*
+- ✨ **Enhanced UX**: Accessibility and user experience improvements *(Future)*
 
----
-
-## 🤖 Gemini Auto Enhanced - AI Code Fixer
-
-**Project Myriad** includes an advanced AI-powered code fixing system with **language-specific intelligence** that automatically identifies and resolves code issues in pull requests.
-
-### ✨ Enhanced Features
-- 🔧 **Language-Specific Analysis**: Specialized rules for Kotlin, JavaScript, TypeScript, and Shell
-- 🧠 **Smart AI Selection**: Uses Gemini 1.5 Pro for complex tasks, Gemini 1.5 Flash for simple ones
-- ⚙️ **Configurable Rules**: Custom `.gemini-rules.json` for project-specific preferences
-- 📊 **Rich Reporting**: Categorized fixes with detailed statistics and educational explanations
-- 🛡️ **Enhanced Security**: Advanced validation, rate limiting, and secure processing
-- 🚀 **Direct Commits**: Applies fixes directly to your PR with detailed commit messages
-
-### 🔍 Language-Specific Optimizations
-- **Kotlin**: Null-safety, coroutine contexts, data classes, Compose performance
-- **JavaScript/TypeScript**: Modern syntax, unused imports, async/await patterns
-- **Shell Scripts**: Best practices, security patterns, shebang validation
-- **Security Analysis**: Vulnerability detection and automatic fixes
-- **Performance**: Language-specific optimization opportunities
-
-### 🛠️ Setup Gemini Auto Enhanced
-1. **Get API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. **Add Secret**: Go to Settings > Secrets > `GEMINI_API_KEY`
-3. **Custom Config**: Optional `.gemini-rules.json` for project-specific rules
-4. **Run Locally**: Use `./gradlew geminiAutoFix` for local analysis
-5. **Use**: Add `gemini-auto` label to any PR or let it run automatically
-
-### 📈 Advanced Configuration
-```json
-{
-  "kotlin": { "enabled": true, "rules": { "null-safety": true, "coroutine-context": true } },
-  "fixCategories": { "security": true, "performance": true, "style": true },
-  "modelSelection": { "defaultModel": "gemini-1.5-flash", "complexTaskModel": "gemini-1.5-pro" }
-}
-```
-
-For complete setup and configuration options, see **[📖 Enhanced Gemini Auto Guide](docs/GEMINI_AUTO.md)**.
+📋 **[Detailed Roadmap & Timeline](ROADMAP.md)**
 
 ---
 
-## 🎯 Key Features Comparison
+## 🤖 AI-Powered Development
 
-| Feature | Project Myriad | Tachiyomi | Other Apps |
-|---------|----------------|-----------|------------|
-| **Modern UI (Material 3)** | ✅ | ❌ | ⚠️ |
-| **AI-Powered Features** | ✅ | ❌ | ❌ |
-| **Local File Support** | ✅ | ✅ | ⚠️ |
-| **Online Sources** | 🚧 | ✅ | ✅ |
-| **Download Manager** | 🚧 | ✅ | ✅ |
-| **Clean Architecture** | ✅ | ❌ | ❌ |
-| **Kotlin Compose** | ✅ | ❌ | ❌ |
+**Project Myriad** includes **Gemini Auto Enhanced** - an advanced AI-powered code fixing system that automatically identifies and resolves code issues in pull requests with language-specific intelligence.
 
-*Legend: ✅ Implemented | 🚧 In Progress | ❌ Not Available | ⚠️ Limited*
+**Key Features**: Language-specific analysis, smart AI model selection, configurable rules, rich reporting, and direct commit integration.
+
+📖 **[Complete Setup Guide & Documentation](docs/GEMINI_AUTO.md)**
 
 ---
 
@@ -295,25 +193,6 @@ For complete setup and configuration options, see **[📖 Enhanced Gemini Auto G
 ```
 
 **Current Test Coverage**: 15% (Expanding to 70%+ target)
-
----
-
-## 📊 Project Statistics
-
-<div align="center">
-
-![GitHub code size](https://img.shields.io/github/languages/code-size/Heartless-Veteran/Project-Myriad)
-![Lines of code](https://img.shields.io/tokei/lines/github/Heartless-Veteran/Project-Myriad)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Heartless-Veteran/Project-Myriad)
-![GitHub last commit](https://img.shields.io/github/last-commit/Heartless-Veteran/Project-Myriad)
-
-</div>
-
-- **Languages**: Kotlin (95%), XML (5%)
-- **Architecture**: Clean Architecture + MVVM
-- **Minimum API**: 24 (Android 7.0)
-- **Target API**: 36 (Android 15+)
-- **Test Coverage**: 15% (improving to 70%+)
 
 ---
 
