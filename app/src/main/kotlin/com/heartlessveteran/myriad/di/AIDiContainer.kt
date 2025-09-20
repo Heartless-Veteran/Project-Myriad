@@ -49,18 +49,6 @@ object AIDiContainer {
     /**
      * Get GetRecommendationsUseCase instance.
      */
-    fun getRecommendationsUseCase(): GetRecommendationsUseCase =
-        recommendationsUseCase ?: synchronized(this) {
-            recommendationsUseCase ?: GetRecommendationsUseCase(
-                mangaRepository = LibraryDiContainer.getMangaRepository(
-                    // We need a context here - this is a limitation of the manual DI approach
-                    // In a real app, we'd pass context or use Hilt
-                    // For now, we'll handle this in the AppDiContainer
-                    throw IllegalStateException("Context required for MangaRepository")
-                )
-            ).also { recommendationsUseCase = it }
-        }
-
     /**
      * Get GetRecommendationsUseCase with context.
      */
