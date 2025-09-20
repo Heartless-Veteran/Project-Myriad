@@ -3,6 +3,7 @@ package com.heartlessveteran.myriad.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -15,13 +16,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.heartlessveteran.myriad.navigation.SettingsSection
 import com.heartlessveteran.myriad.ui.theme.AnimeAccent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
- * Anime Library Screen - Similar to manga library but for anime content
+ * Anime Library Screen - Shows local anime collection with episodes
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnimeLibraryScreen(onAnimeClick: (String) -> Unit) {
+    // Repository for managing anime episode data
+    val repository = remember { com.heartlessveteran.myriad.data.repository.LocalAnimeEpisodeRepository() }
+    
+    // State for episodes
+    var episodes by remember { mutableStateOf<List<com.heartlessveteran.myriad.domain.entities.AnimeEpisode>>(emptyList()) }
+    
+    // Load episodes
+    LaunchedEffect(Unit) {
+        episodes = repository.getAllEpisodes()
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = {
@@ -33,25 +48,175 @@ fun AnimeLibraryScreen(onAnimeClick: (String) -> Unit) {
             },
         )
 
-        Box(
+        LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Text(
-                    text = "Anime Library",
-                    style = MaterialTheme.typography.headlineSmall,
+            items(episodes) { episode ->
+                AnimeEpisodeCard(
+                    episode = episode,
+                    onClick = { onAnimeClick(episode.id) }
                 )
-                Text(
-                    text = "Coming soon in the next phase",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            }
+            
+            // Add import section
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Import Local Videos",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Supported formats: .mp4, .mkv, .avi",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Button(
+                            onClick = { /* TODO: Implement file picker */ },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Import Videos")
+                        }
+                    }
+                }
             }
         }
     }
+}
+
+/**
+ * Individual anime episode card
+ */
+@Composable
+fun AnimeEpisodeCard(
+    episode: com.heartlessveteran.myriad.domain.entities.AnimeEpisode,
+    onClick: () -> Unit
+) {
+    val progress = if (episode.duration > 0) {
+        (episode.watchProgress.toFloat() / episode.duration.toFloat()).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Placeholder thumbnail
+            Card(
+                modifier = Modifier.size(80.dp, 60.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                )
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Play",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            // Episode details
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = episode.title.ifEmpty { "Episode ${episode.episodeNumber}" },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = "Episode ${episode.episodeNumber}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                // Progress bar
+                if (progress > 0.0f) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                        color = AnimeAccent,
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Schedule,
+                        contentDescription = "Duration",
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = formatDuration(episode.duration),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    
+                    if (episode.isWatched) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Completed",
+                            modifier = Modifier.size(16.dp),
+                            tint = AnimeAccent
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Format duration from milliseconds to MM:SS format
+ */
+private fun formatDuration(durationMs: Long): String {
+    val totalSeconds = durationMs / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "%d:%02d".format(minutes, seconds)
 }
 
 /**
@@ -793,24 +958,106 @@ fun WatchingScreen(
     animeId: String,
     onBackPress: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    // Repository for managing anime episode data
+    val repository = remember { com.heartlessveteran.myriad.data.repository.LocalAnimeEpisodeRepository() }
+    
+    // State for episode data
+    var episode by remember { mutableStateOf<com.heartlessveteran.myriad.domain.entities.AnimeEpisode?>(null) }
+    var currentPosition by remember { mutableStateOf(0L) }
+    
+    // Load episode data
+    LaunchedEffect(animeId) {
+        episode = repository.getEpisodeById(animeId)
+        currentPosition = episode?.watchProgress ?: 0L
+    }
+    
+    // Handle back button with position saving
+    val handleBack = {
+        episode?.let { ep ->
+            CoroutineScope(Dispatchers.IO).launch {
+                repository.updateWatchProgress(ep.id, currentPosition)
+            }
+        }
+        onBackPress()
+    }
+    
+    episode?.let { ep ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Video player takes full screen
+            com.heartlessveteran.myriad.ui.components.VideoPlayer(
+                videoUrl = ep.localPath ?: "",
+                modifier = Modifier.fillMaxSize(),
+                initialPosition = ep.watchProgress,
+                onPositionChange = { position ->
+                    currentPosition = position
+                },
+                onVideoComplete = {
+                    // Mark episode as watched and return to library
+                    CoroutineScope(Dispatchers.IO).launch {
+                        repository.updateWatchProgress(ep.id, ep.duration)
+                    }
+                    handleBack()
+                }
+            )
+            
+            // Back button overlay (top-left corner)
+            IconButton(
+                onClick = handleBack,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = androidx.compose.ui.graphics.Color.White
+                )
+            }
+            
+            // Episode info overlay (top-right corner)
+            Card(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.7f)
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(
+                        text = ep.title,
+                        color = androidx.compose.ui.graphics.Color.White,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "Episode ${ep.episodeNumber}",
+                        color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+    } ?: run {
+        // Loading or error state
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Watching Screen",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Text(
-                text = "Anime ID: $animeId",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Button(onClick = onBackPress) {
-                Text("Back to Library")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = "Loading episode...",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Button(onClick = onBackPress) {
+                    Text("Back to Library")
+                }
             }
         }
     }
