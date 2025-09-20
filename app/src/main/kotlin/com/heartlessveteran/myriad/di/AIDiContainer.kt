@@ -3,9 +3,17 @@ package com.heartlessveteran.myriad.di
 import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase
 import com.heartlessveteran.myriad.network.GeminiService
+import com.heartlessveteran.myriad.network.GeminiAuthInterceptor
 import com.heartlessveteran.myriad.services.EnhancedAIService
 import com.heartlessveteran.myriad.services.SmartCacheService
 import com.heartlessveteran.myriad.data.cache.MemoryCache
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 /**
  * Manual dependency injection container for AI Core features.
@@ -64,16 +72,32 @@ object AIDiContainer {
      */
     private fun createGeminiService(): GeminiService {
         // Create basic implementation since we're using manual DI
-        // The actual service will be created via the existing network infrastructure
-        return NetworkModule.provideGeminiService(
-            NetworkModule.provideGeminiRetrofit(
-                NetworkModule.provideGeminiOkHttpClient(
-                    NetworkModule.provideHttpLoggingInterceptor(),
-                    NetworkModule.provideGeminiAuthInterceptor()
-                ),
-                NetworkModule.provideJson()
-            )
-        )
+        // Use simple network configuration for now
+        val json = Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+        }
+        
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        
+        val authInterceptor = GeminiAuthInterceptor()
+        
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
+            
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://generativelanguage.googleapis.com/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            
+        return retrofit.create(GeminiService::class.java)
     }
 
     /**

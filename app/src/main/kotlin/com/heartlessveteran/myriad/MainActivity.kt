@@ -11,13 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.heartlessveteran.myriad.ui.navigation.MyriadNavigation
 import com.heartlessveteran.myriad.ui.theme.MyriadTheme
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Main Activity for Project Myriad
  * Entry point for the Kotlin Android application
  */
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

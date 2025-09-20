@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.di
 
 import android.content.Context
+import androidx.room.Room
 import com.heartlessveteran.myriad.data.database.MyriadDatabase
 import com.heartlessveteran.myriad.data.repository.MangaRepositoryImpl
 import com.heartlessveteran.myriad.data.services.FileManagerServiceImpl
@@ -31,7 +32,11 @@ object LibraryDiContainer {
      */
     fun getDatabase(context: Context): MyriadDatabase =
         database ?: synchronized(this) {
-            database ?: DatabaseModule.provideDatabase(context).also { database = it }
+            database ?: Room.databaseBuilder(
+                context,
+                MyriadDatabase::class.java,
+                MyriadDatabase.DATABASE_NAME,
+            ).build().also { database = it }
         }
 
     /**

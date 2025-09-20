@@ -5,10 +5,8 @@ import com.heartlessveteran.myriad.domain.entities.MangaStatus
 import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.ui.common.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import javax.inject.Inject
 
 /**
  * Enhanced UI State with normalized structure for the Manga Library screen
@@ -77,9 +75,7 @@ enum class SortOrder(
 /**
  * Enhanced ViewModel with normalized state and better error handling
  */
-@HiltViewModel
 class EnhancedMangaLibraryViewModel
-    @Inject
     constructor(
         private val mangaRepository: MangaRepository,
     ) : BaseViewModel<EnhancedMangaLibraryUiState>(EnhancedMangaLibraryUiState()) {
