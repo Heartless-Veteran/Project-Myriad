@@ -116,16 +116,17 @@ fun VideoPlayer(
     }
     
     // Update player state periodically
-    LaunchedEffect(exoPlayer) {
-        while (true) {
-            if (exoPlayer.isPlaying) {
+    LaunchedEffect(playerState.isPlaying) {
+        if (playerState.isPlaying) {
+            while (true) {
+                val currentPosition = exoPlayer.currentPosition
                 playerState = playerState.copy(
-                    currentPosition = exoPlayer.currentPosition,
+                    currentPosition = currentPosition,
                     duration = exoPlayer.duration.takeIf { it != androidx.media3.common.C.TIME_UNSET } ?: 0L
                 )
-                onPositionChanged(exoPlayer.currentPosition)
+                onPositionChanged(currentPosition)
+                delay(1000) // Update every second
             }
-            delay(1000) // Update every second
         }
     }
     
