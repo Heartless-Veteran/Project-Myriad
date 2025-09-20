@@ -141,7 +141,9 @@ class ArchitectureValidator {
         const viewModelFiles = this.findFilesWithPattern('ViewModel.kt');
         viewModelFiles.forEach(file => {
             const content = fs.readFileSync(file, 'utf8');
-            if (!content.includes(': ViewModel()') && !content.includes(': AndroidViewModel(')) {
+            if (!content.includes(': ViewModel()') && 
+                !content.includes(': AndroidViewModel(') && 
+                !content.includes(': BaseViewModel<')) {
                 this.violations.push(`${path.basename(file)} has ViewModel suffix but doesn't extend ViewModel`);
             }
         });
@@ -225,7 +227,7 @@ class ArchitectureValidator {
 
     getExpectedPackageFromPath(filePath) {
         const relativePath = path.relative(this.srcPath, path.dirname(filePath));
-        const packageParts = relativePath.split(path.sep).filter(part => part !== '.');
+        const packageParts = relativePath.split(path.sep).filter(part => part !== '.' && part !== '');
         return `com.heartlessveteran.myriad${packageParts.length > 0 ? '.' + packageParts.join('.') : ''}`;
     }
 
