@@ -7,12 +7,12 @@
 |--------|-------|
 | **Kotlin Files** | 64 |
 | **Test Files** | 11 |
-| **Lines of Code** | 9,112 |
+| **Lines of Code** | 9,192 |
 | **Dependencies** | 52 |
 | **Target SDK** | 35 |
 | **Min SDK** | 24 |
 | **Version** | 1.0.0 |
-| **Commits** | 2 |
+| **Commits** | 4 |
 | **Contributors** | 0 |
 
 *Last updated: 2025-09-20*
@@ -23,7 +23,7 @@
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
-- Latest commit: 6cd2a4a Initial plan
+- Latest commit: 94aad5b Fix workflow naming conventions and deprecated configurations
 
 <!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
