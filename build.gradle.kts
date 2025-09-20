@@ -6,7 +6,7 @@ buildscript {
         set("minSdkVersion", 24)
         set("compileSdkVersion", 35)
         set("targetSdkVersion", 35)
-        set("kotlinVersion", "2.2.20")
+        set("kotlinVersion", "2.1.0")
         set("composeVersion", "2024.02.00")
         set("hiltVersion", "2.48")
         set("roomVersion", "2.6.1")
@@ -17,9 +17,10 @@ buildscript {
 
 plugins {
     id("com.android.application") version "8.13.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20" apply false
+    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0" apply false
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29" apply false
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
     // Code Quality plugins
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0" apply false

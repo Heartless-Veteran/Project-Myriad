@@ -6,26 +6,35 @@ This document outlines the dependency management strategy for Project Myriad, a 
 
 ### Deprecated Package Replacements
 
-The following deprecated packages have been updated or replaced:
+The following packages have been updated or replaced:
 
 1. **Hilt (Dagger) Dependency Injection** 
-   - Temporarily disabled due to Kotlin 2.0 KAPT compatibility issues
-   - Using manual dependency injection until KAPT is replaced with KSP
+   - ✅ **RESOLVED**: Successfully migrated from KAPT to KSP
+   - Hilt now fully operational with KSP annotation processing
+   - All dependency injection working with @HiltAndroidApp, @AndroidEntryPoint, @HiltViewModel
 
-2. **Android Gradle Plugin Updates** 
-   - Updated to version 8.12.1 for better Kotlin 2.0 support
+2. **Annotation Processing Migration**
+   - ✅ **COMPLETE**: Migrated from KAPT to KSP (Kotlin Symbol Processing)
+   - Room database compiler now uses KSP
+   - Hilt compiler now uses KSP
+   - KAPT completely removed from the project
+
+3. **Android Gradle Plugin Updates** 
+   - Updated to version 8.13.0 for better Kotlin 2.1 support
    - Improved build performance and compatibility
 
-3. **Kotlin Compiler Updates**
-   - Updated to Kotlin 2.2.10 with Compose compiler plugin
+4. **Kotlin Compiler Updates**
+   - Updated to Kotlin 2.1.0 with KSP 2.1.0-1.0.29 compatibility
    - Improved Jetpack Compose compilation performance
 
 ### Core Dependencies Updated
 
-- **Kotlin**: Updated to 2.2.10 (from 2.0.21)
-- **Android Gradle Plugin**: Updated to 8.12.1 (from 8.1.x)
-- **Jetpack Compose BOM**: Updated to 2024.02.00 (latest stable)
+- **Kotlin**: Updated to 2.1.0 (for KSP compatibility)
+- **Android Gradle Plugin**: Updated to 8.13.0 (from 8.1.x)
+- **Jetpack Compose BOM**: Updated to 2025.09.00 (latest stable)
 - **Android SDK**: Targeting API 35/36 (Android 15+)
+- **KSP**: Added KSP 2.1.0-1.0.29 for annotation processing
+- **Hilt**: Re-enabled with KSP (version 2.57.1)
 
 ## Renovate Configuration
 
@@ -69,8 +78,9 @@ The project uses Renovate for automated dependency management with the following
 
 ### Known Issues
 
-1. **Hilt/KAPT Compatibility**: Hilt is temporarily disabled due to Kotlin 2.0+ KAPT compatibility issues. Using manual dependency injection until KSP migration is complete.
-2. **Gradle Dependencies**: Some libraries may show warnings with Kotlin 2.2.10 but still function correctly.
-3. **Build Performance**: Large projects may benefit from enabling Gradle build cache and parallel builds.
+1. **Build Performance**: Large projects may benefit from enabling Gradle build cache and parallel builds.
+2. **Gradle Dependencies**: Some libraries may show deprecation warnings with Kotlin 2.1.0 but still function correctly.
+
+**Note**: The previous Hilt/KAPT compatibility issue has been resolved with the successful migration to KSP.
 
 3. **Android Build**: Clean and rebuild Android project after major dependency updates using `./gradlew clean build`

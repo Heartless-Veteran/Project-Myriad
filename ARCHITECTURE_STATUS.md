@@ -13,7 +13,7 @@ This document provides the comprehensive architectural breakdown and current imp
 - **UI**: Jetpack Compose (Material 3)
 - **Navigation**: Jetpack Navigation Compose
 - **Async**: Coroutines + Flow
-- **Dependency Injection**: Manual DI (Hilt disabled due to KAPT compatibility)
+- **Dependency Injection**: Hilt (successfully migrated from KAPT to KSP)
 - **Database**: Room (Flow-based DAOs)
 - **Networking**: Retrofit + Kotlinx Serialization (prepared)
 - **Image Loading**: Coil
@@ -258,9 +258,10 @@ Art Style Recognition
 
 **What You Have**:
 - ✅ Renovate automated dependency updates
-- ✅ Manual DI working (Hilt temporarily disabled)
+- ✅ Hilt dependency injection fully operational (migrated from KAPT to KSP)
 - ✅ Updated Gradle, Kotlin, Compose BOM
 - ✅ Android SDK 24-36 support
+- ✅ KSP annotation processing
 
 ---
 

@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    // id("kotlin-kapt") // Temporarily disabled due to Kotlin 2.0 incompatibility
-    // id("dagger.hilt.android.plugin") // Temporarily disabled due to kapt requirement
+    id("com.google.devtools.ksp")
+    id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
     // Code Quality plugins
@@ -103,12 +103,12 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.8.0")
     implementation("androidx.room:room-ktx:2.8.0")
-    // kapt("androidx.room:room-compiler:2.7.2") // Temporarily disabled
+    ksp("androidx.room:room-compiler:2.8.0")
 
     // Hilt Dependency Injection
     implementation("com.google.dagger:hilt-android:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    // kapt("com.google.dagger:hilt-compiler:2.57.1") // Temporarily disabled
+    ksp("com.google.dagger:hilt-compiler:2.57.1")
 
     // Network
     implementation("com.squareup.retrofit2:retrofit:3.0.0")

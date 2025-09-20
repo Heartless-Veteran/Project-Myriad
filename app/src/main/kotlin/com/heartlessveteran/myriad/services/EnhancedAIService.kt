@@ -372,7 +372,7 @@ class EnhancedAIService
                         )
                     val translatedText =
                         listOf(
-                            TextBound("Loading...", 100f, 80f, 80f, 20f, 0.5f),
+                            TranslatedTextBound("読み込み中", "Loading...", 100f, 80f, 80f, 20f, 0.5f),
                         )
                     TranslationResponse(
                         originalText = originalText,

@@ -1,5 +1,6 @@
 package com.heartlessveteran.myriad.di
 
+import com.heartlessveteran.myriad.data.network.MangaDxApi
 import com.heartlessveteran.myriad.network.GeminiAuthInterceptor
 import com.heartlessveteran.myriad.network.GeminiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -30,11 +31,25 @@ object NetworkModule {
     annotation class GeminiClient
 
     /**
+     * Qualifier annotation for MangaDx-specific Retrofit instance.
+     */
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class MangaDxRetrofit
+
+    /**
      * Qualifier annotation for Gemini-specific Retrofit instance.
      */
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class GeminiRetrofit
+
+    /**
+     * Qualifier annotation for general-purpose OkHttpClient.
+     */
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class GeneralClient
 
     /**
      * Provides a JSON serializer instance configured for API communication.
@@ -71,6 +86,23 @@ object NetworkModule {
     fun provideGeminiAuthInterceptor(): GeminiAuthInterceptor = GeminiAuthInterceptor()
 
     /**
+     * Provides a general-purpose OkHttpClient for standard API calls.
+     */
+    @Provides
+    @Singleton
+    @GeneralClient
+    fun provideGeneralOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+
+    /**
      * Provides an OkHttpClient configured specifically for Gemini API calls.
      */
     @Provides
@@ -90,6 +122,25 @@ object NetworkModule {
             .build()
 
     /**
+     * Provides a Retrofit instance configured for MangaDx API.
+     */
+    @Provides
+    @Singleton
+    @MangaDxRetrofit
+    fun provideMangaDxRetrofit(
+        @GeneralClient okHttpClient: OkHttpClient,
+        json: Json,
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit
+            .Builder()
+            .baseUrl(MangaDxApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    /**
      * Provides a Retrofit instance configured for Gemini API with Kotlinx Serialization.
      */
     @Provides
@@ -107,6 +158,15 @@ object NetworkModule {
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
+
+    /**
+     * Provides the MangaDxApi as a singleton.
+     */
+    @Provides
+    @Singleton
+    fun provideMangaDxApi(
+        @MangaDxRetrofit retrofit: Retrofit,
+    ): MangaDxApi = retrofit.create(MangaDxApi::class.java)
 
     /**
      * Provides the GeminiService as a singleton.

@@ -10,12 +10,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.util.Date
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * A concrete implementation of the [SourceRepository] for MangaDx.
  * It uses the [MangaDxApi] to fetch data and maps it to the domain entities.
  */
-class MangaDxSourceRepositoryImpl(
+class MangaDxSourceRepositoryImpl @Inject constructor(
     private val api: MangaDxApi,
 ) : SourceRepository {
     companion object {

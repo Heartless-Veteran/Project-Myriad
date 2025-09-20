@@ -4,13 +4,14 @@ import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 /**
  * Use case for searching manga by query.
  * Encapsulates the business logic of searching manga,
  * simplifying the ViewModel's responsibilities.
  */
-class SearchMangaUseCase(
+class SearchMangaUseCase @Inject constructor(
     private val sourceRepository: SourceRepository,
 ) {
     /**
