@@ -275,14 +275,14 @@ class NavigationService
         }
 
         /**
-             * Convert a Destination into the navigation route string used by NavController.
-             *
-             * Maps fixed destinations to their predefined route constants and delegates dynamic destinations
-             * (Reading, Watching, MangaDetail, AnimeDetail, Search, Settings) to their respective
-             * `createRoute` helpers so embedded parameters are included in the produced route.
-             *
-             * @return A route string suitable for NavController.navigate.
-             */
+         * Convert a Destination into the navigation route string used by NavController.
+         *
+         * Maps fixed destinations to their predefined route constants and delegates dynamic destinations
+         * (Reading, Watching, MangaDetail, AnimeDetail, Search, Settings) to their respective
+         * `createRoute` helpers so embedded parameters are included in the produced route.
+         *
+         * @return A route string suitable for NavController.navigate.
+         */
         private fun getRouteForDestination(destination: Destination): String =
             when (destination) {
                 is Destination.Home -> NavigationRoutes.HOME

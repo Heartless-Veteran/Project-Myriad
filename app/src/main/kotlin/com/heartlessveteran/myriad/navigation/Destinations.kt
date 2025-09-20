@@ -192,11 +192,11 @@ sealed class Destination {
     ) : Destination() {
         companion object {
             /**
-                 * Create the navigation route for a specific settings section.
-                 *
-                 * @param section The settings section to navigate to. Defaults to [SettingsSection.GENERAL].
-                 * @return The route string "settings/{section}" where `{section}` is the section name in lowercase.
-                 */
+             * Create the navigation route for a specific settings section.
+             *
+             * @param section The settings section to navigate to. Defaults to [SettingsSection.GENERAL].
+             * @return The route string "settings/{section}" where `{section}` is the section name in lowercase.
+             */
             fun createRoute(section: SettingsSection = SettingsSection.GENERAL): String =
                 "settings/${section.name.lowercase()}"
         }
