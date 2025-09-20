@@ -22,6 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
+import com.heartlessveteran.myriad.ui.components.TapZoneOverlay
+import com.heartlessveteran.myriad.ui.components.executeTapAction
+import com.heartlessveteran.myriad.ui.components.HorizontalReader
+import com.heartlessveteran.myriad.ui.components.VerticalReader
+import com.heartlessveteran.myriad.ui.components.DoublePageReader
 import com.heartlessveteran.myriad.ui.theme.MyriadTheme
 import kotlin.math.max
 import kotlin.math.min
@@ -50,6 +55,35 @@ enum class ReadingMode {
 }
 
 /**
+ * Tap zone configuration for navigation
+ */
+data class TapZoneConfiguration(
+    val leftZoneAction: TapAction = TapAction.PREVIOUS_PAGE,
+    val rightZoneAction: TapAction = TapAction.NEXT_PAGE,
+    val centerZoneAction: TapAction = TapAction.TOGGLE_MENU,
+    val topZoneAction: TapAction = TapAction.TOGGLE_MENU,
+    val bottomZoneAction: TapAction = TapAction.TOGGLE_MENU,
+    val enableTapZones: Boolean = true,
+    val leftZoneWidth: Float = 0.33f, // Percentage of screen width
+    val rightZoneWidth: Float = 0.33f, // Percentage of screen width
+    val topZoneHeight: Float = 0.25f, // Percentage of screen height
+    val bottomZoneHeight: Float = 0.25f, // Percentage of screen height
+)
+
+/**
+ * Actions that can be triggered by tap zones
+ */
+enum class TapAction {
+    PREVIOUS_PAGE,
+    NEXT_PAGE,
+    TOGGLE_MENU,
+    NONE,
+    ZOOM_IN,
+    ZOOM_OUT,
+    TOGGLE_BOOKMARK,
+}
+
+/**
  * Reader configuration options
  */
 data class ReaderConfiguration(
@@ -61,6 +95,7 @@ data class ReaderConfiguration(
     val keepScreenOn: Boolean = true,
     val enableDoubleTapZoom: Boolean = true,
     val volumeKeyNavigation: Boolean = true,
+    val tapZones: TapZoneConfiguration = TapZoneConfiguration(),
 )
 
 /**
@@ -126,9 +161,29 @@ fun EnhancedReadingScreen(
                 .fillMaxSize()
                 .background(readerConfig.backgroundColor.color),
     ) {
-        // Main reading content
-        when (readerConfig.readingMode) {
-            ReadingMode.LEFT_TO_RIGHT, ReadingMode.RIGHT_TO_LEFT -> {
+        // Tap zone overlay with reader content
+        TapZoneOverlay(
+            configuration = readerConfig.tapZones,
+            onTapAction = { action ->
+                executeTapAction(
+                    action = action,
+                    currentPage = currentPage,
+                    totalPages = pages.size,
+                    onPageChanged = onPageChanged,
+                    onMenuToggle = { isMenuVisible = !isMenuVisible },
+                    onBookmarkToggle = { /* TODO: Implement bookmark toggle */ },
+                    onZoomIn = { 
+                        if (scale < 3f) scale += 0.5f 
+                    },
+                    onZoomOut = { 
+                        if (scale > 0.5f) scale -= 0.5f 
+                    }
+                )
+            }
+        ) {
+            // Main reading content
+            when (readerConfig.readingMode) {
+                ReadingMode.LEFT_TO_RIGHT, ReadingMode.RIGHT_TO_LEFT -> {
                 HorizontalReader(
                     pages = pages,
                     currentPage = currentPage,
@@ -173,512 +228,91 @@ fun EnhancedReadingScreen(
             }
         }
 
-        // Menu overlay
+        // Menu overlay with simple UI
         if (isMenuVisible) {
-            ReaderMenuOverlay(
-                mangaTitle = mangaTitle,
-                chapterTitle = chapterTitle,
-                currentPage = currentPage,
-                totalPages = pages.size,
-                onBackPress = onBackPress,
-                onSettingsClick = { showSettings = true },
-                onPageSeek = onPageChanged,
-                configuration = readerConfig,
-                modifier = Modifier.align(Alignment.TopCenter),
-            )
-        }
-
-        // Settings dialog
-        if (showSettings) {
-            ReaderSettingsDialog(
-                configuration = readerConfig,
-                onConfigurationChanged = { newConfig ->
-                    readerConfig = newConfig
-                    onConfigurationChanged(newConfig)
-                },
-                onDismiss = { showSettings = false },
-            )
-        }
-    }
-}
-
-@Composable
-private fun HorizontalReader(
-    pages: List<String>,
-    currentPage: Int,
-    onPageChanged: (Int) -> Unit,
-    configuration: ReaderConfiguration,
-    scale: Float,
-    offsetX: Float,
-    offsetY: Float,
-    onScaleChange: (Float) -> Unit,
-    onOffsetChange: (Float, Float) -> Unit,
-    onMenuToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (pages.isNotEmpty() && currentPage in 0 until pages.size) {
-            AsyncImage(
-                model = pages[currentPage],
-                contentDescription = "Page ${currentPage + 1}",
-                contentScale =
-                    when (configuration.zoomMode) {
-                        ZoomMode.FIT_WIDTH -> ContentScale.FillWidth
-                        ZoomMode.FIT_HEIGHT -> ContentScale.FillHeight
-                        ZoomMode.FIT_SCREEN -> ContentScale.Fit
-                        ZoomMode.ORIGINAL_SIZE -> ContentScale.None
-                        ZoomMode.CUSTOM -> ContentScale.None
-                    },
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                            translationX = offsetX,
-                            translationY = offsetY,
-                        ).pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = { offset ->
-                                    val screenWidth = size.width
-                                    when {
-                                        offset.x < screenWidth * 0.3f -> {
-                                            // Left tap
-                                            val newPage =
-                                                if (configuration.readingMode == ReadingMode.RIGHT_TO_LEFT) {
-                                                    min(currentPage + 1, pages.size - 1)
-                                                } else {
-                                                    max(currentPage - 1, 0)
-                                                }
-                                            onPageChanged(newPage)
-                                        }
-                                        offset.x > screenWidth * 0.7f -> {
-                                            // Right tap
-                                            val newPage =
-                                                if (configuration.readingMode == ReadingMode.RIGHT_TO_LEFT) {
-                                                    max(currentPage - 1, 0)
-                                                } else {
-                                                    min(currentPage + 1, pages.size - 1)
-                                                }
-                                            onPageChanged(newPage)
-                                        }
-                                        else -> {
-                                            // Center tap - toggle menu
-                                            onMenuToggle()
-                                        }
-                                    }
-                                },
-                                onDoubleTap = { _ ->
-                                    if (configuration.enableDoubleTapZoom) {
-                                        val newScale = if (scale > 1f) 1f else 2f
-                                        onScaleChange(newScale)
-                                        if (newScale == 1f) {
-                                            onOffsetChange(0f, 0f)
-                                        }
-                                    }
-                                },
-                            )
-                        }.pointerInput(Unit) {
-                            detectTransformGestures { _, pan, zoom, _ ->
-                                if (configuration.enableGestures) {
-                                    val newScale = (scale * zoom).coerceIn(0.5f, 5f)
-                                    onScaleChange(newScale)
-
-                                    val newOffsetX = offsetX + pan.x
-                                    val newOffsetY = offsetY + pan.y
-                                    onOffsetChange(newOffsetX, newOffsetY)
-                                }
-                            }
-                        },
-            )
-        }
-    }
-}
-
-@Composable
-private fun VerticalReader(
-    pages: List<String>,
-    currentPage: Int,
-    onPageChanged: (Int) -> Unit,
-    configuration: ReaderConfiguration,
-    onMenuToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val listState = rememberLazyListState()
-
-    LaunchedEffect(currentPage) {
-        listState.animateScrollToItem(currentPage)
-    }
-
-    LazyColumn(
-        state = listState,
-        modifier =
-            modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { offset ->
-                            val screenWidth = size.width
-                            if (offset.x > screenWidth * 0.3f && offset.x < screenWidth * 0.7f) {
-                                onMenuToggle()
-                            }
-                        },
-                    )
-                },
-        verticalArrangement =
-            if (configuration.readingMode == ReadingMode.WEBTOON) {
-                Arrangement.Top
-            } else {
-                Arrangement.spacedBy(8.dp)
-            },
-    ) {
-        items(pages.size) { index ->
-            AsyncImage(
-                model = pages[index],
-                contentDescription = "Page ${index + 1}",
-                contentScale = ContentScale.FillWidth,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .then(
-                            if (configuration.readingMode == ReadingMode.VERTICAL) {
-                                Modifier.padding(horizontal = 8.dp)
-                            } else {
-                                Modifier
-                            },
-                        ),
-            )
-        }
-    }
-}
-
-@Composable
-private fun DoublePageReader(
-    pages: List<String>,
-    currentPage: Int,
-    onPageChanged: (Int) -> Unit,
-    configuration: ReaderConfiguration,
-    scale: Float,
-    offsetX: Float,
-    offsetY: Float,
-    onScaleChange: (Float) -> Unit,
-    onOffsetChange: (Float, Float) -> Unit,
-    onMenuToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = { offset ->
-                            val screenWidth = size.width
-                            when {
-                                offset.x < screenWidth * 0.3f -> {
-                                    onPageChanged(max(currentPage - 2, 0))
-                                }
-                                offset.x > screenWidth * 0.7f -> {
-                                    onPageChanged(min(currentPage + 2, pages.size - 1))
-                                }
-                                else -> {
-                                    onMenuToggle()
-                                }
-                            }
-                        },
-                    )
-                },
-    ) {
-        // Left page
-        if (currentPage < pages.size) {
-            AsyncImage(
-                model = pages[currentPage],
-                contentDescription = "Page ${currentPage + 1}",
-                contentScale = ContentScale.Fit,
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                            translationX = offsetX,
-                            translationY = offsetY,
-                        ),
-            )
-        }
-
-        // Right page
-        if (currentPage + 1 < pages.size) {
-            AsyncImage(
-                model = pages[currentPage + 1],
-                contentDescription = "Page ${currentPage + 2}",
-                contentScale = ContentScale.Fit,
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                            translationX = offsetX,
-                            translationY = offsetY,
-                        ),
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ReaderMenuOverlay(
-    mangaTitle: String,
-    chapterTitle: String,
-    currentPage: Int,
-    totalPages: Int,
-    onBackPress: () -> Unit,
-    onSettingsClick: () -> Unit,
-    onPageSeek: (Int) -> Unit,
-    configuration: ReaderConfiguration,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        // Top bar
-        TopAppBar(
-            title = {
-                Column {
-                    Text(
-                        text = mangaTitle,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                    )
-                    Text(
-                        text = chapterTitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                    )
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = onBackPress) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                }
-            },
-            actions = {
-                IconButton(onClick = { /* TODO: Bookmark */ }) {
-                    Icon(Icons.Default.BookmarkBorder, contentDescription = "Bookmark")
-                }
-                IconButton(onClick = onSettingsClick) {
-                    Icon(Icons.Default.Settings, contentDescription = "Settings")
-                }
-            },
-            colors =
-                TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                ),
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Bottom controls
-        Surface(
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                shadowElevation = 8.dp
             ) {
-                // Page slider
-                if (configuration.showPageNumbers && totalPages > 1) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = onBackPress) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                        
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = mangaTitle,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1
+                            )
+                            Text(
+                                text = chapterTitle,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1
+                            )
+                        }
+                        
+                        IconButton(onClick = { showSettings = true }) {
+                            Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        }
+                    }
+                    
+                    // Page indicator
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "${currentPage + 1}",
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.width(40.dp),
+                            modifier = Modifier.width(40.dp)
                         )
-
+                        
                         Slider(
                             value = currentPage.toFloat(),
-                            onValueChange = { onPageSeek(it.toInt()) },
-                            valueRange = 0f..(totalPages - 1).toFloat(),
-                            steps = if (totalPages > 2) totalPages - 2 else 0,
-                            modifier = Modifier.weight(1f),
+                            onValueChange = { onPageChanged(it.toInt()) },
+                            valueRange = 0f..(pages.size - 1).toFloat(),
+                            steps = if (pages.size > 2) pages.size - 2 else 0,
+                            modifier = Modifier.weight(1f)
                         )
-
+                        
                         Text(
-                            text = "$totalPages",
+                            text = "${pages.size}",
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.width(40.dp),
+                            modifier = Modifier.width(40.dp)
                         )
-                    }
-                }
-
-                // Navigation buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                ) {
-                    IconButton(
-                        onClick = { onPageSeek(max(currentPage - 1, 0)) },
-                        enabled = currentPage > 0,
-                    ) {
-                        Icon(Icons.Default.SkipPrevious, contentDescription = "Previous")
-                    }
-
-                    IconButton(
-                        onClick = { onPageSeek(min(currentPage + 1, totalPages - 1)) },
-                        enabled = currentPage < totalPages - 1,
-                    ) {
-                        Icon(Icons.Default.SkipNext, contentDescription = "Next")
                     }
                 }
             }
         }
-    }
-}
 
-@Composable
-private fun ReaderSettingsDialog(
-    configuration: ReaderConfiguration,
-    onConfigurationChanged: (ReaderConfiguration) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Reader Settings") },
-        text = {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                item {
-                    // Reading mode
-                    Text(
-                        text = "Reading Mode",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    ReadingMode.entries.forEach { mode ->
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = configuration.readingMode == mode,
-                                onClick = {
-                                    onConfigurationChanged(
-                                        configuration.copy(readingMode = mode),
-                                    )
-                                },
-                            )
-                            Text(
-                                text = mode.name.replace("_", " "),
-                                modifier = Modifier.padding(start = 8.dp),
-                            )
-                        }
+        // Settings dialog
+        if (showSettings) {
+            AlertDialog(
+                onDismissRequest = { showSettings = false },
+                title = { Text("Reader Settings") },
+                text = {
+                    Column {
+                        Text("Reading Mode")
+                        // Add settings controls here
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showSettings = false }) {
+                        Text("Done")
                     }
                 }
-
-                item {
-                    // Background color
-                    Text(
-                        text = "Background Color",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    ReaderBackgroundColor.entries.forEach { color ->
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = configuration.backgroundColor == color,
-                                onClick = {
-                                    onConfigurationChanged(
-                                        configuration.copy(backgroundColor = color),
-                                    )
-                                },
-                            )
-                            Text(
-                                text = color.displayName,
-                                modifier = Modifier.padding(start = 8.dp),
-                            )
-                        }
-                    }
-                }
-
-                item {
-                    // Zoom mode
-                    Text(
-                        text = "Zoom Mode",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Medium,
-                    )
-
-                    ZoomMode.entries.forEach { mode ->
-                        Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            RadioButton(
-                                selected = configuration.zoomMode == mode,
-                                onClick = {
-                                    onConfigurationChanged(
-                                        configuration.copy(zoomMode = mode),
-                                    )
-                                },
-                            )
-                            Text(
-                                text = mode.name.replace("_", " "),
-                                modifier = Modifier.padding(start = 8.dp),
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Done")
-            }
-        },
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier =
-            Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.8f),
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EnhancedReadingScreenPreview() {
-    MyriadTheme {
-        EnhancedReadingScreen(
-            mangaTitle = "Sample Manga",
-            chapterTitle = "Chapter 1: The Beginning",
-            pages = listOf("page1.jpg", "page2.jpg", "page3.jpg"),
-            currentPage = 0,
-            onPageChanged = {},
-            onBackPress = {},
-        )
+            )
+        }
     }
 }

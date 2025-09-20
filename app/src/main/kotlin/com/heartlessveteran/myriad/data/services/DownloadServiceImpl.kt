@@ -92,6 +92,11 @@ class DownloadServiceImpl(
 
             Log.i(TAG, "Enqueued download for manga: ${manga.title} with ${chapterIds.size} chapters")
 
+            // Start foreground service if this is the first download
+            if (currentQueue.size == 1) {
+                DownloadForegroundService.startService(context)
+            }
+
             // Start processing if not at concurrent limit
             processDownloadQueue()
 
