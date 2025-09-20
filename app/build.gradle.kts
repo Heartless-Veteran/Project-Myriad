@@ -158,7 +158,7 @@ dependencies {
 
     // Testing
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.19.0")
+    testImplementation("org.mockito:mockito-core:5.20.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("androidx.room:room-testing:2.8.0")
     testImplementation("androidx.test:core:1.7.0")
