@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 /**
  * UI State for the Manga Library screen
@@ -56,7 +58,8 @@ data class MangaLibraryStatistics(
 /**
  * ViewModel for managing manga library state and operations
  */
-class MangaLibraryViewModel(
+@HiltViewModel
+class MangaLibraryViewModel @Inject constructor(
     private val mangaRepository: MangaRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MangaLibraryUiState())

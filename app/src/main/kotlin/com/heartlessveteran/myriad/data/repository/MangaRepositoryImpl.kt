@@ -5,16 +5,18 @@ import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.entities.MangaStatus
 import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.repository.MangaRepository
-import com.heartlessveteran.myriad.domain.services.FileManagerService
+// import com.heartlessveteran.myriad.domain.services.FileManagerService
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
+import javax.inject.Inject
 
 /**
  * Implementation of MangaRepository using Room database and various services
  */
-class MangaRepositoryImpl(
+class MangaRepositoryImpl @Inject constructor(
     private val mangaDao: MangaDao,
-    private val fileManagerService: FileManagerService,
+    // TODO: Add FileManagerService when implementation is available
+    // private val fileManagerService: FileManagerService,
     // Service dependencies - will be implemented in next phase
     // private val sourceService: SourceService,
     // private val downloadService: DownloadService,
