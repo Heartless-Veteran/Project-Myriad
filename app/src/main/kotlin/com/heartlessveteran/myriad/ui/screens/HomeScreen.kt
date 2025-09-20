@@ -27,6 +27,7 @@ fun HomeScreen(
     onNavigateToManga: () -> Unit,
     onNavigateToAnime: () -> Unit,
     onNavigateToAI: () -> Unit,
+    onNavigateToEpicDemo: (() -> Unit)? = null,
 ) {
     Column(
         modifier =
@@ -82,13 +83,16 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 4.dp),
         ) {
-            items(
-                listOf(
-                    Triple("Manga Library", Icons.Default.AutoStories, onNavigateToManga),
-                    Triple("Anime Library", Icons.Default.PlayArrow, onNavigateToAnime),
-                    Triple("AI Features", Icons.Default.Psychology, onNavigateToAI),
-                ),
-            ) { (title, icon, action) ->
+            val navigationItems = listOfNotNull(
+                Triple("Manga Library", Icons.Default.AutoStories, onNavigateToManga),
+                Triple("Anime Library", Icons.Default.PlayArrow, onNavigateToAnime),
+                Triple("AI Features", Icons.Default.Psychology, onNavigateToAI),
+                onNavigateToEpicDemo?.let { 
+                    Triple("Epic Demo", Icons.Default.AutoStories, it) 
+                }
+            )
+            
+            items(navigationItems) { (title, icon, action) ->
                 QuickActionCard(
                     title = title,
                     icon = icon,

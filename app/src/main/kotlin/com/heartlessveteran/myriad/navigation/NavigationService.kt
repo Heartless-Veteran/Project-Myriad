@@ -293,6 +293,7 @@ class NavigationService
                 is Destination.TrackingManagement -> NavigationRoutes.TRACKING_MANAGEMENT
                 is Destination.BackupRestore -> NavigationRoutes.BACKUP_RESTORE
                 is Destination.AICore -> NavigationRoutes.AI_CORE
+                is Destination.EpicDemo -> NavigationRoutes.EPIC_DEMO
                 is Destination.Reading ->
                     Destination.Reading.createRoute(
                         destination.mangaId,
@@ -345,6 +346,7 @@ class NavigationService
                 route == NavigationRoutes.TRACKING_MANAGEMENT -> Destination.TrackingManagement
                 route == NavigationRoutes.BACKUP_RESTORE -> Destination.BackupRestore
                 route == NavigationRoutes.AI_CORE -> Destination.AICore
+                route == NavigationRoutes.EPIC_DEMO -> Destination.EpicDemo
                 route.startsWith("reading/") -> parseReadingRoute(route)
                 route.startsWith("watching/") -> parseWatchingRoute(route)
                 route.startsWith("manga_detail/") -> parseMangaDetailRoute(route)

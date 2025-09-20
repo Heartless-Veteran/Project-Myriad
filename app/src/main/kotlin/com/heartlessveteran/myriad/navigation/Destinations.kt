@@ -33,6 +33,9 @@ sealed class Destination {
     data object AICore : Destination()
 
     @Serializable
+    data object EpicDemo : Destination()
+
+    @Serializable
     data class Reading(
         val mangaId: String,
         val chapterId: String? = null,
@@ -246,6 +249,7 @@ object NavigationRoutes {
     const val TRACKING_MANAGEMENT = "tracking_management"
     const val BACKUP_RESTORE = "backup_restore"
     const val AI_CORE = "ai_core"
+    const val EPIC_DEMO = "epic_demo"
     const val READING = "reading/{mangaId}?chapterId={chapterId}&page={page}"
     const val WATCHING = "watching/{animeId}?episodeId={episodeId}&timestamp={timestamp}"
     const val MANGA_DETAIL = "manga_detail/{mangaId}?sourceId={sourceId}"

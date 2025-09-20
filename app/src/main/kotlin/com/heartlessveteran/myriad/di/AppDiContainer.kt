@@ -127,6 +127,24 @@ object AppDiContainer {
         AIDiContainer.getRecommendationsUseCase(context)
 
     /**
+     * Get ExtensionManager for source extension management.
+     */
+    fun getExtensionManager(context: Context): com.heartlessveteran.myriad.app.extensions.ExtensionManager = 
+        com.heartlessveteran.myriad.app.extensions.ExtensionManager(context)
+
+    /**
+     * Get VaultService for local media management.
+     */
+    fun getVaultService(context: Context): com.heartlessveteran.myriad.domain.vault.VaultService = 
+        com.heartlessveteran.myriad.data.vault.VaultServiceImpl(context)
+
+    /**
+     * Get AI Core for intelligent features.
+     */
+    fun getAICore(): com.heartlessveteran.myriad.domain.ai.AICore = 
+        com.heartlessveteran.myriad.data.ai.AICoreImpl()
+
+    /**
      * Clears cached instances in DI containers.
      *
      * Resets LibraryDiContainer, DownloadDiContainer, and AIDiContainer (useful for tests or resetting app state).

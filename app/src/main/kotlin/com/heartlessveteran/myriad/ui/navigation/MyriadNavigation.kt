@@ -41,6 +41,8 @@ sealed class Screen(
 
     object AICore : Screen("ai_core", "AI Core", Icons.Default.Psychology)
 
+    object EpicDemo : Screen("epic_demo", "Epic Demo", Icons.Default.AutoStories)
+
     object Settings : Screen("settings", "Settings", Icons.Default.Settings)
 
     object Reading : Screen("reading/{mangaId}", "Reading", Icons.Default.AutoStories) {
@@ -125,6 +127,7 @@ fun MyriadNavigation(
                     onNavigateToManga = { navController.navigate(Screen.MangaLibrary.route) },
                     onNavigateToAnime = { navController.navigate(Screen.AnimeLibrary.route) },
                     onNavigateToAI = { navController.navigate(Screen.AICore.route) },
+                    onNavigateToEpicDemo = { navController.navigate(Screen.EpicDemo.route) },
                 )
             }
 
@@ -186,6 +189,12 @@ fun MyriadNavigation(
 
             composable(Screen.AICore.route) {
                 AICoreScreen()
+            }
+
+            composable(Screen.EpicDemo.route) {
+                EpicDemoScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
 
             composable(Screen.Settings.route) {
