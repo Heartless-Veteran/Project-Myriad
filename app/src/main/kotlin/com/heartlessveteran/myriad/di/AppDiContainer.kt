@@ -6,6 +6,8 @@ import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import com.heartlessveteran.myriad.domain.services.FileManagerService
 import com.heartlessveteran.myriad.domain.services.SourceService
+import com.heartlessveteran.myriad.domain.services.TrackingService
+import com.heartlessveteran.myriad.domain.services.BackupService
 import com.heartlessveteran.myriad.domain.usecase.DownloadMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.GetLatestMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.ImportMangaFromFileUseCase
@@ -35,6 +37,22 @@ object AppDiContainer {
      * @return The SourceService instance.
      */
     fun getSourceService(): SourceService = DownloadDiContainer.getSourceService()
+
+    /**
+     * Returns the TrackingService for progress tracking with external services.
+     *
+     * @param context Android Context used to obtain the service.
+     * @return The TrackingService instance.
+     */
+    fun getTrackingService(context: Context): TrackingService = DownloadDiContainer.getTrackingService(context)
+
+    /**
+     * Returns the BackupService for data backup and restore operations.
+     *
+     * @param context Android Context used to obtain the service.
+     * @return The BackupService instance.
+     */
+    fun getBackupService(context: Context): BackupService = DownloadDiContainer.getBackupService(context)
 
     /**
      * Get MangaRepository for manga data operations.

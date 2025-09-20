@@ -289,6 +289,9 @@ class NavigationService
                 is Destination.MangaLibrary -> NavigationRoutes.MANGA_LIBRARY
                 is Destination.AnimeLibrary -> NavigationRoutes.ANIME_LIBRARY
                 is Destination.Browse -> NavigationRoutes.BROWSE
+                is Destination.SourceManagement -> NavigationRoutes.SOURCE_MANAGEMENT
+                is Destination.TrackingManagement -> NavigationRoutes.TRACKING_MANAGEMENT
+                is Destination.BackupRestore -> NavigationRoutes.BACKUP_RESTORE
                 is Destination.AICore -> NavigationRoutes.AI_CORE
                 is Destination.Reading ->
                     Destination.Reading.createRoute(
@@ -338,6 +341,9 @@ class NavigationService
                 route == NavigationRoutes.MANGA_LIBRARY -> Destination.MangaLibrary
                 route == NavigationRoutes.ANIME_LIBRARY -> Destination.AnimeLibrary
                 route == NavigationRoutes.BROWSE -> Destination.Browse
+                route == NavigationRoutes.SOURCE_MANAGEMENT -> Destination.SourceManagement
+                route == NavigationRoutes.TRACKING_MANAGEMENT -> Destination.TrackingManagement
+                route == NavigationRoutes.BACKUP_RESTORE -> Destination.BackupRestore
                 route == NavigationRoutes.AI_CORE -> Destination.AICore
                 route.startsWith("reading/") -> parseReadingRoute(route)
                 route.startsWith("watching/") -> parseWatchingRoute(route)

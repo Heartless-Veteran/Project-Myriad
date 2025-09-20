@@ -5,23 +5,27 @@ import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.entities.MangaChapter
 import com.heartlessveteran.myriad.domain.entities.MangaStatus
 import com.heartlessveteran.myriad.domain.models.Result
+import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import com.heartlessveteran.myriad.domain.services.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import java.util.Date
 import java.util.UUID
 
 /**
- * Implementation of SourceService with basic MangaDx integration.
+ * Implementation of SourceService with real MangaDx integration.
  *
  * This implementation provides:
+ * - Real MangaDx source integration via SourceRepository
  * - Basic source management functionality
- * - MangaDx as the primary official source
- * - Search and discovery capabilities (placeholder implementation)
+ * - Search and discovery capabilities
  * - Foundation for future source plugin system
  */
-class SourceServiceImpl : SourceService {
+class SourceServiceImpl(
+    private val mangaDxSourceRepository: SourceRepository? = null
+) : SourceService {
     companion object {
         private const val TAG = "SourceServiceImpl"
 
@@ -251,24 +255,52 @@ class SourceServiceImpl : SourceService {
                 )
         }
 
-    // MangaDx implementation methods (placeholder implementations)
+    // MangaDx implementation methods (now using real SourceRepository)
 
     private suspend fun getMangaDxLatestManga(page: Int): Result<List<Manga>> {
-        // TODO: Implement actual MangaDx API calls
-        Log.d(TAG, "Getting latest manga from MangaDx (page: $page)")
-        return Result.Success(generateSampleManga("MangaDx Latest", 5))
+        return if (mangaDxSourceRepository != null) {
+            try {
+                Log.d(TAG, "Getting latest manga from MangaDx via SourceRepository (page: $page)")
+                mangaDxSourceRepository.getLatestManga(page).first()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting latest manga from MangaDx", e)
+                Result.Error(e, "Failed to fetch latest manga: ${e.localizedMessage}")
+            }
+        } else {
+            Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
+            Result.Success(generateSampleManga("MangaDx Latest", 5))
+        }
     }
 
     private suspend fun getMangaDxPopularManga(page: Int): Result<List<Manga>> {
-        // TODO: Implement actual MangaDx API calls
-        Log.d(TAG, "Getting popular manga from MangaDx (page: $page)")
-        return Result.Success(generateSampleManga("MangaDx Popular", 5))
+        return if (mangaDxSourceRepository != null) {
+            try {
+                Log.d(TAG, "Getting popular manga from MangaDx via SourceRepository (page: $page)")
+                // For now, popular manga uses the same as latest - this can be enhanced later
+                mangaDxSourceRepository.getLatestManga(page).first()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error getting popular manga from MangaDx", e)
+                Result.Error(e, "Failed to fetch popular manga: ${e.localizedMessage}")
+            }
+        } else {
+            Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
+            Result.Success(generateSampleManga("MangaDx Popular", 5))
+        }
     }
 
     private suspend fun searchMangaDx(query: String): Result<List<Manga>> {
-        // TODO: Implement actual MangaDx search API
-        Log.d(TAG, "Searching MangaDx for: $query")
-        return Result.Success(generateSampleManga("MangaDx Search: $query", 3))
+        return if (mangaDxSourceRepository != null) {
+            try {
+                Log.d(TAG, "Searching MangaDx via SourceRepository for: $query")
+                mangaDxSourceRepository.searchManga(query, 1).first()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error searching MangaDx", e)
+                Result.Error(e, "Search failed: ${e.localizedMessage}")
+            }
+        } else {
+            Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
+            Result.Success(generateSampleManga("MangaDx Search: $query", 3))
+        }
     }
 
     private suspend fun getMangaDxMangaDetails(mangaId: String): Result<Manga> {

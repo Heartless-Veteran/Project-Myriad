@@ -826,6 +826,9 @@ fun SettingsScreen(
     initialSection: SettingsSection = SettingsSection.GENERAL,
     onBackClick: () -> Unit = {},
     onSectionChange: (SettingsSection) -> Unit = {},
+    onNavigateToSourceManagement: () -> Unit = {},
+    onNavigateToTrackingManagement: () -> Unit = {},
+    onNavigateToBackupRestore: () -> Unit = {},
 ) {
     var currentSection by remember { mutableStateOf<SettingsSection>(initialSection) }
 
@@ -879,8 +882,13 @@ fun SettingsScreen(
                     com.heartlessveteran.myriad.navigation.SettingsSection.GENERAL -> GeneralSettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.READING -> ReadingSettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.WATCHING -> WatchingSettings()
-                    com.heartlessveteran.myriad.navigation.SettingsSection.SOURCES -> SourcesSettings()
-                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE -> StorageSettings()
+                    com.heartlessveteran.myriad.navigation.SettingsSection.SOURCES -> SourcesSettings(
+                        onNavigateToSourceManagement = onNavigateToSourceManagement,
+                        onNavigateToTrackingManagement = onNavigateToTrackingManagement
+                    )
+                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE -> StorageSettings(
+                        onNavigateToBackupRestore = onNavigateToBackupRestore
+                    )
                     com.heartlessveteran.myriad.navigation.SettingsSection.AI -> AISettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.ABOUT -> AboutSettings()
                 }
@@ -976,26 +984,42 @@ private fun WatchingSettings() {
 }
 
 @Composable
-private fun SourcesSettings() {
+private fun SourcesSettings(
+    onNavigateToSourceManagement: () -> Unit = {},
+    onNavigateToTrackingManagement: () -> Unit = {}
+) {
     SettingsSection(
-        title = "Content Sources",
-        description = "Manage your content providers",
+        title = "Content Sources & Tracking",
+        description = "Manage your content providers and progress tracking",
     ) {
-        Text(
-            text = "Online content sources will be available in the next development phase",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(16.dp),
+        SettingsItem(
+            title = "Content Sources",
+            description = "Manage online manga and anime sources",
+            onClick = onNavigateToSourceManagement
+        )
+        
+        SettingsItem(
+            title = "Progress Tracking",
+            description = "Connect with MyAnimeList, AniList, and other tracking services",
+            onClick = onNavigateToTrackingManagement
         )
     }
 }
 
 @Composable
-private fun StorageSettings() {
+private fun StorageSettings(
+    onNavigateToBackupRestore: () -> Unit = {}
+) {
     SettingsSection(
-        title = "Storage Settings",
-        description = "Manage local storage and cache",
+        title = "Storage & Backup",
+        description = "Manage local storage, cache, and data backup",
     ) {
+        SettingsItem(
+            title = "Backup & Restore",
+            description = "Create backups and restore your data",
+            onClick = onNavigateToBackupRestore
+        )
+        
         SettingsItem(
             title = "Library Location",
             description = "Choose where your media is stored",

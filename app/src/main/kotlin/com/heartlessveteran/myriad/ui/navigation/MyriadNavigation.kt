@@ -160,6 +160,27 @@ fun MyriadNavigation(
                         // For now, we can navigate to reading screen using manga ID
                         navController.navigate(Screen.Reading.createRoute(manga.id))
                     },
+                    onSourceManagementClick = {
+                        navController.navigate("source_management")
+                    }
+                )
+            }
+
+            composable("source_management") {
+                SourceManagementScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable("tracking_management") {
+                TrackingManagementScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable("backup_restore") {
+                BackupRestoreScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 
@@ -172,6 +193,15 @@ fun MyriadNavigation(
                     initialSection = SettingsSection.GENERAL, // or appropriate default section
                     onBackClick = { navController.popBackStack() },
                     onSectionChange = { /* handle section change if needed */ },
+                    onNavigateToSourceManagement = {
+                        navController.navigate("source_management")
+                    },
+                    onNavigateToTrackingManagement = {
+                        navController.navigate("tracking_management")
+                    },
+                    onNavigateToBackupRestore = {
+                        navController.navigate("backup_restore")
+                    }
                 )
             }
 
