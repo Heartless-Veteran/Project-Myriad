@@ -331,8 +331,18 @@ class EnhancedAIService
             )
 
         /**
-         * Generate mock recommendations
-         */
+             * Produce a small, deterministic list of mock content recommendations.
+             *
+             * This returns a fixed set of sample ContentRecommendation objects and then
+             * truncates the list to the requested `limit`. The `genres` parameter is
+             * accepted for API compatibility but is not used to filter or influence the
+             * mock results.
+             *
+             * @param genres List of genre filters (currently ignored).
+             * @param limit Maximum number of recommendations to return; if greater than
+             * the available mock items, the full mock list is returned.
+             * @return A list of up to `limit` mock ContentRecommendation objects.
+             */
         private fun generateMockRecommendations(
             genres: List<String>,
             limit: Int,

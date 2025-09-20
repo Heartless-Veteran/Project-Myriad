@@ -228,8 +228,17 @@ class MangaLibraryViewModel(
         }
 
     /**
-     * Calculate library statistics for display
-     */
+         * Computes library statistics from a list of manga.
+         *
+         * Returns counts used by the UI:
+         * - totalCount: total number of items in the list.
+         * - favoriteCount: number of items where `isFavorite` is true.
+         * - readingCount: number of items where `readChapters > 0`, `totalChapters > 0`, and `readChapters < totalChapters`.
+         * - completedCount: number of items where `totalChapters > 0` and `readChapters >= totalChapters`.
+         *
+         * @param mangaList The source list of `Manga` to aggregate.
+         * @return A [MangaLibraryStatistics] instance with the computed counts.
+         */
     private fun calculateStatistics(mangaList: List<Manga>): MangaLibraryStatistics =
         MangaLibraryStatistics(
             totalCount = mangaList.size,

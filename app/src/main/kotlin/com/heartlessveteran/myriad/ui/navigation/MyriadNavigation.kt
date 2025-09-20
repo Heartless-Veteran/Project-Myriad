@@ -69,6 +69,20 @@ val bottomNavItems =
  * Main navigation component with bottom navigation bar
  */
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Hosts the app's navigation graph and scaffolded UI chrome (bottom navigation).
+ *
+ * Renders a Scaffold with a conditional bottom navigation bar for the main screens and
+ * a NavHost that wires composable destinations to the app's routes (Home, MangaLibrary,
+ * AnimeLibrary, Browse, AICore, Settings, Reading, Watching). Selecting a bottom item
+ * navigates to its route with popUpTo the graph start destination and launchSingleTop.
+ *
+ * The Reading and Watching destinations extract `mangaId`/`animeId` from the navigation
+ * arguments and return early if the expected argument is missing.
+ *
+ * @param navController NavHostController used to drive navigation.
+ * @param context Android Context used as the default Compose LocalContext; rarely needed directly.
+ */
 @Composable
 fun MyriadNavigation(
     navController: NavHostController,

@@ -275,15 +275,14 @@ class NavigationService
         }
 
         /**
-         * Returns the navigation route string for the given Destination.
-         *
-         * For static destinations (Home, libraries, Browse, AI Core) this returns the predefined route constant.
-         * For dynamic destinations (Reading, Watching, MangaDetail, AnimeDetail, Search, Settings) this builds
-         * a route via the destination's `createRoute` helper, including any embedded parameters.
-         *
-         * @param destination Destination to convert into a route string.
-         * @return A route string suitable for passing to NavController.navigate.
-         */
+             * Convert a Destination into the navigation route string used by NavController.
+             *
+             * Maps fixed destinations to their predefined route constants and delegates dynamic destinations
+             * (Reading, Watching, MangaDetail, AnimeDetail, Search, Settings) to their respective
+             * `createRoute` helpers so embedded parameters are included in the produced route.
+             *
+             * @return A route string suitable for NavController.navigate.
+             */
         private fun getRouteForDestination(destination: Destination): String =
             when (destination) {
                 is Destination.Home -> NavigationRoutes.HOME
@@ -380,15 +379,17 @@ class NavigationService
             }
 
         /**
-         * Updates the internal navigation state from a route string.
+         * Update the internal NavigationState from a route string.
          *
-         * Parses the given route to a Destination and, if successful, updates the
-         * backing StateFlow (_navigationState) with the new current destination,
-         * previous destination (nullified when unchanged), whether back navigation is
-         * possible, and a navigation history capped to the last 10 entries.
+         * Parses the provided route into a Destination and, if successful, updates
+         * the backing StateFlow (_navigationState) with:
+         * - currentDestination set to the parsed Destination,
+         * - previousDestination set to the prior current destination only if it differs (otherwise null),
+         * - canNavigateBack reflecting whether back navigation is possible,
+         * - navigationHistory appended with the new destination and trimmed to the last 10 entries.
          *
-         * @param route The navigation route string to parse; may be null. If the route
-         *              does not map to a Destination, the state is left unchanged.
+         * @param route The navigation route string to parse; may be null. If parsing fails or the route
+         *              is unrecognized, the navigation state is not modified.
          */
         private fun updateNavigationState(route: String?) {
             val currentDestination = parseRouteToDestination(route)

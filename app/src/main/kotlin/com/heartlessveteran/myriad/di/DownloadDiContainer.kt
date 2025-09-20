@@ -39,7 +39,11 @@ object DownloadDiContainer {
         }
 
     /**
-     * Clear all cached instances (useful for testing).
+     * Clear and reset the cached service instances.
+     *
+     * Thread-safe: if the cached downloadService is a DownloadServiceImpl, its
+     * cleanup() method is invoked before both downloadService and sourceService
+     * are set to null. Intended for testing or resetting DI state. 
      */
     fun clearInstances() {
         synchronized(this) {

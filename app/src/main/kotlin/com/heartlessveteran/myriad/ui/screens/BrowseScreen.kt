@@ -25,6 +25,17 @@ import com.heartlessveteran.myriad.ui.viewmodel.BrowseViewModel
 import com.heartlessveteran.myriad.ui.viewmodel.FileImportViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Browse screen composable that displays searchable manga from the view model and provides local import controls.
+ *
+ * Observes BrowseViewModel.uiState to render loading, error, empty, or a grid of manga. Exposes a search field that
+ * triggers viewModel.searchManga and a clear action that reloads latest manga. Shows a FAB to open a local file/directory
+ * import dialog and an import progress dialog driven by a FileImportViewModel; import status changes control dialog
+ * visibility. Manga items support an external click callback and online items include an inline download action.
+ *
+ * @param onMangaClick Callback invoked when a manga item is selected.
+ * @param onImportClick Callback invoked when the import action is triggered (alias for FAB action; default opens import dialog).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowseScreen(
@@ -196,6 +207,16 @@ private fun MangaGrid(
     }
 }
 
+/**
+ * Renders a single manga tile: cover image, title, and an inline download action for non-local items.
+ *
+ * The tile is a clickable Card that invokes [onClick]. If the manga is not local, a small
+ * FloatingActionButton overlays the cover and enqueues a background download via the app's
+ * download service when tapped.
+ *
+ * @param manga The manga to display (provides cover image, title, and isLocal flag).
+ * @param onClick Callback invoked when the card is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MangaGridItem(

@@ -426,7 +426,16 @@ class SourceExtensionSystem
         suspend fun clearCache(): Result<Unit> = cacheService.clear(SOURCE_CACHE_KEY)
 
         /**
-         * Update source statistics
+         * Update the stored statistics for a source with a new request measurement.
+         *
+         * Increments the total request count, adjusts the successful/failed counters based
+         * on `success`, recomputes a running average response time (milliseconds) using
+         * the previous average and total requests, and sets `lastUsed` to the current time.
+         * If no stats exist for `sourceId` the function returns without side effects.
+         *
+         * @param sourceId Identifier of the source whose statistics should be updated.
+         * @param success True if the request completed successfully; false otherwise.
+         * @param responseTime Measured response time for the request in milliseconds.
          */
         private fun updateSourceStats(
             sourceId: String,
