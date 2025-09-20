@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.heartlessveteran.myriad.ui.screens.ReaderConfiguration
+import com.heartlessveteran.myriad.ui.screens.ReadingMode
 import kotlin.math.absoluteValue
 
 /**

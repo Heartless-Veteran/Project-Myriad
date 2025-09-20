@@ -295,6 +295,7 @@ fun EnhancedReadingScreen(
                 }
             }
         }
+        }
 
         // Settings dialog
         if (showSettings) {

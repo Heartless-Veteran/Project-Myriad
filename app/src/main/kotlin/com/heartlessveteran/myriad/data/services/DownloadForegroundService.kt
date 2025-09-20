@@ -41,6 +41,8 @@ class DownloadForegroundService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "download_channel"
         private const val NOTIFICATION_ID = 1001
         private const val REQUEST_CODE_OPEN_APP = 1004
+        private const val REQUEST_CODE_PAUSE_ALL = 1005
+        private const val REQUEST_CODE_CANCEL_ALL = 1006
         
         const val ACTION_START_DOWNLOADS = "START_DOWNLOADS"
         const val ACTION_PAUSE_ALL = "PAUSE_ALL"
