@@ -32,11 +32,25 @@ This document provides essential information for developers working on Project M
 #### Building a Release APK
 
 ```bash
-# Generate a release build for Android
+# Generate a signed release APK
 ./gradlew assembleRelease
 ```
 
 The APK will be generated at `app/build/outputs/apk/release/app-release.apk`.
+
+#### Building an Android App Bundle (AAB) - Recommended for Play Store
+
+```bash
+# Generate a signed Android App Bundle for Google Play Store
+./gradlew bundleRelease
+```
+
+The AAB will be generated at `app/build/outputs/bundle/release/app-release.aab`.
+
+**📋 Important**: For production releases, see the complete guide in [`RELEASE_BUILD_GUIDE.md`](RELEASE_BUILD_GUIDE.md) which covers:
+- Version management and signing key setup
+- Security best practices for release builds  
+- Google Play Store publishing process
 
 ### Configuration Files
 
