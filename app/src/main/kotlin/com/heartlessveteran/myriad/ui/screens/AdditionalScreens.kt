@@ -378,7 +378,9 @@ private fun ImportContent() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Note: File import functionality is currently being developed and will be fully functional in future updates.",
+                        text =
+                            "Note: File import functionality is currently being developed " +
+                                "and will be fully functional in future updates.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -547,12 +549,17 @@ fun AICoreScreen() {
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "AI features are scheduled for Phase 3 (Q3 2024) of the development roadmap. These features will leverage cutting-edge machine learning models for OCR, image analysis, and recommendation systems.",
+                        text =
+                            "AI features are scheduled for Phase 3 (Q3 2024) of the development roadmap. " +
+                                "These features will leverage cutting-edge machine learning models for OCR, " +
+                                "image analysis, and recommendation systems.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Current focus is on Phase 2: Core Features - building essential manga/anime management and reader capabilities.",
+                        text =
+                            "Current focus is on Phase 2: Core Features - building essential " +
+                                "manga/anime management and reader capabilities.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -1061,7 +1068,9 @@ private fun AboutSettings() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Built with modern Android architecture using Jetpack Compose, Room database, and Material 3 design.",
+                    text =
+                        "Built with modern Android architecture using Jetpack Compose, " +
+                            "Room database, and Material 3 design.",
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

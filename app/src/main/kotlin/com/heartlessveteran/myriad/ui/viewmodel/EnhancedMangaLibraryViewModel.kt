@@ -42,9 +42,6 @@ data class LibraryStatistics(
     val droppedCount: Int = 0,
 )
 
-/**
- * Enhanced filter options - Using basic MangaFilter to avoid duplication
- */
 /*
 enum class MangaFilter(val displayName: String) {
     ALL("All Manga"),
@@ -53,10 +50,13 @@ enum class MangaFilter(val displayName: String) {
     COMPLETED("Completed"),
     ON_HOLD("On Hold"),
     DROPPED("Dropped"),
-    UNREAD("Unread")
+    PLAN_TO_READ("Plan to Read")
 }
 */
 
+/**
+ * Enhanced filter options - Using basic MangaFilter to avoid duplication
+ */
 /**
  * Sort order options
  */

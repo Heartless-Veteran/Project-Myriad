@@ -26,7 +26,7 @@ import com.heartlessveteran.myriad.ui.theme.MyriadTheme
 import kotlin.math.max
 import kotlin.math.min
 
-/**
+/*
  * Enhanced manga reading screen with advanced features.
  *
  * This screen provides:

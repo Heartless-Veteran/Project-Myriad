@@ -5,9 +5,9 @@
 
 | Metric | Value |
 |--------|-------|
-| **Kotlin Files** | 64 |
+| **Kotlin Files** | 65 |
 | **Test Files** | 11 |
-| **Lines of Code** | 9,192 |
+| **Lines of Code** | 9,217 |
 | **Dependencies** | 52 |
 | **Target SDK** | 35 |
 | **Min SDK** | 24 |
@@ -23,7 +23,7 @@
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
-- Latest commit: 94aad5b Fix workflow naming conventions and deprecated configurations
+- Latest commit: 909759e Fix most ktlint formatting issues - compilation successful
 
 <!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
@@ -32,7 +32,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Android](https://img.shields.io/badge/platform-Android-green.svg)
-![Kotlin](https://img.shields.io/badge/kotlin-64%20files-purple)
+![Kotlin](https://img.shields.io/badge/kotlin-65%20files-purple)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Build Status](https://img.shields.io/badge/build-in%20progress-yellow.svg)
 
