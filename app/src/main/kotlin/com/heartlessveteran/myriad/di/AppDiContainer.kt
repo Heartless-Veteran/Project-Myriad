@@ -118,7 +118,13 @@ object AppDiContainer {
     /**
      * Get EnhancedAIService for coordinated AI operations.
      */
-    fun getEnhancedAIService(): EnhancedAIService = AIDiContainer.getEnhancedAIService()
+    fun getEnhancedAIService(context: Context): EnhancedAIService = AIDiContainer.getEnhancedAIService(context)
+
+    /**
+     * Get GetRecommendationsUseCase for AI recommendations.
+     */
+    fun getRecommendationsUseCase(context: Context): com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase = 
+        AIDiContainer.getRecommendationsUseCase(context)
 
     /**
      * Clears cached instances in DI containers.

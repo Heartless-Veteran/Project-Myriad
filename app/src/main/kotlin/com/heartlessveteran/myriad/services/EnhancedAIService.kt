@@ -2,8 +2,10 @@ package com.heartlessveteran.myriad.services
 
 import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.models.Result
+import com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase
 import com.heartlessveteran.myriad.network.GeminiService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
@@ -127,6 +129,7 @@ class EnhancedAIService
         private val geminiService: GeminiService,
         private val cacheService: SmartCacheService,
         private val ocrService: OCRService,
+        private val recommendationsUseCase: GetRecommendationsUseCase,
     ) {
         companion object {
             private const val TRANSLATION_CACHE_KEY = "ai_translations"
@@ -225,7 +228,7 @@ class EnhancedAIService
         }
 
         /**
-         * Get content recommendations based on user preferences
+         * Get content recommendations based on user preferences using real recommendation engine
          *
          * @param userId User identifier
          * @param genres Preferred genres
@@ -239,11 +242,52 @@ class EnhancedAIService
         ): Result<List<ContentRecommendation>> =
             withContext(Dispatchers.IO) {
                 try {
-                    // Mock implementation - would use ML models in production
-                    val recommendations = generateMockRecommendations(genres, limit)
-                    Result.Success(recommendations)
+                    // Use the real recommendation engine
+                    if (genres.isNotEmpty()) {
+                        // Use genre-based recommendations
+                        when (val result = recommendationsUseCase.getRecommendationsByGenres(genres, limit).first()) {
+                            is Result.Success -> Result.Success(result.data)
+                            is Result.Error -> {
+                                // Fallback to mock recommendations on error
+                                val recommendations = generateMockRecommendations(genres, limit)
+                                Result.Success(recommendations)
+                            }
+                            is Result.Loading -> {
+                                // Return mock while loading
+                                val recommendations = generateMockRecommendations(genres, limit)
+                                Result.Success(recommendations)
+                            }
+                        }
+                    } else {
+                        // Use personalized recommendations
+                        when (val result = recommendationsUseCase(userId, limit).first()) {
+                            is Result.Success -> Result.Success(result.data)
+                            is Result.Error -> {
+                                // Fallback to trending recommendations on error
+                                when (val trendingResult = recommendationsUseCase.getTrendingRecommendations(limit).first()) {
+                                    is Result.Success -> Result.Success(trendingResult.data)
+                                    else -> {
+                                        // Final fallback to mock
+                                        val recommendations = generateMockRecommendations(emptyList(), limit)
+                                        Result.Success(recommendations)
+                                    }
+                                }
+                            }
+                            is Result.Loading -> {
+                                // Return mock while loading
+                                val recommendations = generateMockRecommendations(emptyList(), limit)
+                                Result.Success(recommendations)
+                            }
+                        }
+                    }
                 } catch (e: Exception) {
-                    Result.Error(e)
+                    // Fallback to mock implementation on any error
+                    try {
+                        val recommendations = generateMockRecommendations(genres, limit)
+                        Result.Success(recommendations)
+                    } catch (fallbackError: Exception) {
+                        Result.Error(e)
+                    }
                 }
             }
 

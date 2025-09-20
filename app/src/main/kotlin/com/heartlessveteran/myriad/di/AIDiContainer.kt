@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.di
 
 import com.heartlessveteran.myriad.data.services.OCRService
+import com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase
 import com.heartlessveteran.myriad.network.GeminiService
 import com.heartlessveteran.myriad.services.EnhancedAIService
 import com.heartlessveteran.myriad.services.SmartCacheService
@@ -12,6 +13,7 @@ import com.heartlessveteran.myriad.data.cache.MemoryCache
  *
  * This container provides:
  * - OCRService for text recognition and translation
+ * - GetRecommendationsUseCase for AI recommendations
  * - EnhancedAIService for coordinated AI operations
  * - Caching services for AI results
  */
@@ -24,6 +26,9 @@ object AIDiContainer {
 
     @Volatile
     private var smartCacheService: SmartCacheService? = null
+
+    @Volatile
+    private var recommendationsUseCase: GetRecommendationsUseCase? = null
 
     /**
      * Get OCRService instance.
@@ -39,6 +44,31 @@ object AIDiContainer {
     fun getSmartCacheService(): SmartCacheService =
         smartCacheService ?: synchronized(this) {
             smartCacheService ?: SmartCacheService(MemoryCache()).also { smartCacheService = it }
+        }
+
+    /**
+     * Get GetRecommendationsUseCase instance.
+     */
+    fun getRecommendationsUseCase(): GetRecommendationsUseCase =
+        recommendationsUseCase ?: synchronized(this) {
+            recommendationsUseCase ?: GetRecommendationsUseCase(
+                mangaRepository = LibraryDiContainer.getMangaRepository(
+                    // We need a context here - this is a limitation of the manual DI approach
+                    // In a real app, we'd pass context or use Hilt
+                    // For now, we'll handle this in the AppDiContainer
+                    throw IllegalStateException("Context required for MangaRepository")
+                )
+            ).also { recommendationsUseCase = it }
+        }
+
+    /**
+     * Get GetRecommendationsUseCase with context.
+     */
+    fun getRecommendationsUseCase(context: android.content.Context): GetRecommendationsUseCase =
+        recommendationsUseCase ?: synchronized(this) {
+            recommendationsUseCase ?: GetRecommendationsUseCase(
+                mangaRepository = LibraryDiContainer.getMangaRepository(context)
+            ).also { recommendationsUseCase = it }
         }
 
     /**
@@ -61,12 +91,13 @@ object AIDiContainer {
     /**
      * Get EnhancedAIService instance with all dependencies.
      */
-    fun getEnhancedAIService(): EnhancedAIService =
+    fun getEnhancedAIService(context: android.content.Context): EnhancedAIService =
         enhancedAIService ?: synchronized(this) {
             enhancedAIService ?: EnhancedAIService(
                 geminiService = createGeminiService(),
                 cacheService = getSmartCacheService(),
                 ocrService = getOCRService(),
+                recommendationsUseCase = getRecommendationsUseCase(context),
             ).also { enhancedAIService = it }
         }
 
@@ -79,6 +110,7 @@ object AIDiContainer {
             ocrService = null
             enhancedAIService = null
             smartCacheService = null
+            recommendationsUseCase = null
         }
     }
 }

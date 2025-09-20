@@ -31,7 +31,7 @@ fun EnhancedReadingScreenWithTranslation(
 ) {
     val context = LocalContext.current
     val translationViewModel: TranslationViewModel = viewModel {
-        TranslationViewModel(AppDiContainer.getEnhancedAIService())
+        TranslationViewModel(AppDiContainer.getEnhancedAIService(context))
     }
     
     var currentPage by remember { mutableStateOf(1) }
