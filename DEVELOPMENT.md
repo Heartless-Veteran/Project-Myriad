@@ -8,8 +8,8 @@ This document provides essential information for developers working on Project M
 
 - Android Studio Hedgehog | 2023.1.1 or newer
 - JDK 11 or higher
-- Android SDK API 24-35
-- Kotlin 1.9.22
+- Android SDK API 24-36
+- Kotlin 2.2.20
 
 ### Setting Up the Development Environment
 
@@ -104,7 +104,7 @@ app/src/main/kotlin/com/heartlessveteran/myriad/
 - Use Hilt for dependency injection
 - Define modules in the `di/` packages
 - Use `@HiltAndroidApp` for Application class
-- Use `@AndroidEntryPoint` for Activities and Fragments
+- Use `@AndroidEntryPoint` for Activities and ViewModels
 
 ### Database Guidelines
 
@@ -129,11 +129,11 @@ app/src/main/kotlin/com/heartlessveteran/myriad/
 - Use camelCase for functions and variables
 - Use UPPER_SNAKE_CASE for constants
 - Add descriptive suffixes:
-  - `Activity` for activities
-  - `Fragment` for fragments  
+  - `Activity` for activities (if any)
   - `ViewModel` for ViewModels
   - `Repository` for repositories
   - `Dao` for data access objects
+  - `Screen` for Compose screens
 
 ### Package Structure
 

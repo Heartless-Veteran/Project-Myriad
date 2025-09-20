@@ -24,16 +24,16 @@ The following packages have been updated or replaced:
    - Improved build performance and compatibility
 
 4. **Kotlin Compiler Updates**
-   - Updated to Kotlin 2.1.0 with KSP 2.1.0-1.0.29 compatibility
+   - Updated to Kotlin 2.2.20 with KSP 2.2.20-2.0.3 compatibility
    - Improved Jetpack Compose compilation performance
 
 ### Core Dependencies Updated
 
-- **Kotlin**: Updated to 2.1.0 (for KSP compatibility)
+- **Kotlin**: Updated to 2.2.20 (latest stable with full KSP compatibility)
 - **Android Gradle Plugin**: Updated to 8.13.0 (from 8.1.x)
 - **Jetpack Compose BOM**: Updated to 2025.09.00 (latest stable)
 - **Android SDK**: Targeting API 35/36 (Android 15+)
-- **KSP**: Added KSP 2.1.0-1.0.29 for annotation processing
+- **KSP**: Added KSP 2.2.20-2.0.3 for annotation processing
 - **Hilt**: Re-enabled with KSP (version 2.57.1)
 
 ## Renovate Configuration
@@ -79,7 +79,7 @@ The project uses Renovate for automated dependency management with the following
 ### Known Issues
 
 1. **Build Performance**: Large projects may benefit from enabling Gradle build cache and parallel builds.
-2. **Gradle Dependencies**: Some libraries may show deprecation warnings with Kotlin 2.1.0 but still function correctly.
+2. **Gradle Dependencies**: Some libraries may show deprecation warnings with Kotlin 2.2.20 but still function correctly.
 
 **Note**: The previous Hilt/KAPT compatibility issue has been resolved with the successful migration to KSP.
 
