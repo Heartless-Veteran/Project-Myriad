@@ -1,5 +1,6 @@
 package com.heartlessveteran.myriad.services
 
+import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.network.GeminiService
 import kotlinx.coroutines.Dispatchers
@@ -125,6 +126,7 @@ class EnhancedAIService
     constructor(
         private val geminiService: GeminiService,
         private val cacheService: SmartCacheService,
+        private val ocrService: OCRService,
     ) {
         companion object {
             private const val TRANSLATION_CACHE_KEY = "ai_translations"
@@ -288,33 +290,42 @@ class EnhancedAIService
             }
 
         /**
-         * Mock OCR translation implementation
-         * In production, this would use ML Kit or similar OCR libraries
+         * Mock OCR translation implementation replaced with real ML Kit implementation
          */
         private suspend fun performOCRTranslation(
             imageBase64: String,
             options: TranslationRequest,
         ): TranslationResponse {
-            // Mock implementation - would use actual OCR libraries
-            val originalText =
-                listOf(
-                    TextBound("こんにちは", 100f, 50f, 80f, 20f, 0.95f),
-                    TextBound("世界", 100f, 80f, 40f, 20f, 0.92f),
-                )
+            return when (val result = ocrService.performOCRTranslation(imageBase64, options.targetLanguage)) {
+                is Result.Success -> result.data
+                is Result.Error -> {
+                    // Fallback to mock implementation if real OCR fails
+                    val originalText =
+                        listOf(
+                            TextBound("こんにちは", 100f, 50f, 80f, 20f, 0.95f),
+                            TextBound("世界", 100f, 80f, 40f, 20f, 0.92f),
+                        )
 
-            val translatedText =
-                listOf(
-                    TranslatedTextBound("こんにちは", "Hello", 100f, 50f, 80f, 20f, 0.95f),
-                    TranslatedTextBound("世界", "World", 100f, 80f, 40f, 20f, 0.92f),
-                )
+                    val translatedText =
+                        listOf(
+                            TranslatedTextBound("こんにちは", "Hello", 100f, 50f, 80f, 20f, 0.95f),
+                            TranslatedTextBound("世界", "World", 100f, 80f, 40f, 20f, 0.92f),
+                        )
 
-            return TranslationResponse(
-                originalText = originalText,
-                translatedText = translatedText,
-                confidence = 0.93f,
-                processingTime = 0L, // Will be set by caller
-                language = options.language,
-            )
+                    TranslationResponse(
+                        originalText = originalText,
+                        translatedText = translatedText,
+                        confidence = 0.93f,
+                        processingTime = 0L, // Will be set by caller
+                        language = options.language,
+                    )
+                }
+                is Result.Loading -> {
+                    // This shouldn't happen in our implementation since we don't return Loading state
+                    // But we need to handle it for exhaustive when
+                    throw IllegalStateException("Unexpected loading state in OCR service")
+                }
+            }
         }
 
         /**

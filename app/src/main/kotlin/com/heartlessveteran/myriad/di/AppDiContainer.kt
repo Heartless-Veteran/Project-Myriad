@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.di
 
 import android.content.Context
+import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import com.heartlessveteran.myriad.domain.services.DownloadService
@@ -12,6 +13,7 @@ import com.heartlessveteran.myriad.domain.usecase.DownloadMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.GetLatestMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.ImportMangaFromFileUseCase
 import com.heartlessveteran.myriad.domain.usecase.SearchMangaUseCase
+import com.heartlessveteran.myriad.services.EnhancedAIService
 
 /**
  * Master dependency injection container that provides access to all services and use cases.
@@ -109,14 +111,25 @@ object AppDiContainer {
     fun getSearchMangaUseCase(): SearchMangaUseCase = BrowseDiContainer.searchMangaUseCase
 
     /**
+     * Get OCRService for text recognition and translation.
+     */
+    fun getOCRService(): OCRService = AIDiContainer.getOCRService()
+
+    /**
+     * Get EnhancedAIService for coordinated AI operations.
+     */
+    fun getEnhancedAIService(): EnhancedAIService = AIDiContainer.getEnhancedAIService()
+
+    /**
      * Clears cached instances in DI containers.
      *
-     * Resets LibraryDiContainer and DownloadDiContainer (useful for tests or resetting app state).
+     * Resets LibraryDiContainer, DownloadDiContainer, and AIDiContainer (useful for tests or resetting app state).
      * Note: BrowseDiContainer is not cleared because it exposes singleton objects.
      */
     fun clearInstances() {
         LibraryDiContainer.clearInstances()
         DownloadDiContainer.clearInstances()
+        AIDiContainer.clearInstances()
         // BrowseDiContainer doesn't need clearing as it uses singleton objects
     }
 }
