@@ -272,7 +272,9 @@ private fun MangaListItem(
                 }
 
                 Text(
-                    text = "${manga.readChapters}/${if (manga.totalChapters > 0) manga.totalChapters else "?"} chapters",
+                    text =
+                        "${manga.readChapters}/${if (manga.totalChapters > 0) manga.totalChapters else "?"} " +
+                            "chapters",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -290,8 +292,14 @@ private fun MangaListItem(
             IconButton(onClick = onToggleFavorite) {
                 Icon(
                     imageVector = if (manga.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (manga.isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (manga.isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription =
+                        if (manga.isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint =
+                        if (manga.isFavorite) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                 )
             }
         }

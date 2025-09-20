@@ -23,17 +23,17 @@ class MangaDxSourceRepositoryImpl(
     }
 
     /**
-         * Streams the latest manga from MangaDx for the given 1-based page.
-         *
-         * Emits Result.Loading, then Result.Success with a list of Manga on success or Result.Error on failure.
-         * Each page contains 20 items; an internal offset is computed as (page - 1) * 20. DTOs from the API
-         * are mapped to domain Manga objects (cover URL resolved when cover art is present, titles prefer
-         * English then any available title, status mapped to MangaStatus, tags → genres, etc.).
-         *
-         * @param page 1-based page number used to compute the API offset (20 items per page).
-         * @return Flow that emits the loading state and then either a success with a list of Manga or an error.
-         */
-        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
+     * Streams the latest manga from MangaDx for the given 1-based page.
+     *
+     * Emits Result.Loading, then Result.Success with a list of Manga on success or Result.Error on failure.
+     * Each page contains 20 items; an internal offset is computed as (page - 1) * 20. DTOs from the API
+     * are mapped to domain Manga objects (cover URL resolved when cover art is present, titles prefer
+     * English then any available title, status mapped to MangaStatus, tags → genres, etc.).
+     *
+     * @param page 1-based page number used to compute the API offset (20 items per page).
+     * @return Flow that emits the loading state and then either a success with a list of Manga or an error.
+     */
+    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
         flow {
             try {
                 emit(Result.Loading)
@@ -91,18 +91,18 @@ class MangaDxSourceRepositoryImpl(
         }
 
     /**
-         * Searches MangaDex for manga matching the given query and emits paginated results.
-         *
-         * Performs a search request with 20 items per page (offset = (page - 1) * 20), maps each returned DTO
-         * to a Manga domain entity (including title resolution, genre extraction, cover URL construction,
-         * status mapping, and generated id), and emits the results as a Flow of Result.
-         *
-         * @param query Search text to send to the remote API.
-         * @param page  1-based page number. Pages contain 20 items each.
-         * @return A Flow that first emits Result.Loading and then either Result.Success with a list of Manga
-         *         or Result.Error with failure details if the request or mapping fails.
-         */
-        override fun searchManga(
+     * Searches MangaDex for manga matching the given query and emits paginated results.
+     *
+     * Performs a search request with 20 items per page (offset = (page - 1) * 20), maps each returned DTO
+     * to a Manga domain entity (including title resolution, genre extraction, cover URL construction,
+     * status mapping, and generated id), and emits the results as a Flow of Result.
+     *
+     * @param query Search text to send to the remote API.
+     * @param page  1-based page number. Pages contain 20 items each.
+     * @return A Flow that first emits Result.Loading and then either Result.Success with a list of Manga
+     *         or Result.Error with failure details if the request or mapping fails.
+     */
+    override fun searchManga(
         query: String,
         page: Int,
     ): Flow<Result<List<Manga>>> =
