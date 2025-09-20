@@ -207,7 +207,7 @@ fun MyriadNavigation(
 
             composable(Screen.Reading.route) { backStackEntry ->
                 val mangaId = backStackEntry.arguments?.getString("mangaId") ?: return@composable
-                ReadingScreen(
+                EnhancedReadingScreenWithTranslation(
                     mangaId = mangaId,
                     onBackPress = { navController.popBackStack() },
                 )

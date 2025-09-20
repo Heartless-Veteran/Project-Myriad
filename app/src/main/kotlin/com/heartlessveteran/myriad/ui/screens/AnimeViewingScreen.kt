@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.heartlessveteran.myriad.ui.components.VideoPlayer
 import com.heartlessveteran.myriad.ui.components.VideoPlayerConfiguration
 import com.heartlessveteran.myriad.ui.theme.MyriadTheme
+import kotlinx.coroutines.delay
 
 /**
  * Anime viewing screen with video player.
