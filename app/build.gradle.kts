@@ -3,8 +3,9 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
+    // KSP and Hilt temporarily disabled due to Kotlin 2.2.20 compatibility
+    // id("com.google.devtools.ksp")
+    // id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
     // Code Quality plugins
@@ -103,12 +104,14 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.8.0")
     implementation("androidx.room:room-ktx:2.8.0")
-    ksp("androidx.room:room-compiler:2.8.0")
+    // KSP temporarily disabled due to Kotlin 2.2.20 compatibility
+    // ksp("androidx.room:room-compiler:2.8.0")
 
-    // Hilt Dependency Injection
-    implementation("com.google.dagger:hilt-android:2.57.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
-    ksp("com.google.dagger:hilt-compiler:2.57.1")
+    // Hilt Dependency Injection temporarily disabled due to Kotlin 2.2.20 compatibility
+    // Using manual dependency injection until KAPT is replaced with KSP
+    // implementation("com.google.dagger:hilt-android:2.57.1")
+    // implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+    // ksp("com.google.dagger:hilt-compiler:2.57.1")
 
     // Network
     implementation("com.squareup.retrofit2:retrofit:3.0.0")

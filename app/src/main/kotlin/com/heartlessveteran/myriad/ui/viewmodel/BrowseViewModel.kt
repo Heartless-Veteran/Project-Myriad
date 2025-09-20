@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 data class BrowseUiState(
     val isLoading: Boolean = true,
@@ -24,8 +22,7 @@ data class BrowseUiState(
     val isSearching: Boolean = false,
 )
 
-@HiltViewModel
-class BrowseViewModel @Inject constructor(
+class BrowseViewModel(
     private val getLatestMangaUseCase: GetLatestMangaUseCase,
     private val searchMangaUseCase: SearchMangaUseCase,
 ) : ViewModel() {
