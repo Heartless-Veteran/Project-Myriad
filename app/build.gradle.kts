@@ -7,6 +7,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("androidx.baselineprofile")
     // Code Quality plugins
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt") // Re-enabled for code quality checks
@@ -45,11 +46,36 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            
+            // Enable split APKs by ABI for smaller downloads
+            ndk {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            }
+        }
+        
+        debug {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+        }
+    }
+
+    // Enable App Bundle optimizations
+    bundle {
+        abi {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        language {
+            enableSplit = true
         }
     }
 
@@ -79,6 +105,19 @@ android {
 }
 
 dependencies {
+    // Module dependencies
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":feature:reader"))
+    implementation(project(":feature:browser"))
+    implementation(project(":feature:vault"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:ai"))
+    
+    // Baseline Profile dependency
+    baselineProfile(project(":baselineprofile"))
+    
     // Core Android
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
