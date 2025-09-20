@@ -125,7 +125,9 @@ fun HomeScreen(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        text = "Enhanced Settings, Basic Reader, and File Management features are now being implemented",
+                        text =
+                            "Enhanced Settings, Basic Reader, and File Management features " +
+                                "are now being implemented",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

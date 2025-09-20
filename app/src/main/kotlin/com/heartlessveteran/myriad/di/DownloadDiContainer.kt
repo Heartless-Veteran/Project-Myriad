@@ -43,7 +43,7 @@ object DownloadDiContainer {
      *
      * Thread-safe: if the cached downloadService is a DownloadServiceImpl, its
      * cleanup() method is invoked before both downloadService and sourceService
-     * are set to null. Intended for testing or resetting DI state. 
+     * are set to null. Intended for testing or resetting DI state.
      */
     fun clearInstances() {
         synchronized(this) {

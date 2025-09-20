@@ -126,7 +126,9 @@ class FileImportViewModel(
                     _importStatus.value =
                         ImportStatus(
                             isError = true,
-                            message = "Unable to access the selected directory. Please try selecting a different directory.",
+                            message =
+                                "Unable to access the selected directory. " +
+                                    "Please try selecting a different directory.",
                         )
                     return@launch
                 }
