@@ -5,7 +5,6 @@ import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.services.ContentRecommendation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
