@@ -12,7 +12,7 @@
 | **Target SDK** | 35 |
 | **Min SDK** | 24 |
 | **Version** | 1.0.0 |
-| **Commits** | 4 |
+| **Commits** | 2 |
 | **Contributors** | 0 |
 
 *Last updated: 2025-09-20*
@@ -23,7 +23,7 @@
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
-- Latest commit: 94aad5b Fix workflow naming conventions and deprecated configurations
+- Latest commit: 6309b47 Initial plan
 
 <!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
