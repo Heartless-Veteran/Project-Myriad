@@ -172,6 +172,12 @@ fun MyriadNavigation(
                 )
             }
 
+            composable("tracking_management") {
+                TrackingManagementScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.AICore.route) {
                 AICoreScreen()
             }
@@ -181,6 +187,12 @@ fun MyriadNavigation(
                     initialSection = SettingsSection.GENERAL, // or appropriate default section
                     onBackClick = { navController.popBackStack() },
                     onSectionChange = { /* handle section change if needed */ },
+                    onNavigateToSourceManagement = {
+                        navController.navigate("source_management")
+                    },
+                    onNavigateToTrackingManagement = {
+                        navController.navigate("tracking_management")
+                    }
                 )
             }
 

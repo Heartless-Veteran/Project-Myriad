@@ -290,6 +290,7 @@ class NavigationService
                 is Destination.AnimeLibrary -> NavigationRoutes.ANIME_LIBRARY
                 is Destination.Browse -> NavigationRoutes.BROWSE
                 is Destination.SourceManagement -> NavigationRoutes.SOURCE_MANAGEMENT
+                is Destination.TrackingManagement -> NavigationRoutes.TRACKING_MANAGEMENT
                 is Destination.AICore -> NavigationRoutes.AI_CORE
                 is Destination.Reading ->
                     Destination.Reading.createRoute(
@@ -340,6 +341,7 @@ class NavigationService
                 route == NavigationRoutes.ANIME_LIBRARY -> Destination.AnimeLibrary
                 route == NavigationRoutes.BROWSE -> Destination.Browse
                 route == NavigationRoutes.SOURCE_MANAGEMENT -> Destination.SourceManagement
+                route == NavigationRoutes.TRACKING_MANAGEMENT -> Destination.TrackingManagement
                 route == NavigationRoutes.AI_CORE -> Destination.AICore
                 route.startsWith("reading/") -> parseReadingRoute(route)
                 route.startsWith("watching/") -> parseWatchingRoute(route)
