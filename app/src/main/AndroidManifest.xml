@@ -16,6 +16,10 @@
     <!-- Device features -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Foreground service permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".MyriadApplication"
@@ -56,6 +60,12 @@
                 <data android:mimeType="video/x-msvideo" />
             </intent-filter>
         </activity>
+        
+        <!-- Download foreground service -->
+        <service
+            android:name=".data.services.DownloadForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
         
     </application>
 </manifest>
