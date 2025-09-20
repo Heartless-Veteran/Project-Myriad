@@ -227,7 +227,7 @@ class ArchitectureValidator {
 
     getExpectedPackageFromPath(filePath) {
         const relativePath = path.relative(this.srcPath, path.dirname(filePath));
-        const packageParts = relativePath.split(path.sep).filter(part => part !== '.' && part !== '');
+        const packageParts = relativePath.split(path.sep).filter(part => part && part !== '.' && part !== '..');
         return `com.heartlessveteran.myriad${packageParts.length > 0 ? '.' + packageParts.join('.') : ''}`;
     }
 
