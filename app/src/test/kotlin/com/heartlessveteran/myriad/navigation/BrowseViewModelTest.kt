@@ -1,9 +1,14 @@
 package com.heartlessveteran.myriad.ui.viewmodel
 
-import com.heartlessveteran.myriad.domain.model.Manga
+import com.heartlessveteran.myriad.domain.entities.Manga
+import com.heartlessveteran.myriad.domain.entities.MangaStatus
+import com.heartlessveteran.myriad.domain.models.Result
+import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import com.heartlessveteran.myriad.domain.usecase.GetLatestMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.SearchMangaUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
@@ -17,24 +22,28 @@ class BrowseViewModelTest {
         // Given
         val mockGetLatestUseCase =
             GetLatestMangaUseCase(
-                object : com.heartlessveteran.myriad.domain.repository.SourceRepository {
-                    override fun getLatestManga(page: Int) = flowOf(Result.success(emptyList<Manga>()))
+                object : SourceRepository {
+                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                        flowOf(Result.Success(emptyList()))
 
                     override fun searchManga(
                         query: String,
                         page: Int,
-                    ) = flowOf(Result.success(emptyList<Manga>()))
+                    ): Flow<Result<List<Manga>>> = 
+                        flowOf(Result.Success(emptyList()))
                 },
             )
         val mockSearchUseCase =
             SearchMangaUseCase(
-                object : com.heartlessveteran.myriad.domain.repository.SourceRepository {
-                    override fun getLatestManga(page: Int) = flowOf(Result.success(emptyList<Manga>()))
+                object : SourceRepository {
+                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                        flowOf(Result.Success(emptyList()))
 
                     override fun searchManga(
                         query: String,
                         page: Int,
-                    ) = flowOf(Result.success(emptyList<Manga>()))
+                    ): Flow<Result<List<Manga>>> = 
+                        flowOf(Result.Success(emptyList()))
                 },
             )
 
@@ -56,37 +65,40 @@ class BrowseViewModelTest {
             val testManga =
                 listOf(
                     Manga(
-                        url = "test-url",
                         title = "Test Manga",
                         artist = "Test Artist",
                         author = "Test Author",
                         description = "Test Description",
-                        genre = listOf("Action", "Adventure"),
-                        status = "Ongoing",
-                        thumbnailUrl = "test-thumbnail-url",
+                        genres = listOf("Action", "Adventure"),
+                        status = MangaStatus.ONGOING,
+                        coverImageUrl = "test-thumbnail-url",
                     ),
                 )
 
             val mockGetLatestUseCase =
                 GetLatestMangaUseCase(
-                    object : com.heartlessveteran.myriad.domain.repository.SourceRepository {
-                        override fun getLatestManga(page: Int) = flowOf(Result.success(testManga))
+                    object : SourceRepository {
+                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                            flowOf(Result.Success(testManga))
 
                         override fun searchManga(
                             query: String,
                             page: Int,
-                        ) = flowOf(Result.success(emptyList<Manga>()))
+                        ): Flow<Result<List<Manga>>> = 
+                            flowOf(Result.Success(emptyList()))
                     },
                 )
             val mockSearchUseCase =
                 SearchMangaUseCase(
-                    object : com.heartlessveteran.myriad.domain.repository.SourceRepository {
-                        override fun getLatestManga(page: Int) = flowOf(Result.success(testManga))
+                    object : SourceRepository {
+                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                            flowOf(Result.Success(testManga))
 
                         override fun searchManga(
                             query: String,
                             page: Int,
-                        ) = flowOf(Result.success(emptyList<Manga>()))
+                        ): Flow<Result<List<Manga>>> = 
+                            flowOf(Result.Success(emptyList()))
                     },
                 )
 
