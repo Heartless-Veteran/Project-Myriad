@@ -9,6 +9,8 @@
     "test-enhanced-gemini-auto": "node ./scripts/test-enhanced-gemini-auto.js",
     "validate-architecture": "node ./scripts/validate-architecture.js",
     "update-readme-stats": "node ./scripts/update-readme-stats.js",
+    "project-manager": "node ./scripts/project-manager.js",
+    "test-project-manager": "node ./scripts/project-manager.js",
     "test-workflow": "node ./scripts/test-workflow.js",
     "test": "echo 'No tests defined for Node.js environment' && exit 0",
     "lint": "npx eslint ."

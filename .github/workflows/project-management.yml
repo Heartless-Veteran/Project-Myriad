@@ -1,27 +1,145 @@
-name: Project Management - Add to GitHub Projects
+name: Project Management - Enhanced Automation
 
 on:
   issues:
-    types: [opened]
+    types: [opened, closed, reopened, assigned, unassigned, labeled, unlabeled, milestoned, demilestoned]
   pull_request:
-    types: [opened]
+    types: [opened, closed, reopened, converted_to_draft, ready_for_review, assigned, unassigned, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted]
 
 permissions:
   contents: read
   issues: write
   pull-requests: write
+  repository-projects: write
 
 jobs:
-  add-to-project:
-    name: Add to Project Board
+  manage-project:
+    name: Manage Project Board
     runs-on: ubuntu-latest
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Add To GitHub Projects
         uses: actions/add-to-project@v1.0.2
+        if: github.event.action == 'opened'
         with:
-          # You can get this from the project URL: https://github.com/users/USERNAME/projects/PROJECT_NUMBER
-          # or https://github.com/orgs/ORGNAME/projects/PROJECT_NUMBER  
           project-url: https://github.com/users/Heartless-Veteran/projects/1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Update Project Status
+        uses: actions/github-script@v7
+        env:
+          PROJECT_URL: https://github.com/users/Heartless-Veteran/projects/1
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const eventAction = context.payload.action;
+            const isIssue = context.eventName === 'issues';
+            const isPR = context.eventName === 'pull_request';
+            const item = isIssue ? context.payload.issue : context.payload.pull_request;
+            
+            console.log(`Processing ${isIssue ? 'issue' : 'PR'} #${item.number} - action: ${eventAction}`);
+            
+            // Auto-labeling based on PR file changes
+            if (isPR && (eventAction === 'opened' || eventAction === 'reopened')) {
+              try {
+                const { data: files } = await github.rest.pulls.listFiles({
+                  owner,
+                  repo,
+                  pull_number: item.number,
+                });
+                
+                const labels = [];
+                const paths = files.map(file => file.filename);
+                
+                // Auto-label based on file paths
+                if (paths.some(path => path.includes('docs/'))) {
+                  labels.push('documentation');
+                }
+                if (paths.some(path => path.includes('.github/workflows/'))) {
+                  labels.push('ci/cd');
+                }
+                if (paths.some(path => path.includes('app/src/main/kotlin/'))) {
+                  labels.push('android');
+                }
+                if (paths.some(path => path.includes('scripts/'))) {
+                  labels.push('automation');
+                }
+                if (paths.some(path => path.includes('build.gradle'))) {
+                  labels.push('build');
+                }
+                
+                // Apply labels
+                if (labels.length > 0) {
+                  await github.rest.issues.addLabels({
+                    owner,
+                    repo,
+                    issue_number: item.number,
+                    labels: labels
+                  });
+                  console.log(`Added labels: ${labels.join(', ')}`);
+                }
+              } catch (error) {
+                console.log('Error adding auto-labels:', error.message);
+              }
+            }
+            
+            // Status updates based on events
+            if (isIssue) {
+              if (eventAction === 'assigned') {
+                console.log(`Issue #${item.number} assigned - status should be "In Progress"`);
+              } else if (eventAction === 'closed') {
+                console.log(`Issue #${item.number} closed - status should be "Done"`);
+              }
+            }
+            
+            if (isPR) {
+              if (eventAction === 'opened' || eventAction === 'ready_for_review') {
+                console.log(`PR #${item.number} ready for review - status should be "In Review"`);
+              } else if (eventAction === 'converted_to_draft') {
+                console.log(`PR #${item.number} converted to draft - status should be "In Progress"`);
+              } else if (eventAction === 'closed' && item.merged) {
+                console.log(`PR #${item.number} merged - status should be "Done"`);
+              }
+            }
+            
+            // Auto-assign milestones based on labels
+            if ((eventAction === 'labeled') && (isIssue || isPR)) {
+              const label = context.payload.label?.name;
+              let milestone = null;
+              
+              if (label === 'priority:high' || label === 'bug') {
+                milestone = 'v1.0.0 - Foundation';
+              } else if (label === 'feature' || label === 'enhancement') {
+                milestone = 'v1.1.0 - Core Features';
+              } else if (label === 'documentation') {
+                milestone = 'v1.0.0 - Foundation';
+              }
+              
+              if (milestone) {
+                try {
+                  const { data: milestones } = await github.rest.issues.listMilestones({
+                    owner,
+                    repo,
+                  });
+                  
+                  const targetMilestone = milestones.find(m => m.title === milestone);
+                  if (targetMilestone && !item.milestone) {
+                    await github.rest.issues.update({
+                      owner,
+                      repo,
+                      issue_number: item.number,
+                      milestone: targetMilestone.number
+                    });
+                    console.log(`Assigned milestone: ${milestone}`);
+                  }
+                } catch (error) {
+                  console.log('Error assigning milestone:', error.message);
+                }
+              }
+            }

@@ -12,7 +12,7 @@
 | **Target SDK** | 35 |
 | **Min SDK** | 24 |
 | **Version** | 1.0.0 |
-| **Commits** | 2 |
+| **Commits** | 3 |
 | **Contributors** | 0 |
 
 *Last updated: 2025-09-20*
@@ -23,7 +23,7 @@
 - **Android Test**: 4 dependencies
 
 ### Recent Activity
-- Latest commit: 6309b47 Initial plan
+- Latest commit: 4752958 Initial analysis: Understand current project management automation
 
 <!-- /PROJECT_STATS -->
 ## The Definitive Manga and Anime Platform
@@ -247,6 +247,17 @@ For detailed development plans, timelines, and implementation roadmap, see our c
 ## 🤖 Gemini Auto Enhanced - AI Code Fixer
 
 **Project Myriad** includes an advanced AI-powered code fixing system with **language-specific intelligence** that automatically identifies and resolves code issues in pull requests.
+
+### 🚀 **Enhanced Project Management Automation**
+
+The repository features intelligent GitHub Projects integration with:
+
+- **🏷️ Smart Auto-Labeling**: Automatically categorizes issues and PRs based on file changes and content analysis
+- **🎯 Intelligent Milestones**: Priority-based assignment to development phases (Foundation, Core Features, AI Integration)  
+- **📊 Status Tracking**: Automatic movement between project columns based on issue/PR lifecycle
+- **🔄 Event-Driven**: Responds to 15+ GitHub events for comprehensive project management
+
+> 📚 **Learn More**: See [Project Management Documentation](docs/PROJECT_MANAGEMENT.md) for detailed features and configuration.
 
 ### ✨ Enhanced Features
 - 🔧 **Language-Specific Analysis**: Specialized rules for Kotlin, JavaScript, TypeScript, and Shell

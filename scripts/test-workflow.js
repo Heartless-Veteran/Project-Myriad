@@ -64,7 +64,13 @@ if (runTest('Detekt Analysis', './gradlew detekt', false)) {
 
 // Test 5: Dokka documentation generation
 total++;
-if (runTest('Dokka Documentation', './gradlew dokkaHtml')) {
+if (runTest('Dokka Documentation', './gradlew dokkaGenerateModuleHtml')) {
+    passed++;
+}
+
+// Test 6: Project Management Automation
+total++;
+if (runTest('Project Management Automation', 'node scripts/project-manager.js')) {
     passed++;
 }
 
