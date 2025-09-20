@@ -338,9 +338,27 @@ class EnhancedAIService
             limit: Int,
         ): List<ContentRecommendation> =
             listOf(
-                ContentRecommendation("1", "Attack on Titan", 0.92f, "Similar intense action", listOf("Action", "Drama")),
-                ContentRecommendation("2", "Demon Slayer", 0.89f, "Popular shonen style", listOf("Action", "Supernatural")),
-                ContentRecommendation("3", "My Hero Academia", 0.85f, "Character development focus", listOf("Action", "School")),
+                ContentRecommendation(
+                    "1",
+                    "Attack on Titan",
+                    0.92f,
+                    "Similar intense action",
+                    listOf("Action", "Drama"),
+                ),
+                ContentRecommendation(
+                    "2",
+                    "Demon Slayer",
+                    0.89f,
+                    "Popular shonen style",
+                    listOf("Action", "Supernatural"),
+                ),
+                ContentRecommendation(
+                    "3",
+                    "My Hero Academia",
+                    0.85f,
+                    "Character development focus",
+                    listOf("Action", "School"),
+                ),
             ).take(limit)
 
         /**

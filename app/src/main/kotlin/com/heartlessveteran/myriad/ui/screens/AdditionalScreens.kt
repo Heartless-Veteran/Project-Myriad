@@ -200,7 +200,8 @@ private fun LocalFilesContent() {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "File management system is currently in development. Basic file import and scanning capabilities are being implemented in this phase.",
+                        text = "File management system is currently in development. " +
+                            "Basic file import and scanning capabilities are being implemented in this phase.",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

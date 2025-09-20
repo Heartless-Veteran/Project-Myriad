@@ -36,7 +36,9 @@ interface AnimeDao {
     @Query("SELECT * FROM anime WHERE genres LIKE '%' || :genre || '%'")
     fun getAnimeByGenre(genre: String): Flow<List<Anime>>
 
-    @Query("UPDATE anime SET watchedEpisodes = :watchedEpisodes, lastWatchedDate = :lastWatchedDate WHERE id = :animeId")
+    @Query(
+        "UPDATE anime SET watchedEpisodes = :watchedEpisodes, lastWatchedDate = :lastWatchedDate WHERE id = :animeId",
+    )
     suspend fun updateWatchProgress(
         animeId: String,
         watchedEpisodes: Int,

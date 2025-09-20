@@ -197,7 +197,8 @@ sealed class Destination {
              * @param section The settings section to navigate to; defaults to GENERAL.
              * @return The route path "settings/{section}" where `{section}` is the section name in lowercase.
              */
-            fun createRoute(section: SettingsSection = SettingsSection.GENERAL): String = "settings/${section.name.lowercase()}"
+            fun createRoute(section: SettingsSection = SettingsSection.GENERAL): String =
+                "settings/${section.name.lowercase()}"
         }
     }
 }

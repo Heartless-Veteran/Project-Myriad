@@ -234,7 +234,12 @@ class MangaLibraryViewModel(
         MangaLibraryStatistics(
             totalCount = mangaList.size,
             favoriteCount = mangaList.count { it.isFavorite },
-            readingCount = mangaList.count { it.readChapters > 0 && it.totalChapters > 0 && it.readChapters < it.totalChapters },
+            readingCount =
+                mangaList.count {
+                    it.readChapters > 0 &&
+                        it.totalChapters > 0 &&
+                        it.readChapters < it.totalChapters
+                },
             completedCount = mangaList.count { it.totalChapters > 0 && it.readChapters >= it.totalChapters },
         )
 }

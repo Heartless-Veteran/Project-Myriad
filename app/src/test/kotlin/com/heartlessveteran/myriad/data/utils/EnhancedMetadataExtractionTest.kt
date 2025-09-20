@@ -60,7 +60,12 @@ class EnhancedMetadataExtractionTest {
 
         // Use reflection to access private extractXmlTag method
         val metadataExtractor = MetadataExtractor
-        val method = metadataExtractor::class.java.getDeclaredMethod("extractXmlTag", String::class.java, String::class.java)
+        val method =
+            metadataExtractor::class.java.getDeclaredMethod(
+                "extractXmlTag",
+                String::class.java,
+                String::class.java,
+            )
         method.isAccessible = true
 
         val result = method.invoke(metadataExtractor, xmlContent, "Title") as String?
@@ -74,7 +79,12 @@ class EnhancedMetadataExtractionTest {
 
         // Use reflection to access private extractXmlTag method
         val metadataExtractor = MetadataExtractor
-        val method = metadataExtractor::class.java.getDeclaredMethod("extractXmlTag", String::class.java, String::class.java)
+        val method =
+            metadataExtractor::class.java.getDeclaredMethod(
+                "extractXmlTag",
+                String::class.java,
+                String::class.java,
+            )
         method.isAccessible = true
 
         val result = method.invoke(metadataExtractor, xmlContent, "Title") as String?
@@ -88,7 +98,12 @@ class EnhancedMetadataExtractionTest {
 
         // Use reflection to access private extractXmlTag method
         val metadataExtractor = MetadataExtractor
-        val method = metadataExtractor::class.java.getDeclaredMethod("extractXmlTag", String::class.java, String::class.java)
+        val method =
+            metadataExtractor::class.java.getDeclaredMethod(
+                "extractXmlTag",
+                String::class.java,
+                String::class.java,
+            )
         method.isAccessible = true
 
         val result = method.invoke(metadataExtractor, xmlContent, "Title") as String?

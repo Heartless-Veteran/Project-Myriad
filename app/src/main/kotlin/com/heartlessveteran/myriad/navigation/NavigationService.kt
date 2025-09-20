@@ -291,16 +291,34 @@ class NavigationService
                 is Destination.AnimeLibrary -> NavigationRoutes.ANIME_LIBRARY
                 is Destination.Browse -> NavigationRoutes.BROWSE
                 is Destination.AICore -> NavigationRoutes.AI_CORE
-                is Destination.Reading -> Destination.Reading.createRoute(destination.mangaId, destination.chapterId, destination.page)
+                is Destination.Reading ->
+                    Destination.Reading.createRoute(
+                        destination.mangaId,
+                        destination.chapterId,
+                        destination.page,
+                    )
                 is Destination.Watching ->
                     Destination.Watching.createRoute(
                         destination.animeId,
                         destination.episodeId,
                         destination.timestamp,
                     )
-                is Destination.MangaDetail -> Destination.MangaDetail.createRoute(destination.mangaId, destination.sourceId)
-                is Destination.AnimeDetail -> Destination.AnimeDetail.createRoute(destination.animeId, destination.sourceId)
-                is Destination.Search -> Destination.Search.createRoute(destination.query, destination.type, destination.source)
+                is Destination.MangaDetail ->
+                    Destination.MangaDetail.createRoute(
+                        destination.mangaId,
+                        destination.sourceId,
+                    )
+                is Destination.AnimeDetail ->
+                    Destination.AnimeDetail.createRoute(
+                        destination.animeId,
+                        destination.sourceId,
+                    )
+                is Destination.Search ->
+                    Destination.Search.createRoute(
+                        destination.query,
+                        destination.type,
+                        destination.source,
+                    )
                 is Destination.Settings -> Destination.Settings.createRoute(destination.section)
             }
 
@@ -386,7 +404,14 @@ class NavigationService
                 _navigationState.value =
                     NavigationState(
                         currentDestination = currentDestination,
-                        previousDestination = if (currentDestination != previousDestination) previousDestination else null,
+                        previousDestination =
+                            if (currentDestination !=
+                                previousDestination
+                            ) {
+                                previousDestination
+                            } else {
+                                null
+                            },
                         canNavigateBack = canNavigateBack,
                         navigationHistory = navigationHistory,
                     )

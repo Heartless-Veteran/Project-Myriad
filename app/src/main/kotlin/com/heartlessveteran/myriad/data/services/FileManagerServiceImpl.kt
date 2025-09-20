@@ -184,7 +184,8 @@ class FileManagerServiceImpl(
         }
     }
 
-    override suspend fun extractMetadata(filePath: String): Result<Map<String, Any>> = MetadataExtractor.extractMetadata(filePath)
+    override suspend fun extractMetadata(filePath: String): Result<Map<String, Any>> =
+        MetadataExtractor.extractMetadata(filePath)
 
     override fun isSupportedMangaFile(filePath: String): Boolean = ArchiveUtils.isSupportedArchive(filePath)
 

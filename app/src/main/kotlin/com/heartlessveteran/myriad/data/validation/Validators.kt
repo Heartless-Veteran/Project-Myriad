@@ -85,7 +85,13 @@ class MangaValidator : Validator<com.heartlessveteran.myriad.domain.entities.Man
         }
 
         if (data.readChapters > data.totalChapters && data.totalChapters > 0) {
-            errors.add(ValidationError("readChapters", "Read chapters cannot exceed total chapters", "READ_CHAPTERS_EXCEED_TOTAL"))
+            errors.add(
+                ValidationError(
+                    "readChapters",
+                    "Read chapters cannot exceed total chapters",
+                    "READ_CHAPTERS_EXCEED_TOTAL",
+                ),
+            )
         }
 
         // Source validation

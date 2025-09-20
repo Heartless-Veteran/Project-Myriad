@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 abstract class BaseViewModel<UiStateType>(
     initialState: UiStateType,
 ) : ViewModel() {
-    protected val _uiState = MutableStateFlow(initialState)
+    private val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<UiStateType> = _uiState.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)

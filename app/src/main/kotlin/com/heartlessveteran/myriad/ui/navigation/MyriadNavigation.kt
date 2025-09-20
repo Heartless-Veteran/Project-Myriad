@@ -12,8 +12,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -72,7 +72,7 @@ val bottomNavItems =
 @Composable
 fun MyriadNavigation(
     navController: NavHostController,
-    context: android.content.Context = androidx.compose.ui.platform.LocalContext.current
+    context: android.content.Context = androidx.compose.ui.platform.LocalContext.current,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -135,8 +135,10 @@ fun MyriadNavigation(
                     viewModel =
                         viewModel {
                             BrowseViewModel(
-                                com.heartlessveteran.myriad.di.AppDiContainer.getGetLatestMangaUseCase(),
-                                com.heartlessveteran.myriad.di.AppDiContainer.getSearchMangaUseCase(),
+                                com.heartlessveteran.myriad.di.AppDiContainer
+                                    .getGetLatestMangaUseCase(),
+                                com.heartlessveteran.myriad.di.AppDiContainer
+                                    .getSearchMangaUseCase(),
                             )
                         },
                     onMangaClick = { manga ->
