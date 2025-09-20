@@ -21,6 +21,9 @@ sealed class Destination {
     data object Browse : Destination()
 
     @Serializable
+    data object SourceManagement : Destination()
+
+    @Serializable
     data object AICore : Destination()
 
     @Serializable
@@ -233,6 +236,7 @@ object NavigationRoutes {
     const val MANGA_LIBRARY = "manga_library"
     const val ANIME_LIBRARY = "anime_library"
     const val BROWSE = "browse"
+    const val SOURCE_MANAGEMENT = "source_management"
     const val AI_CORE = "ai_core"
     const val READING = "reading/{mangaId}?chapterId={chapterId}&page={page}"
     const val WATCHING = "watching/{animeId}?episodeId={episodeId}&timestamp={timestamp}"

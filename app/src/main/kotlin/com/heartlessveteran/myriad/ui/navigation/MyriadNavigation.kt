@@ -160,6 +160,15 @@ fun MyriadNavigation(
                         // For now, we can navigate to reading screen using manga ID
                         navController.navigate(Screen.Reading.createRoute(manga.id))
                     },
+                    onSourceManagementClick = {
+                        navController.navigate("source_management")
+                    }
+                )
+            }
+
+            composable("source_management") {
+                SourceManagementScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

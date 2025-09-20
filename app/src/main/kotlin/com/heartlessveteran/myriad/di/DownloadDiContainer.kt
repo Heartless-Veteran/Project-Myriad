@@ -12,7 +12,7 @@ import com.heartlessveteran.myriad.domain.services.SourceService
  *
  * This container provides:
  * - DownloadService for background downloads
- * - SourceService for online content discovery
+ * - SourceService for online content discovery with real MangaDx integration
  * - Integration between download and source services
  */
 object DownloadDiContainer {
@@ -31,11 +31,13 @@ object DownloadDiContainer {
         }
 
     /**
-     * Get SourceService instance.
+     * Get SourceService instance with real MangaDx integration.
      */
     fun getSourceService(): SourceService =
         sourceService ?: synchronized(this) {
-            sourceService ?: SourceServiceImpl().also { sourceService = it }
+            sourceService ?: SourceServiceImpl(
+                mangaDxSourceRepository = BrowseDiContainer.sourceRepository
+            ).also { sourceService = it }
         }
 
     /**

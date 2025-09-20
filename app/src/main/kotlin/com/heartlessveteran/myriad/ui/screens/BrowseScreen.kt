@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ fun BrowseScreen(
     viewModel: BrowseViewModel,
     onMangaClick: (manga: Manga) -> Unit = {},
     onImportClick: () -> Unit = {},
+    onSourceManagementClick: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -73,6 +75,14 @@ fun BrowseScreen(
                         Text("Browse MangaDex")
                     }
                 },
+                actions = {
+                    IconButton(onClick = onSourceManagementClick) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Source Management"
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {
