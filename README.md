@@ -213,24 +213,6 @@ For detailed development setup instructions, see our [Contributing Guide](CONTRI
 
 ---
 
-## 📱 Screenshots
-
-<div align="center">
-
-| Home Screen | Library View | Reading Interface |
-|-------------|--------------|-------------------|
-| ![Home](docs/images/home-screen.png) | ![Library](docs/images/library-view.png) | ![Reader](docs/images/reader-interface.png) |
-
-| AI Features | Settings | Download Queue |
-|-------------|----------|----------------|
-| ![AI](docs/images/ai-features.png) | ![Settings](docs/images/settings-screen.png) | ![Downloads](docs/images/download-queue.png) |
-
-*Screenshots will be updated as features are implemented*
-
-</div>
-
----
-
 ## 📈 Roadmap
 
 For detailed development plans, timelines, and implementation roadmap, see our comprehensive **[🗺️ ROADMAP.md](ROADMAP.md)**.
@@ -358,7 +340,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ### Recognition
 
-All contributors are recognized in our [Hall of Fame](CONTRIBUTORS.md) and release notes.
+All contributors are recognized in release notes and commit history.
 
 ---
 
