@@ -18,101 +18,110 @@ data class TranslationUiState(
     val isLoading: Boolean = false,
     val translatedTexts: List<TranslatedTextBound> = emptyList(),
     val isTranslationVisible: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )
 
 /**
  * ViewModel for managing translation functionality in the reading screen
  */
 class TranslationViewModel(
-    private val aiService: EnhancedAIService
+    private val aiService: EnhancedAIService,
 ) : ViewModel() {
-    
     private val _translationState = MutableStateFlow(TranslationUiState())
     val translationState: StateFlow<TranslationUiState> = _translationState.asStateFlow()
-    
+
     private val _targetLanguage = MutableStateFlow("en")
     val targetLanguage: StateFlow<String> = _targetLanguage.asStateFlow()
-    
+
     /**
      * Translate the current manga page
      */
-    fun translatePage(imageBase64: String, targetLang: String) {
+    fun translatePage(
+        imageBase64: String,
+        targetLang: String,
+    ) {
         viewModelScope.launch {
-            _translationState.value = _translationState.value.copy(
-                isLoading = true,
-                error = null
-            )
-            
-            try {
-                val translationRequest = TranslationRequest(
-                    imageBase64 = imageBase64,
-                    language = "japanese",
-                    targetLanguage = targetLang
+            _translationState.value =
+                _translationState.value.copy(
+                    isLoading = true,
+                    error = null,
                 )
-                
+
+            try {
+                val translationRequest =
+                    TranslationRequest(
+                        imageBase64 = imageBase64,
+                        language = "japanese",
+                        targetLanguage = targetLang,
+                    )
+
                 when (val result = aiService.translateImageText(imageBase64, translationRequest)) {
                     is Result.Success -> {
-                        _translationState.value = _translationState.value.copy(
-                            isLoading = false,
-                            translatedTexts = result.data.translatedText,
-                            isTranslationVisible = true,
-                            error = null
-                        )
+                        _translationState.value =
+                            _translationState.value.copy(
+                                isLoading = false,
+                                translatedTexts = result.data.translatedText,
+                                isTranslationVisible = true,
+                                error = null,
+                            )
                     }
                     is Result.Error -> {
-                        _translationState.value = _translationState.value.copy(
-                            isLoading = false,
-                            error = result.exception.message ?: "Translation failed"
-                        )
+                        _translationState.value =
+                            _translationState.value.copy(
+                                isLoading = false,
+                                error = result.exception.message ?: "Translation failed",
+                            )
                     }
                     is Result.Loading -> {
                         // Stay in loading state
                     }
                 }
             } catch (e: Exception) {
-                _translationState.value = _translationState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: "An unexpected error occurred"
-                )
+                _translationState.value =
+                    _translationState.value.copy(
+                        isLoading = false,
+                        error = e.message ?: "An unexpected error occurred",
+                    )
             }
         }
     }
-    
+
     /**
      * Toggle translation visibility
      */
     fun toggleTranslationVisibility() {
-        _translationState.value = _translationState.value.copy(
-            isTranslationVisible = !_translationState.value.isTranslationVisible
-        )
+        _translationState.value =
+            _translationState.value.copy(
+                isTranslationVisible = !_translationState.value.isTranslationVisible,
+            )
     }
-    
+
     /**
      * Set target language for translation
      */
     fun setTargetLanguage(language: String) {
         _targetLanguage.value = language
     }
-    
+
     /**
      * Clear current translation
      */
     fun clearTranslation() {
-        _translationState.value = _translationState.value.copy(
-            translatedTexts = emptyList(),
-            isTranslationVisible = false,
-            error = null
-        )
+        _translationState.value =
+            _translationState.value.copy(
+                translatedTexts = emptyList(),
+                isTranslationVisible = false,
+                error = null,
+            )
     }
-    
+
     /**
      * Clear error message
      */
     fun clearError() {
         _translationState.value = _translationState.value.copy(error = null)
     }
-    
+
     /**
      * Retry translation with last used parameters
      */

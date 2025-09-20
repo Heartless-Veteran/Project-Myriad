@@ -264,7 +264,13 @@ class EnhancedAIService
                             is Result.Success -> Result.Success(result.data)
                             is Result.Error -> {
                                 // Fallback to trending recommendations on error
-                                when (val trendingResult = recommendationsUseCase.getTrendingRecommendations(limit).first()) {
+                                when (
+                                    val trendingResult =
+                                        recommendationsUseCase
+                                            .getTrendingRecommendations(
+                                                limit,
+                                            ).first()
+                                ) {
                                     is Result.Success -> Result.Success(trendingResult.data)
                                     else -> {
                                         // Final fallback to mock
@@ -339,8 +345,8 @@ class EnhancedAIService
         private suspend fun performOCRTranslation(
             imageBase64: String,
             options: TranslationRequest,
-        ): TranslationResponse {
-            return when (val result = ocrService.performOCRTranslation(imageBase64, options.targetLanguage)) {
+        ): TranslationResponse =
+            when (val result = ocrService.performOCRTranslation(imageBase64, options.targetLanguage)) {
                 is Result.Success -> result.data
                 is Result.Error -> {
                     // Fallback to mock implementation if real OCR fails
@@ -383,7 +389,6 @@ class EnhancedAIService
                     )
                 }
             }
-        }
 
         /**
          * Mock art style analysis implementation

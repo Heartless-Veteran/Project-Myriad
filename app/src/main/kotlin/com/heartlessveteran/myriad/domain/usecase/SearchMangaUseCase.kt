@@ -11,17 +11,19 @@ import javax.inject.Inject
  * Encapsulates the business logic of searching manga,
  * simplifying the ViewModel's responsibilities.
  */
-class SearchMangaUseCase @Inject constructor(
-    private val sourceRepository: SourceRepository,
-) {
-    /**
-     * Invokes the use case.
-     * @param query The search query.
-     * @param page The page number to fetch.
-     * @return A Flow emitting the result of the operation.
-     */
-    operator fun invoke(
-        query: String,
-        page: Int,
-    ): Flow<Result<List<Manga>>> = sourceRepository.searchManga(query, page)
-}
+class SearchMangaUseCase
+    @Inject
+    constructor(
+        private val sourceRepository: SourceRepository,
+    ) {
+        /**
+         * Invokes the use case.
+         * @param query The search query.
+         * @param page The page number to fetch.
+         * @return A Flow emitting the result of the operation.
+         */
+        operator fun invoke(
+            query: String,
+            page: Int,
+        ): Flow<Result<List<Manga>>> = sourceRepository.searchManga(query, page)
+    }

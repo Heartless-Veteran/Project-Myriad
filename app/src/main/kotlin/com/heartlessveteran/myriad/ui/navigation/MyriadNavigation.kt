@@ -162,25 +162,25 @@ fun MyriadNavigation(
                     },
                     onSourceManagementClick = {
                         navController.navigate("source_management")
-                    }
+                    },
                 )
             }
 
             composable("source_management") {
                 SourceManagementScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
                 )
             }
 
             composable("tracking_management") {
                 TrackingManagementScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
                 )
             }
 
             composable("backup_restore") {
                 BackupRestoreScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
                 )
             }
 
@@ -201,7 +201,7 @@ fun MyriadNavigation(
                     },
                     onNavigateToBackupRestore = {
                         navController.navigate("backup_restore")
-                    }
+                    },
                 )
             }
 

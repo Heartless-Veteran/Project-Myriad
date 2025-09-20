@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.heartlessveteran.myriad.data.services.TrackingServiceImpl
+import com.heartlessveteran.myriad.di.AppDiContainer
 import com.heartlessveteran.myriad.domain.services.TrackingServiceProvider
 import kotlinx.coroutines.launch
 
 /**
  * Tracking Services Management Screen for configuring external tracking.
- * 
+ *
  * Allows users to:
  * - View available tracking services (MyAnimeList, AniList)
  * - Authenticate with tracking services
@@ -27,17 +27,15 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrackingManagementScreen(
-    onBackClick: () -> Unit = {},
-) {
+fun TrackingManagementScreen(onBackClick: () -> Unit = {}) {
     val context = LocalContext.current
-    val trackingService = remember { TrackingServiceImpl(context) }
+    val trackingService = remember { AppDiContainer.getTrackingService(context) }
     val scope = rememberCoroutineScope()
-    
+
     var availableServices by remember { mutableStateOf<List<TrackingServiceProvider>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    
+
     // Load tracking services on screen start
     LaunchedEffect(Unit) {
         try {
@@ -57,24 +55,25 @@ fun TrackingManagementScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
         ) {
             when {
                 isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -82,12 +81,12 @@ fun TrackingManagementScreen(
                 errorMessage != null -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
                             text = errorMessage!!,
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Button(onClick = {
                             isLoading = true
@@ -111,18 +110,18 @@ fun TrackingManagementScreen(
                         text = "Progress Tracking",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp),
                     )
-                    
+
                     Text(
                         text = "Connect your accounts to sync reading and watching progress",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier.padding(bottom = 24.dp),
                     )
 
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(availableServices) { service ->
                             TrackingServiceCard(
@@ -147,10 +146,10 @@ fun TrackingManagementScreen(
                                             errorMessage = "Failed to disconnect: ${e.message}"
                                         }
                                     }
-                                }
+                                },
                             )
                         }
-                        
+
                         // Add informational card
                         item {
                             InfoCard()
@@ -166,96 +165,109 @@ fun TrackingManagementScreen(
 private fun TrackingServiceCard(
     service: TrackingServiceProvider,
     onConnect: (String) -> Unit,
-    onDisconnect: (String) -> Unit
+    onDisconnect: (String) -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         text = service.name,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
-                    
+
                     Text(
                         text = service.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 4.dp),
                     )
-                    
+
                     // Authentication status
                     Row(
                         modifier = Modifier.padding(top = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Icon(
-                            imageVector = if (service.isAuthenticated) 
-                                Icons.Default.CheckCircle else Icons.Default.Warning,
+                            imageVector =
+                                if (service.isAuthenticated) {
+                                    Icons.Default.CheckCircle
+                                } else {
+                                    Icons.Default.Warning
+                                },
                             contentDescription = null,
-                            tint = if (service.isAuthenticated) 
-                                MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
-                            modifier = Modifier.size(16.dp)
+                            tint =
+                                if (service.isAuthenticated) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.error
+                                },
+                            modifier = Modifier.size(16.dp),
                         )
-                        
+
                         Text(
                             text = if (service.isAuthenticated) "Connected" else "Not connected",
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (service.isAuthenticated) 
-                                MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                            color =
+                                if (service.isAuthenticated) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.error
+                                },
                         )
                     }
                 }
-                
+
                 Column(
                     horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     if (service.isAuthenticated) {
                         OutlinedButton(
-                            onClick = { onDisconnect(service.id) }
+                            onClick = { onDisconnect(service.id) },
                         ) {
                             Text("Disconnect")
                         }
                     } else {
                         Button(
-                            onClick = { onConnect(service.id) }
+                            onClick = { onConnect(service.id) },
                         ) {
                             Text("Connect")
                         }
                     }
                 }
             }
-            
+
             // Show supported types and features
             if (service.supportedTypes.isNotEmpty() || service.features.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
-                
+
                 if (service.supportedTypes.isNotEmpty()) {
                     Text(
                         text = "Supports:",
                         style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
-                    
+
                     Row(
                         modifier = Modifier.padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         service.supportedTypes.forEach { type ->
                             AssistChip(
@@ -263,25 +275,25 @@ private fun TrackingServiceCard(
                                 label = {
                                     Text(
                                         text = type.name.lowercase().replaceFirstChar { it.uppercase() },
-                                        style = MaterialTheme.typography.labelSmall
+                                        style = MaterialTheme.typography.labelSmall,
                                     )
-                                }
+                                },
                             )
                         }
                     }
                 }
-                
+
                 if (service.features.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Features:",
                         style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
                     )
-                    
+
                     Row(
                         modifier = Modifier.padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         service.features.take(3).forEach { feature ->
                             AssistChip(
@@ -289,17 +301,17 @@ private fun TrackingServiceCard(
                                 label = {
                                     Text(
                                         text = formatFeatureName(feature),
-                                        style = MaterialTheme.typography.labelSmall
+                                        style = MaterialTheme.typography.labelSmall,
                                     )
-                                }
+                                },
                             )
                         }
-                        
+
                         if (service.features.size > 3) {
                             Text(
                                 text = "+${service.features.size - 3} more",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
@@ -313,48 +325,51 @@ private fun TrackingServiceCard(
 private fun InfoCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
-                
+
                 Text(
                     text = "About Progress Tracking",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Text(
-                text = "• Automatically sync your reading and watching progress\n" +
-                      "• Keep your lists updated across devices\n" +
-                      "• Share your achievements with the community\n" +
-                      "• Access your lists from anywhere",
+                text =
+                    "• Automatically sync your reading and watching progress\n" +
+                        "• Keep your lists updated across devices\n" +
+                        "• Share your achievements with the community\n" +
+                        "• Access your lists from anywhere",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
 
-private fun formatFeatureName(feature: com.heartlessveteran.myriad.domain.services.TrackingFeature): String {
-    return when (feature) {
+private fun formatFeatureName(feature: com.heartlessveteran.myriad.domain.services.TrackingFeature): String =
+    when (feature) {
         com.heartlessveteran.myriad.domain.services.TrackingFeature.OAUTH2_AUTH -> "OAuth2"
         com.heartlessveteran.myriad.domain.services.TrackingFeature.PROGRESS_SYNC -> "Progress Sync"
         com.heartlessveteran.myriad.domain.services.TrackingFeature.SCORE_SYNC -> "Score Sync"
@@ -364,4 +379,3 @@ private fun formatFeatureName(feature: com.heartlessveteran.myriad.domain.servic
         com.heartlessveteran.myriad.domain.services.TrackingFeature.BULK_SYNC -> "Bulk Sync"
         com.heartlessveteran.myriad.domain.services.TrackingFeature.REAL_TIME_SYNC -> "Real-time"
     }
-}

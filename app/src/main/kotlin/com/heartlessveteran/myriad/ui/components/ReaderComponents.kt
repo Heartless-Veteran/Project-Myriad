@@ -2,11 +2,9 @@ package com.heartlessveteran.myriad.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -15,7 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -24,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.heartlessveteran.myriad.ui.screens.ReaderConfiguration
 import com.heartlessveteran.myriad.ui.screens.ReadingMode
-import kotlin.math.absoluteValue
 
 /**
  * Horizontal reader component for left-to-right and right-to-left reading modes.
@@ -44,27 +40,28 @@ fun HorizontalReader(
     onMenuToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = rememberPagerState(
-        initialPage = currentPage,
-        pageCount = { pages.size }
-    )
-    
+    val pagerState =
+        rememberPagerState(
+            initialPage = currentPage,
+            pageCount = { pages.size },
+        )
+
     // Update current page when pager state changes
     LaunchedEffect(pagerState.currentPage) {
         onPageChanged(pagerState.currentPage)
     }
-    
+
     // Update pager when external current page changes
     LaunchedEffect(currentPage) {
         if (pagerState.currentPage != currentPage) {
             pagerState.animateScrollToPage(currentPage)
         }
     }
-    
+
     HorizontalPager(
         state = pagerState,
         modifier = modifier.fillMaxSize(),
-        reverseLayout = configuration.readingMode == ReadingMode.RIGHT_TO_LEFT
+        reverseLayout = configuration.readingMode == ReadingMode.RIGHT_TO_LEFT,
     ) { pageIndex ->
         PageContent(
             imageUrl = pages[pageIndex],
@@ -75,7 +72,7 @@ fun HorizontalReader(
             onScaleChange = onScaleChange,
             onOffsetChange = onOffsetChange,
             onMenuToggle = onMenuToggle,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
@@ -93,7 +90,7 @@ fun VerticalReader(
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = currentPage)
-    
+
     // Update current page when scroll position changes
     LaunchedEffect(listState.isScrollInProgress) {
         if (!listState.isScrollInProgress) {
@@ -103,22 +100,25 @@ fun VerticalReader(
             }
         }
     }
-    
+
     // Update scroll position when external current page changes
     LaunchedEffect(currentPage) {
         if (listState.firstVisibleItemIndex != currentPage) {
             listState.animateScrollToItem(currentPage)
         }
     }
-    
+
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = if (configuration.readingMode == com.heartlessveteran.myriad.ui.screens.ReadingMode.WEBTOON) {
-            Arrangement.spacedBy(0.dp)
-        } else {
-            Arrangement.spacedBy(4.dp)
-        }
+        verticalArrangement =
+            if (configuration.readingMode ==
+                com.heartlessveteran.myriad.ui.screens.ReadingMode.WEBTOON
+            ) {
+                Arrangement.spacedBy(0.dp)
+            } else {
+                Arrangement.spacedBy(4.dp)
+            },
     ) {
         items(pages.size) { pageIndex ->
             PageContent(
@@ -130,15 +130,18 @@ fun VerticalReader(
                 onScaleChange = {},
                 onOffsetChange = { _, _ -> },
                 onMenuToggle = onMenuToggle,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (configuration.readingMode == com.heartlessveteran.myriad.ui.screens.ReadingMode.WEBTOON) {
-                            Modifier.wrapContentHeight()
-                        } else {
-                            Modifier.fillParentMaxHeight()
-                        }
-                    )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (configuration.readingMode ==
+                                com.heartlessveteran.myriad.ui.screens.ReadingMode.WEBTOON
+                            ) {
+                                Modifier.wrapContentHeight()
+                            } else {
+                                Modifier.fillParentMaxHeight()
+                            },
+                        ),
             )
         }
     }
@@ -163,17 +166,19 @@ fun DoublePageReader(
     modifier: Modifier = Modifier,
 ) {
     // Group pages into pairs for double-page display
-    val pagedItems = remember(pages) {
-        pages.chunked(2).mapIndexed { index, pageGroup ->
-            Pair(index * 2, pageGroup)
+    val pagedItems =
+        remember(pages) {
+            pages.chunked(2).mapIndexed { index, pageGroup ->
+                Pair(index * 2, pageGroup)
+            }
         }
-    }
-    
-    val pagerState = rememberPagerState(
-        initialPage = currentPage / 2,
-        pageCount = { pagedItems.size }
-    )
-    
+
+    val pagerState =
+        rememberPagerState(
+            initialPage = currentPage / 2,
+            pageCount = { pagedItems.size },
+        )
+
     // Update current page when pager state changes
     LaunchedEffect(pagerState.currentPage) {
         val newPage = pagerState.currentPage * 2
@@ -181,7 +186,7 @@ fun DoublePageReader(
             onPageChanged(newPage)
         }
     }
-    
+
     // Update pager when external current page changes
     LaunchedEffect(currentPage) {
         val targetPage = currentPage / 2
@@ -189,17 +194,17 @@ fun DoublePageReader(
             pagerState.animateScrollToPage(targetPage)
         }
     }
-    
+
     HorizontalPager(
         state = pagerState,
         modifier = modifier.fillMaxSize(),
-        reverseLayout = configuration.readingMode == com.heartlessveteran.myriad.ui.screens.ReadingMode.RIGHT_TO_LEFT
+        reverseLayout = configuration.readingMode == com.heartlessveteran.myriad.ui.screens.ReadingMode.RIGHT_TO_LEFT,
     ) { pageIndex ->
         val (startIndex, pageGroup) = pagedItems[pageIndex]
-        
+
         Row(
             modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             // First page of the pair
             PageContent(
@@ -211,11 +216,12 @@ fun DoublePageReader(
                 onScaleChange = onScaleChange,
                 onOffsetChange = onOffsetChange,
                 onMenuToggle = onMenuToggle,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
             )
-            
+
             // Second page of the pair (if exists)
             if (pageGroup.size > 1) {
                 PageContent(
@@ -227,17 +233,19 @@ fun DoublePageReader(
                     onScaleChange = onScaleChange,
                     onOffsetChange = onOffsetChange,
                     onMenuToggle = onMenuToggle,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
                 )
             } else {
                 // Empty space for odd number of pages
                 Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .background(configuration.backgroundColor.color)
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .background(configuration.backgroundColor.color),
                 )
             }
         }
@@ -260,62 +268,64 @@ private fun PageContent(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
-    
+
     Box(
-        modifier = modifier
-            .background(configuration.backgroundColor.color)
-            .pointerInput(configuration.enableGestures) {
-                if (configuration.enableGestures) {
-                    detectTransformGestures { _, pan, zoom, _ ->
-                        val newScale = (scale * zoom).coerceIn(0.5f, 3f)
-                        onScaleChange(newScale)
-                        
-                        val newOffsetX = offsetX + pan.x
-                        val newOffsetY = offsetY + pan.y
-                        onOffsetChange(newOffsetX, newOffsetY)
-                    }
-                }
-            }
-            .pointerInput(configuration.enableDoubleTapZoom) {
-                if (configuration.enableDoubleTapZoom) {
-                    detectTapGestures(
-                        onDoubleTap = {
-                            val newScale = if (scale > 1f) 1f else 2f
+        modifier =
+            modifier
+                .background(configuration.backgroundColor.color)
+                .pointerInput(configuration.enableGestures) {
+                    if (configuration.enableGestures) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            val newScale = (scale * zoom).coerceIn(0.5f, 3f)
                             onScaleChange(newScale)
-                            if (newScale == 1f) {
-                                onOffsetChange(0f, 0f)
-                            }
+
+                            val newOffsetX = offsetX + pan.x
+                            val newOffsetY = offsetY + pan.y
+                            onOffsetChange(newOffsetX, newOffsetY)
                         }
-                    )
-                }
-            },
-        contentAlignment = Alignment.Center
+                    }
+                }.pointerInput(configuration.enableDoubleTapZoom) {
+                    if (configuration.enableDoubleTapZoom) {
+                        detectTapGestures(
+                            onDoubleTap = {
+                                val newScale = if (scale > 1f) 1f else 2f
+                                onScaleChange(newScale)
+                                if (newScale == 1f) {
+                                    onOffsetChange(0f, 0f)
+                                }
+                            },
+                        )
+                    }
+                },
+        contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
             model = imageUrl,
             contentDescription = "Manga page",
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offsetX,
-                    translationY = offsetY
-                ),
-            contentScale = when (configuration.zoomMode) {
-                com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_WIDTH -> ContentScale.FillWidth
-                com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_HEIGHT -> ContentScale.FillHeight
-                com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_SCREEN -> ContentScale.Fit
-                com.heartlessveteran.myriad.ui.screens.ZoomMode.ORIGINAL_SIZE -> ContentScale.None
-                com.heartlessveteran.myriad.ui.screens.ZoomMode.CUSTOM -> ContentScale.Crop
-            }
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        translationX = offsetX,
+                        translationY = offsetY,
+                    ),
+            contentScale =
+                when (configuration.zoomMode) {
+                    com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_WIDTH -> ContentScale.FillWidth
+                    com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_HEIGHT -> ContentScale.FillHeight
+                    com.heartlessveteran.myriad.ui.screens.ZoomMode.FIT_SCREEN -> ContentScale.Fit
+                    com.heartlessveteran.myriad.ui.screens.ZoomMode.ORIGINAL_SIZE -> ContentScale.None
+                    com.heartlessveteran.myriad.ui.screens.ZoomMode.CUSTOM -> ContentScale.Crop
+                },
         )
-        
+
         // Loading indicator
         if (imageUrl.isBlank()) {
             CircularProgressIndicator(
                 modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

@@ -79,10 +79,10 @@ fun BrowseScreen(
                     IconButton(onClick = onSourceManagementClick) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Source Management"
+                            contentDescription = "Source Management",
                         )
                     }
-                }
+                },
             )
         },
         floatingActionButton = {

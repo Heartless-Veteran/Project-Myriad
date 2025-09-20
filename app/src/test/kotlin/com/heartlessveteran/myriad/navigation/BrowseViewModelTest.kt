@@ -23,27 +23,25 @@ class BrowseViewModelTest {
         val mockGetLatestUseCase =
             GetLatestMangaUseCase(
                 object : SourceRepository {
-                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
                         flowOf(Result.Success(emptyList()))
 
                     override fun searchManga(
                         query: String,
                         page: Int,
-                    ): Flow<Result<List<Manga>>> = 
-                        flowOf(Result.Success(emptyList()))
+                    ): Flow<Result<List<Manga>>> = flowOf(Result.Success(emptyList()))
                 },
             )
         val mockSearchUseCase =
             SearchMangaUseCase(
                 object : SourceRepository {
-                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                    override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
                         flowOf(Result.Success(emptyList()))
 
                     override fun searchManga(
                         query: String,
                         page: Int,
-                    ): Flow<Result<List<Manga>>> = 
-                        flowOf(Result.Success(emptyList()))
+                    ): Flow<Result<List<Manga>>> = flowOf(Result.Success(emptyList()))
                 },
             )
 
@@ -78,27 +76,25 @@ class BrowseViewModelTest {
             val mockGetLatestUseCase =
                 GetLatestMangaUseCase(
                     object : SourceRepository {
-                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
                             flowOf(Result.Success(testManga))
 
                         override fun searchManga(
                             query: String,
                             page: Int,
-                        ): Flow<Result<List<Manga>>> = 
-                            flowOf(Result.Success(emptyList()))
+                        ): Flow<Result<List<Manga>>> = flowOf(Result.Success(emptyList()))
                     },
                 )
             val mockSearchUseCase =
                 SearchMangaUseCase(
                     object : SourceRepository {
-                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> = 
+                        override fun getLatestManga(page: Int): Flow<Result<List<Manga>>> =
                             flowOf(Result.Success(testManga))
 
                         override fun searchManga(
                             query: String,
                             page: Int,
-                        ): Flow<Result<List<Manga>>> = 
-                            flowOf(Result.Success(emptyList()))
+                        ): Flow<Result<List<Manga>>> = flowOf(Result.Success(emptyList()))
                     },
                 )
 

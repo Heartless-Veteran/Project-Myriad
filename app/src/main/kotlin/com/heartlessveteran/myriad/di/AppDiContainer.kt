@@ -4,11 +4,11 @@ import android.content.Context
 import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.domain.repository.SourceRepository
+import com.heartlessveteran.myriad.domain.services.BackupService
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import com.heartlessveteran.myriad.domain.services.FileManagerService
 import com.heartlessveteran.myriad.domain.services.SourceService
 import com.heartlessveteran.myriad.domain.services.TrackingService
-import com.heartlessveteran.myriad.domain.services.BackupService
 import com.heartlessveteran.myriad.domain.usecase.DownloadMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.GetLatestMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.ImportMangaFromFileUseCase
@@ -123,7 +123,9 @@ object AppDiContainer {
     /**
      * Get GetRecommendationsUseCase for AI recommendations.
      */
-    fun getRecommendationsUseCase(context: Context): com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase = 
+    fun getRecommendationsUseCase(
+        context: Context,
+    ): com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase =
         AIDiContainer.getRecommendationsUseCase(context)
 
     /**
