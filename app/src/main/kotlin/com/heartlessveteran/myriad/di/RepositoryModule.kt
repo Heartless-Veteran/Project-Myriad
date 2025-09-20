@@ -1,7 +1,7 @@
 package com.heartlessveteran.myriad.di
 
-import com.heartlessveteran.myriad.data.repository.MangaRepositoryImpl
 import com.heartlessveteran.myriad.data.repository.MangaDxSourceRepositoryImpl
+import com.heartlessveteran.myriad.data.repository.MangaRepositoryImpl
 import com.heartlessveteran.myriad.domain.repository.MangaRepository
 import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import dagger.Binds

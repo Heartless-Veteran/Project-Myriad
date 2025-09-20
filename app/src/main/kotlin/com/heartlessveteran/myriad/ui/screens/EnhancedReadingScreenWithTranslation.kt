@@ -26,21 +26,22 @@ import com.heartlessveteran.myriad.ui.viewmodel.TranslationViewModel
 fun EnhancedReadingScreenWithTranslation(
     mangaId: String,
     onBackPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val translationViewModel: TranslationViewModel = viewModel {
-        TranslationViewModel(AppDiContainer.getEnhancedAIService(context))
-    }
-    
+    val translationViewModel: TranslationViewModel =
+        viewModel {
+            TranslationViewModel(AppDiContainer.getEnhancedAIService(context))
+        }
+
     var currentPage by remember { mutableStateOf(1) }
     var totalPages by remember { mutableStateOf(10) } // Mock data
     var isMenuVisible by remember { mutableStateOf(false) }
     var showTranslationSettings by remember { mutableStateOf(false) }
-    
+
     val translationState by translationViewModel.translationState.collectAsState()
     val targetLanguage by translationViewModel.targetLanguage.collectAsState()
-    
+
     Scaffold(
         topBar = {
             if (isMenuVisible) {
@@ -104,32 +105,36 @@ fun EnhancedReadingScreenWithTranslation(
         },
     ) { paddingValues ->
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             // Main reading area
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { isMenuVisible = !isMenuVisible },
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clickable { isMenuVisible = !isMenuVisible },
                 contentAlignment = Alignment.Center,
             ) {
                 // Mock manga page display
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .aspectRatio(0.7f),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .aspectRatio(0.7f),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     ) {
                         // Mock page content
                         Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
@@ -154,7 +159,7 @@ fun EnhancedReadingScreenWithTranslation(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
-                        
+
                         // Translation overlay
                         if (translationState.isTranslationVisible && translationState.translatedTexts.isNotEmpty()) {
                             TranslationOverlay(
@@ -163,7 +168,7 @@ fun EnhancedReadingScreenWithTranslation(
                                 pageWidth = 350.dp, // This should match the actual page size
                                 pageHeight = 500.dp,
                                 onToggleTranslation = { translationViewModel.toggleTranslationVisibility() },
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
                     }
@@ -173,46 +178,48 @@ fun EnhancedReadingScreenWithTranslation(
                 if (isMenuVisible) {
                     LinearProgressIndicator(
                         progress = { currentPage.toFloat() / totalPages.toFloat() },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomCenter)
+                                .fillMaxWidth()
+                                .padding(16.dp),
                     )
                 }
             }
-            
+
             // Translation control panel (overlay at bottom)
             if (isMenuVisible) {
                 TranslationControlPanel(
                     isTranslationVisible = translationState.isTranslationVisible,
                     isTranslating = translationState.isLoading,
                     onToggleTranslation = { translationViewModel.toggleTranslationVisibility() },
-                    onStartTranslation = { 
+                    onStartTranslation = {
                         // Mock base64 image for testing - in real implementation this would be the actual page image
                         translationViewModel.translatePage("mock_base64_image_data", targetLanguage)
                     },
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    modifier = Modifier.align(Alignment.BottomCenter),
                 )
             }
-            
+
             // Translation settings panel
             if (showTranslationSettings) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { showTranslationSettings = false },
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clickable { showTranslationSettings = false },
+                    contentAlignment = Alignment.Center,
                 ) {
                     TranslationSettingsPanel(
                         targetLanguage = targetLanguage,
                         onLanguageChange = { language ->
                             translationViewModel.setTargetLanguage(language)
                         },
-                        modifier = Modifier.clickable(enabled = false) { /* Prevent clicks from propagating */ }
+                        modifier = Modifier.clickable(enabled = false) { /* Prevent clicks from propagating */ },
                     )
                 }
             }
-            
+
             // Error message display
             if (translationState.error != null) {
                 Snackbar(
@@ -221,7 +228,7 @@ fun EnhancedReadingScreenWithTranslation(
                         TextButton(onClick = { translationViewModel.clearError() }) {
                             Text("Dismiss")
                         }
-                    }
+                    },
                 ) {
                     Text("Translation error: ${translationState.error}")
                 }

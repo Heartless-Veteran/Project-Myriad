@@ -3,11 +3,10 @@ package com.heartlessveteran.myriad.domain.services
 import com.heartlessveteran.myriad.domain.models.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
-import java.io.File
 
 /**
  * Service interface for backup and restore functionality.
- * 
+ *
  * Provides functionality for:
  * - Creating local backups of user data (library, reading progress, settings)
  * - Restoring data from backup files
@@ -15,10 +14,9 @@ import java.io.File
  * - Integration with Android Storage Access Framework
  */
 interface BackupService {
-    
     /**
      * Create a complete backup of user data.
-     * 
+     *
      * @param includeLibrary Whether to include manga/anime library data
      * @param includeProgress Whether to include reading/watching progress
      * @param includeSettings Whether to include app settings and preferences
@@ -31,81 +29,81 @@ interface BackupService {
         includeProgress: Boolean = true,
         includeSettings: Boolean = true,
         includeCategories: Boolean = true,
-        includeTrackingLinks: Boolean = true
+        includeTrackingLinks: Boolean = true,
     ): Result<BackupMetadata>
-    
+
     /**
      * Create a backup and save to a specific file using Storage Access Framework.
-     * 
+     *
      * @param targetUri Android Storage Access Framework URI for the backup file
      * @param options Backup configuration options
      * @return Flow emitting backup progress and final result
      */
     fun createBackupToFile(
         targetUri: String,
-        options: BackupOptions = BackupOptions()
+        options: BackupOptions = BackupOptions(),
     ): Flow<BackupProgress>
-    
+
     /**
      * Restore data from a backup file.
-     * 
+     *
      * @param sourceUri Android Storage Access Framework URI for the backup file
      * @param options Restore configuration options
      * @return Flow emitting restore progress and final result
      */
     fun restoreFromFile(
         sourceUri: String,
-        options: RestoreOptions = RestoreOptions()
+        options: RestoreOptions = RestoreOptions(),
     ): Flow<RestoreProgress>
-    
+
     /**
      * Validate a backup file without restoring it.
-     * 
+     *
      * @param sourceUri URI of the backup file to validate
      * @return Result containing backup validation info or error
      */
     suspend fun validateBackup(sourceUri: String): Result<BackupValidation>
-    
+
     /**
      * Get list of local backup files.
-     * 
+     *
      * @return List of backup files with metadata
      */
     suspend fun getLocalBackups(): Result<List<BackupMetadata>>
-    
+
     /**
      * Delete a local backup file.
-     * 
+     *
      * @param backupId Backup identifier
      * @return Result indicating success or failure
      */
     suspend fun deleteBackup(backupId: String): Result<Unit>
-    
+
     /**
      * Get backup service configuration and status.
-     * 
+     *
      * @return Current backup service configuration
      */
     fun getBackupConfiguration(): BackupConfiguration
-    
+
     /**
      * Update backup service configuration.
-     * 
+     *
      * @param config New backup configuration
      * @return Result indicating success or failure
      */
     suspend fun updateConfiguration(config: BackupConfiguration): Result<Unit>
-    
+
     /**
      * Create an automatic backup if conditions are met.
-     * 
+     *
      * @return Result containing backup info or reason for skipping
      */
     suspend fun createAutomaticBackup(): Result<AutoBackupResult>
-    
+
     /**
      * Cleanup old backup files based on retention policy.
-     * 
+     *
      * @return Result with cleanup summary
      */
     suspend fun cleanupOldBackups(): Result<CleanupResult>
@@ -122,7 +120,7 @@ data class BackupOptions(
     val includeTrackingLinks: Boolean = true,
     val compressionLevel: CompressionLevel = CompressionLevel.MEDIUM,
     val encryptionEnabled: Boolean = false,
-    val encryptionPassword: String? = null
+    val encryptionPassword: String? = null,
 )
 
 /**
@@ -135,7 +133,7 @@ data class RestoreOptions(
     val restoreCategories: Boolean = true,
     val restoreTrackingLinks: Boolean = true,
     val mergeMode: MergeMode = MergeMode.REPLACE,
-    val validateIntegrity: Boolean = true
+    val validateIntegrity: Boolean = true,
 )
 
 /**
@@ -148,7 +146,7 @@ data class BackupConfiguration(
     val compressionEnabled: Boolean = true,
     val backupLocation: BackupLocation = BackupLocation.INTERNAL,
     val includeCovers: Boolean = false,
-    val notificationsEnabled: Boolean = true
+    val notificationsEnabled: Boolean = true,
 )
 
 /**
@@ -164,7 +162,7 @@ data class BackupMetadata(
     val appVersion: String,
     val itemCounts: BackupItemCounts,
     val options: BackupOptions,
-    val checksum: String? = null
+    val checksum: String? = null,
 )
 
 /**
@@ -176,7 +174,7 @@ data class BackupItemCounts(
     val animeCount: Int = 0,
     val categoryCount: Int = 0,
     val trackingLinkCount: Int = 0,
-    val settingsCount: Int = 0
+    val settingsCount: Int = 0,
 )
 
 /**
@@ -190,7 +188,7 @@ data class BackupProgress(
     val totalItems: Int = 0,
     val error: String? = null,
     val completed: Boolean = false,
-    val result: BackupMetadata? = null
+    val result: BackupMetadata? = null,
 )
 
 /**
@@ -204,7 +202,7 @@ data class RestoreProgress(
     val totalItems: Int = 0,
     val error: String? = null,
     val completed: Boolean = false,
-    val result: RestoreResult? = null
+    val result: RestoreResult? = null,
 )
 
 /**
@@ -216,7 +214,7 @@ data class BackupValidation(
     val createdAt: Long,
     val itemCounts: BackupItemCounts,
     val compatibility: CompatibilityStatus,
-    val issues: List<ValidationIssue> = emptyList()
+    val issues: List<ValidationIssue> = emptyList(),
 )
 
 /**
@@ -226,7 +224,7 @@ data class RestoreResult(
     val success: Boolean,
     val itemsRestored: RestoreItemCounts,
     val warnings: List<String> = emptyList(),
-    val errors: List<String> = emptyList()
+    val errors: List<String> = emptyList(),
 )
 
 /**
@@ -237,7 +235,7 @@ data class RestoreItemCounts(
     val animeRestored: Int = 0,
     val categoriesRestored: Int = 0,
     val trackingLinksRestored: Int = 0,
-    val settingsRestored: Int = 0
+    val settingsRestored: Int = 0,
 )
 
 /**
@@ -246,7 +244,7 @@ data class RestoreItemCounts(
 data class AutoBackupResult(
     val created: Boolean,
     val backupMetadata: BackupMetadata? = null,
-    val reason: String? = null // Reason if backup was skipped
+    val reason: String? = null, // Reason if backup was skipped
 )
 
 /**
@@ -255,7 +253,7 @@ data class AutoBackupResult(
 data class CleanupResult(
     val filesDeleted: Int,
     val spaceFreed: Long,
-    val errors: List<String> = emptyList()
+    val errors: List<String> = emptyList(),
 )
 
 /**
@@ -264,7 +262,7 @@ data class CleanupResult(
 data class ValidationIssue(
     val type: IssueType,
     val description: String,
-    val severity: IssueSeverity
+    val severity: IssueSeverity,
 )
 
 /**
@@ -282,7 +280,7 @@ enum class BackupPhase {
     ENCRYPTING,
     WRITING_FILE,
     FINALIZING,
-    COMPLETED
+    COMPLETED,
 }
 
 /**
@@ -301,7 +299,7 @@ enum class RestorePhase {
     RESTORING_PROGRESS,
     RESTORING_TRACKING,
     FINALIZING,
-    COMPLETED
+    COMPLETED,
 }
 
 /**
@@ -312,7 +310,7 @@ enum class CompressionLevel {
     LOW,
     MEDIUM,
     HIGH,
-    MAXIMUM
+    MAXIMUM,
 }
 
 /**
@@ -320,8 +318,8 @@ enum class CompressionLevel {
  */
 enum class MergeMode {
     REPLACE, // Replace existing data
-    MERGE,   // Merge with existing data
-    SKIP     // Skip if data exists
+    MERGE, // Merge with existing data
+    SKIP, // Skip if data exists
 }
 
 /**
@@ -331,7 +329,7 @@ enum class AutoBackupFrequency {
     DAILY,
     WEEKLY,
     MONTHLY,
-    NEVER
+    NEVER,
 }
 
 /**
@@ -341,7 +339,7 @@ enum class BackupLocation {
     INTERNAL,
     EXTERNAL,
     DOCUMENTS,
-    DOWNLOADS
+    DOWNLOADS,
 }
 
 /**
@@ -351,7 +349,7 @@ enum class CompatibilityStatus {
     COMPATIBLE,
     PARTIALLY_COMPATIBLE,
     INCOMPATIBLE,
-    UNKNOWN
+    UNKNOWN,
 }
 
 /**
@@ -362,7 +360,7 @@ enum class IssueType {
     VERSION_MISMATCH,
     MISSING_DATA,
     INVALID_FORMAT,
-    CHECKSUM_MISMATCH
+    CHECKSUM_MISMATCH,
 }
 
 /**
@@ -372,5 +370,5 @@ enum class IssueSeverity {
     INFO,
     WARNING,
     ERROR,
-    CRITICAL
+    CRITICAL,
 }

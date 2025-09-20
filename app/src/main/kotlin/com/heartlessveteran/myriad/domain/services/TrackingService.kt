@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Service interface for manga/anime tracking integration with external services.
- * 
+ *
  * Provides functionality for:
  * - Authentication with tracking services (MyAnimeList, AniList, etc.)
  * - Syncing read/watch progress
@@ -13,32 +13,31 @@ import kotlinx.coroutines.flow.Flow
  * - Retrieving user's tracking data
  */
 interface TrackingService {
-    
     /**
      * Get all available tracking services.
-     * 
+     *
      * @return List of available tracking service providers
      */
     fun getAvailableServices(): List<TrackingServiceProvider>
-    
+
     /**
      * Get enabled/authenticated tracking services.
-     * 
+     *
      * @return List of authenticated tracking services
      */
     fun getAuthenticatedServices(): List<TrackingServiceProvider>
-    
+
     /**
      * Start OAuth2 authentication for a tracking service.
-     * 
+     *
      * @param serviceId The tracking service identifier (e.g., "myanimelist", "anilist")
      * @return Result containing authentication URL or error
      */
     suspend fun startAuthentication(serviceId: String): Result<AuthenticationSession>
-    
+
     /**
      * Complete OAuth2 authentication flow.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param authCode The authorization code from OAuth callback
      * @param state The state parameter for security verification
@@ -47,20 +46,20 @@ interface TrackingService {
     suspend fun completeAuthentication(
         serviceId: String,
         authCode: String,
-        state: String
+        state: String,
     ): Result<UserProfile>
-    
+
     /**
      * Disconnect/logout from a tracking service.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @return Result indicating success or failure
      */
     suspend fun disconnect(serviceId: String): Result<Unit>
-    
+
     /**
      * Search for manga/anime on a tracking service.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param query Search query
      * @param type Content type (manga/anime)
@@ -69,12 +68,12 @@ interface TrackingService {
     suspend fun search(
         serviceId: String,
         query: String,
-        type: TrackingContentType
+        type: TrackingContentType,
     ): Result<List<TrackingEntry>>
-    
+
     /**
      * Link local manga/anime to tracking service entry.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param localId Local manga/anime ID
      * @param trackingId Remote tracking ID
@@ -85,12 +84,12 @@ interface TrackingService {
         serviceId: String,
         localId: String,
         trackingId: String,
-        type: TrackingContentType
+        type: TrackingContentType,
     ): Result<TrackingLink>
-    
+
     /**
      * Update progress for linked content.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param trackingId Remote tracking ID
      * @param progress Current progress (chapter/episode number)
@@ -103,12 +102,12 @@ interface TrackingService {
         trackingId: String,
         progress: Int,
         status: TrackingStatus? = null,
-        score: Float? = null
+        score: Float? = null,
     ): Result<Unit>
-    
+
     /**
      * Get user's tracked manga/anime list.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param type Content type filter
      * @param status Status filter (optional)
@@ -117,37 +116,37 @@ interface TrackingService {
     fun getUserList(
         serviceId: String,
         type: TrackingContentType,
-        status: TrackingStatus? = null
+        status: TrackingStatus? = null,
     ): Flow<Result<List<TrackingEntry>>>
-    
+
     /**
      * Get tracking information for specific content.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param trackingId Remote tracking ID
      * @return Result containing tracking details
      */
     suspend fun getTrackingInfo(
         serviceId: String,
-        trackingId: String
+        trackingId: String,
     ): Result<TrackingEntry>
-    
+
     /**
      * Sync local progress with tracking service.
      * This automatically updates progress based on local reading/watching data.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @param localId Local content ID
      * @return Result indicating sync success or failure
      */
     suspend fun syncProgress(
         serviceId: String,
-        localId: String
+        localId: String,
     ): Result<Unit>
-    
+
     /**
      * Bulk sync all linked content for a service.
-     * 
+     *
      * @param serviceId The tracking service identifier
      * @return Flow emitting sync progress for each item
      */
@@ -165,7 +164,7 @@ data class TrackingServiceProvider(
     val websiteUrl: String,
     val isAuthenticated: Boolean = false,
     val supportedTypes: Set<TrackingContentType> = setOf(TrackingContentType.MANGA, TrackingContentType.ANIME),
-    val features: Set<TrackingFeature> = emptySet()
+    val features: Set<TrackingFeature> = emptySet(),
 )
 
 /**
@@ -175,7 +174,7 @@ data class AuthenticationSession(
     val serviceId: String,
     val authUrl: String,
     val state: String,
-    val expiresAt: Long
+    val expiresAt: Long,
 )
 
 /**
@@ -187,7 +186,7 @@ data class UserProfile(
     val username: String,
     val displayName: String? = null,
     val avatarUrl: String? = null,
-    val profileUrl: String? = null
+    val profileUrl: String? = null,
 )
 
 /**
@@ -208,7 +207,7 @@ data class TrackingEntry(
     val maxScore: Float = 10f,
     val startDate: String? = null,
     val endDate: String? = null,
-    val lastUpdated: Long = System.currentTimeMillis()
+    val lastUpdated: Long = System.currentTimeMillis(),
 )
 
 /**
@@ -220,7 +219,7 @@ data class TrackingLink(
     val trackingId: String,
     val type: TrackingContentType,
     val title: String,
-    val lastSynced: Long = System.currentTimeMillis()
+    val lastSynced: Long = System.currentTimeMillis(),
 )
 
 /**
@@ -232,7 +231,7 @@ data class SyncResult(
     val trackingId: String,
     val success: Boolean,
     val error: String? = null,
-    val updatedProgress: Int? = null
+    val updatedProgress: Int? = null,
 )
 
 /**
@@ -240,7 +239,7 @@ data class SyncResult(
  */
 enum class TrackingContentType {
     MANGA,
-    ANIME
+    ANIME,
 }
 
 /**
@@ -252,7 +251,7 @@ enum class TrackingStatus {
     COMPLETED,
     PAUSED,
     DROPPED,
-    REPEATING
+    REPEATING,
 }
 
 /**
@@ -266,5 +265,5 @@ enum class TrackingFeature {
     LIST_IMPORT,
     LIST_EXPORT,
     BULK_SYNC,
-    REAL_TIME_SYNC
+    REAL_TIME_SYNC,
 }

@@ -882,13 +882,15 @@ fun SettingsScreen(
                     com.heartlessveteran.myriad.navigation.SettingsSection.GENERAL -> GeneralSettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.READING -> ReadingSettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.WATCHING -> WatchingSettings()
-                    com.heartlessveteran.myriad.navigation.SettingsSection.SOURCES -> SourcesSettings(
-                        onNavigateToSourceManagement = onNavigateToSourceManagement,
-                        onNavigateToTrackingManagement = onNavigateToTrackingManagement
-                    )
-                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE -> StorageSettings(
-                        onNavigateToBackupRestore = onNavigateToBackupRestore
-                    )
+                    com.heartlessveteran.myriad.navigation.SettingsSection.SOURCES ->
+                        SourcesSettings(
+                            onNavigateToSourceManagement = onNavigateToSourceManagement,
+                            onNavigateToTrackingManagement = onNavigateToTrackingManagement,
+                        )
+                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE ->
+                        StorageSettings(
+                            onNavigateToBackupRestore = onNavigateToBackupRestore,
+                        )
                     com.heartlessveteran.myriad.navigation.SettingsSection.AI -> AISettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.ABOUT -> AboutSettings()
                 }
@@ -986,7 +988,7 @@ private fun WatchingSettings() {
 @Composable
 private fun SourcesSettings(
     onNavigateToSourceManagement: () -> Unit = {},
-    onNavigateToTrackingManagement: () -> Unit = {}
+    onNavigateToTrackingManagement: () -> Unit = {},
 ) {
     SettingsSection(
         title = "Content Sources & Tracking",
@@ -995,21 +997,19 @@ private fun SourcesSettings(
         SettingsItem(
             title = "Content Sources",
             description = "Manage online manga and anime sources",
-            onClick = onNavigateToSourceManagement
+            onClick = onNavigateToSourceManagement,
         )
-        
+
         SettingsItem(
             title = "Progress Tracking",
             description = "Connect with MyAnimeList, AniList, and other tracking services",
-            onClick = onNavigateToTrackingManagement
+            onClick = onNavigateToTrackingManagement,
         )
     }
 }
 
 @Composable
-private fun StorageSettings(
-    onNavigateToBackupRestore: () -> Unit = {}
-) {
+private fun StorageSettings(onNavigateToBackupRestore: () -> Unit = {}) {
     SettingsSection(
         title = "Storage & Backup",
         description = "Manage local storage, cache, and data backup",
@@ -1017,9 +1017,9 @@ private fun StorageSettings(
         SettingsItem(
             title = "Backup & Restore",
             description = "Create backups and restore your data",
-            onClick = onNavigateToBackupRestore
+            onClick = onNavigateToBackupRestore,
         )
-        
+
         SettingsItem(
             title = "Library Location",
             description = "Choose where your media is stored",

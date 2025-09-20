@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Source Management Screen for configuring online content sources.
- * 
+ *
  * Allows users to:
  * - View available sources (MangaDx, Komikku, etc.)
  * - Enable/disable sources
@@ -29,13 +29,11 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SourceManagementScreen(
-    onBackClick: () -> Unit = {},
-) {
+fun SourceManagementScreen(onBackClick: () -> Unit = {}) {
     val context = LocalContext.current
     val sourceService = remember { AppDiContainer.getSourceService() }
     val scope = rememberCoroutineScope()
-    
+
     var availableSources by remember { mutableStateOf<List<ContentSource>>(emptyList()) }
     var enabledSources by remember { mutableStateOf<List<ContentSource>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -61,24 +59,25 @@ fun SourceManagementScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
         ) {
             when {
                 isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -86,12 +85,12 @@ fun SourceManagementScreen(
                 errorMessage != null -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
                             text = errorMessage!!,
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Button(onClick = {
                             isLoading = true
@@ -116,18 +115,18 @@ fun SourceManagementScreen(
                         text = "Content Sources",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp),
                     )
-                    
+
                     Text(
                         text = "Manage online sources for manga discovery",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier.padding(bottom = 24.dp),
                     )
 
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(availableSources) { source ->
                             SourceCard(
@@ -142,7 +141,7 @@ fun SourceManagementScreen(
                                             errorMessage = "Failed to update source: ${e.message}"
                                         }
                                     }
-                                }
+                                },
                             )
                         }
                     }
@@ -156,93 +155,94 @@ fun SourceManagementScreen(
 private fun SourceCard(
     source: ContentSource,
     isEnabled: Boolean,
-    onToggleEnabled: (Boolean) -> Unit
+    onToggleEnabled: (Boolean) -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         text = source.name,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
-                    
+
                     Text(
                         text = source.description,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 4.dp),
                     )
-                    
+
                     Row(
                         modifier = Modifier.padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Text(
                             text = "v${source.version}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
-                        
+
                         if (source.isOfficial) {
                             Text(
                                 text = "Official",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.secondary
+                                color = MaterialTheme.colorScheme.secondary,
                             )
                         }
                     }
                 }
-                
+
                 Column(
-                    horizontalAlignment = Alignment.End
+                    horizontalAlignment = Alignment.End,
                 ) {
                     Switch(
                         checked = isEnabled,
-                        onCheckedChange = onToggleEnabled
+                        onCheckedChange = onToggleEnabled,
                     )
-                    
+
                     if (source.hasSettings) {
                         IconButton(
                             onClick = { /* TODO: Open source settings */ },
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = "Settings",
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(16.dp),
                             )
                         }
                     }
                 }
             }
-            
+
             // Show supported features
             if (source.supportedFeatures.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = "Features:",
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
-                
+
                 Row(
                     modifier = Modifier.padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     source.supportedFeatures.take(3).forEach { feature ->
                         AssistChip(
@@ -250,17 +250,17 @@ private fun SourceCard(
                             label = {
                                 Text(
                                     text = formatFeatureName(feature),
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
-                            }
+                            },
                         )
                     }
-                    
+
                     if (source.supportedFeatures.size > 3) {
                         Text(
                             text = "+${source.supportedFeatures.size - 3} more",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -269,8 +269,8 @@ private fun SourceCard(
     }
 }
 
-private fun formatFeatureName(feature: SourceFeature): String {
-    return when (feature) {
+private fun formatFeatureName(feature: SourceFeature): String =
+    when (feature) {
         SourceFeature.SEARCH -> "Search"
         SourceFeature.LATEST -> "Latest"
         SourceFeature.POPULAR -> "Popular"
@@ -281,4 +281,3 @@ private fun formatFeatureName(feature: SourceFeature): String {
         SourceFeature.RATE_LIMITED -> "Rate Limited"
         SourceFeature.NSFW_CONTENT -> "NSFW"
     }
-}

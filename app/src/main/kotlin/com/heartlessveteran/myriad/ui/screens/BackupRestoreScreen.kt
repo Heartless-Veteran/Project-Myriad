@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.heartlessveteran.myriad.data.services.BackupServiceImpl
+import com.heartlessveteran.myriad.di.AppDiContainer
 import com.heartlessveteran.myriad.domain.services.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -21,7 +21,7 @@ import java.util.Locale
 
 /**
  * Backup & Restore Management Screen for data backup and recovery.
- * 
+ *
  * Allows users to:
  * - Create manual backups
  * - View existing backup files
@@ -31,13 +31,11 @@ import java.util.Locale
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackupRestoreScreen(
-    onBackClick: () -> Unit = {},
-) {
+fun BackupRestoreScreen(onBackClick: () -> Unit = {}) {
     val context = LocalContext.current
-    val backupService = remember { BackupServiceImpl(context) }
+    val backupService = remember { AppDiContainer.getBackupService(context) }
     val scope = rememberCoroutineScope()
-    
+
     var backups by remember { mutableStateOf<List<BackupMetadata>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -46,7 +44,7 @@ fun BackupRestoreScreen(
     var showRestoreDialog by remember { mutableStateOf(false) }
     var selectedBackup by remember { mutableStateOf<BackupMetadata?>(null) }
     var backupConfiguration by remember { mutableStateOf(BackupConfiguration()) }
-    
+
     // Load backups and configuration on screen start
     LaunchedEffect(Unit) {
         try {
@@ -76,7 +74,7 @@ fun BackupRestoreScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
                 },
@@ -84,24 +82,25 @@ fun BackupRestoreScreen(
                     IconButton(onClick = { showBackupDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Create Backup"
+                            contentDescription = "Create Backup",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
         ) {
             when {
                 isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -109,12 +108,12 @@ fun BackupRestoreScreen(
                 errorMessage != null -> {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
                             text = errorMessage!!,
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                         Button(onClick = {
                             isLoading = true
@@ -144,7 +143,7 @@ fun BackupRestoreScreen(
                 }
                 else -> {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         // Quick Actions Section
                         item {
@@ -158,8 +157,11 @@ fun BackupRestoreScreen(
                                             when (result) {
                                                 is com.heartlessveteran.myriad.domain.models.Result.Success -> {
                                                     val backupsResult = backupService.getLocalBackups()
-                                                    if (backupsResult is com.heartlessveteran.myriad.domain.models.Result.Success) {
-                                                        backups = backupsResult.data
+                                                    val successResult =
+                                                        backupsResult as?
+                                                            com.heartlessveteran.myriad.domain.models.Result.Success
+                                                    if (successResult != null) {
+                                                        backups = successResult.data
                                                     }
                                                 }
                                                 is com.heartlessveteran.myriad.domain.models.Result.Error -> {
@@ -177,10 +179,10 @@ fun BackupRestoreScreen(
                                 onImportBackup = {
                                     // TODO: Implement file picker for import
                                     showRestoreDialog = true
-                                }
+                                },
                             )
                         }
-                        
+
                         // Configuration Section
                         item {
                             ConfigurationSection(
@@ -194,47 +196,48 @@ fun BackupRestoreScreen(
                                             errorMessage = "Failed to update configuration: ${e.message}"
                                         }
                                     }
-                                }
+                                },
                             )
                         }
-                        
+
                         // Backup Files Section
                         item {
                             Text(
                                 text = "Backup Files",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding(vertical = 8.dp),
                             )
                         }
-                        
+
                         if (backups.isEmpty()) {
                             item {
                                 Card(
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
                                 ) {
                                     Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(24.dp),
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(24.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                                        verticalArrangement = Arrangement.spacedBy(16.dp),
                                     ) {
                                         Icon(
                                             imageVector = Icons.Default.FolderOff,
                                             contentDescription = null,
                                             modifier = Modifier.size(48.dp),
-                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
                                         Text(
                                             text = "No backup files found",
                                             style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
                                         Text(
                                             text = "Create your first backup to secure your data",
                                             style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
                                     }
                                 }
@@ -252,14 +255,17 @@ fun BackupRestoreScreen(
                                             try {
                                                 backupService.deleteBackup(backupToDelete.id)
                                                 val backupsResult = backupService.getLocalBackups()
-                                                if (backupsResult is com.heartlessveteran.myriad.domain.models.Result.Success) {
-                                                    backups = backupsResult.data
+                                                val successResult =
+                                                    backupsResult as?
+                                                        com.heartlessveteran.myriad.domain.models.Result.Success
+                                                if (successResult != null) {
+                                                    backups = successResult.data
                                                 }
                                             } catch (e: Exception) {
                                                 errorMessage = "Failed to delete backup: ${e.message}"
                                             }
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -268,7 +274,7 @@ fun BackupRestoreScreen(
             }
         }
     }
-    
+
     // Backup Creation Dialog
     if (showBackupDialog) {
         BackupOptionsDialog(
@@ -278,13 +284,14 @@ fun BackupRestoreScreen(
                 scope.launch {
                     isCreatingBackup = true
                     try {
-                        val result = backupService.createBackup(
-                            includeLibrary = options.includeLibrary,
-                            includeProgress = options.includeProgress,
-                            includeSettings = options.includeSettings,
-                            includeCategories = options.includeCategories,
-                            includeTrackingLinks = options.includeTrackingLinks
-                        )
+                        val result =
+                            backupService.createBackup(
+                                includeLibrary = options.includeLibrary,
+                                includeProgress = options.includeProgress,
+                                includeSettings = options.includeSettings,
+                                includeCategories = options.includeCategories,
+                                includeTrackingLinks = options.includeTrackingLinks,
+                            )
                         when (result) {
                             is com.heartlessveteran.myriad.domain.models.Result.Success -> {
                                 val backupsResult = backupService.getLocalBackups()
@@ -303,15 +310,15 @@ fun BackupRestoreScreen(
                         isCreatingBackup = false
                     }
                 }
-            }
+            },
         )
     }
-    
+
     // Restore Dialog
     if (showRestoreDialog) {
         RestoreOptionsDialog(
             backup = selectedBackup,
-            onDismiss = { 
+            onDismiss = {
                 showRestoreDialog = false
                 selectedBackup = null
             },
@@ -320,7 +327,7 @@ fun BackupRestoreScreen(
                 selectedBackup = null
                 // TODO: Implement restore functionality
                 errorMessage = "Restore functionality coming soon"
-            }
+            },
         )
     }
 }
@@ -329,56 +336,57 @@ fun BackupRestoreScreen(
 private fun QuickActionsSection(
     isCreatingBackup: Boolean,
     onCreateBackup: () -> Unit,
-    onImportBackup: () -> Unit
+    onImportBackup: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Text(
                 text = "Quick Actions",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Button(
                     onClick = onCreateBackup,
                     enabled = !isCreatingBackup,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     if (isCreatingBackup) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp
+                            strokeWidth = 2.dp,
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Default.Backup,
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(18.dp),
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Create Backup")
                 }
-                
+
                 OutlinedButton(
                     onClick = onImportBackup,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 ) {
                     Icon(
                         imageVector = Icons.Default.Restore,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Import")
@@ -391,61 +399,65 @@ private fun QuickActionsSection(
 @Composable
 private fun ConfigurationSection(
     configuration: BackupConfiguration,
-    onConfigurationChange: (BackupConfiguration) -> Unit
+    onConfigurationChange: (BackupConfiguration) -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Text(
                 text = "Auto Backup Settings",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Enable Auto Backup",
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
                         text = "Automatically create backups",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                
+
                 Switch(
                     checked = configuration.autoBackupEnabled,
                     onCheckedChange = { enabled ->
                         onConfigurationChange(configuration.copy(autoBackupEnabled = enabled))
-                    }
+                    },
                 )
             }
-            
+
             if (configuration.autoBackupEnabled) {
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 Text(
-                    text = "Backup Frequency: ${configuration.autoBackupFrequency.name.lowercase().replaceFirstChar { it.uppercase() }}",
-                    style = MaterialTheme.typography.bodyMedium
+                    text = "Backup Frequency: ${configuration.autoBackupFrequency.name.lowercase().replaceFirstChar {
+                        it
+                            .uppercase()
+                    }}",
+                    style = MaterialTheme.typography.bodyMedium,
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Text(
                     text = "Max Backup Files: ${configuration.maxBackupFiles}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -456,59 +468,60 @@ private fun ConfigurationSection(
 private fun BackupFileCard(
     backup: BackupMetadata,
     onRestore: () -> Unit,
-    onDelete: (BackupMetadata) -> Unit
+    onDelete: (BackupMetadata) -> Unit,
 ) {
     val dateFormat = remember { SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()) }
-    
+
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = backup.fileName,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
-                    
+
                     Text(
                         text = dateFormat.format(Date(backup.createdAt)),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    
+
                     Text(
                         text = "${formatFileSize(backup.fileSize)} • ${backup.itemCounts.mangaCount} manga",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                
+
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     OutlinedButton(
-                        onClick = onRestore
+                        onClick = onRestore,
                     ) {
                         Text("Restore")
                     }
-                    
+
                     IconButton(
-                        onClick = { onDelete(backup) }
+                        onClick = { onDelete(backup) },
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete",
-                            tint = MaterialTheme.colorScheme.error
+                            tint = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
@@ -520,14 +533,14 @@ private fun BackupFileCard(
 @Composable
 private fun BackupOptionsDialog(
     onDismiss: () -> Unit,
-    onConfirm: (BackupOptions) -> Unit
+    onConfirm: (BackupOptions) -> Unit,
 ) {
     var includeLibrary by remember { mutableStateOf(true) }
     var includeProgress by remember { mutableStateOf(true) }
     var includeSettings by remember { mutableStateOf(true) }
     var includeCategories by remember { mutableStateOf(true) }
     var includeTrackingLinks by remember { mutableStateOf(true) }
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Create Backup") },
@@ -535,37 +548,37 @@ private fun BackupOptionsDialog(
             Column {
                 Text(
                     text = "Select what to include in the backup:",
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
                 )
-                
+
                 CheckboxOption(
                     text = "Library (manga/anime)",
                     checked = includeLibrary,
-                    onCheckedChange = { includeLibrary = it }
+                    onCheckedChange = { includeLibrary = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Reading progress",
                     checked = includeProgress,
-                    onCheckedChange = { includeProgress = it }
+                    onCheckedChange = { includeProgress = it },
                 )
-                
+
                 CheckboxOption(
                     text = "App settings",
                     checked = includeSettings,
-                    onCheckedChange = { includeSettings = it }
+                    onCheckedChange = { includeSettings = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Categories",
                     checked = includeCategories,
-                    onCheckedChange = { includeCategories = it }
+                    onCheckedChange = { includeCategories = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Tracking links",
                     checked = includeTrackingLinks,
-                    onCheckedChange = { includeTrackingLinks = it }
+                    onCheckedChange = { includeTrackingLinks = it },
                 )
             }
         },
@@ -578,10 +591,10 @@ private fun BackupOptionsDialog(
                             includeProgress = includeProgress,
                             includeSettings = includeSettings,
                             includeCategories = includeCategories,
-                            includeTrackingLinks = includeTrackingLinks
-                        )
+                            includeTrackingLinks = includeTrackingLinks,
+                        ),
                     )
-                }
+                },
             ) {
                 Text("Create")
             }
@@ -590,7 +603,7 @@ private fun BackupOptionsDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
 
@@ -598,14 +611,14 @@ private fun BackupOptionsDialog(
 private fun RestoreOptionsDialog(
     backup: BackupMetadata?,
     onDismiss: () -> Unit,
-    onConfirm: (RestoreOptions) -> Unit
+    onConfirm: (RestoreOptions) -> Unit,
 ) {
     var restoreLibrary by remember { mutableStateOf(true) }
     var restoreProgress by remember { mutableStateOf(true) }
     var restoreSettings by remember { mutableStateOf(true) }
     var restoreCategories by remember { mutableStateOf(true) }
     var restoreTrackingLinks by remember { mutableStateOf(true) }
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Restore from Backup") },
@@ -615,43 +628,43 @@ private fun RestoreOptionsDialog(
                     Text(
                         text = "Restore from: ${it.fileName}",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp),
                     )
                 }
-                
+
                 Text(
                     text = "Select what to restore:",
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
                 )
-                
+
                 CheckboxOption(
                     text = "Library (manga/anime)",
                     checked = restoreLibrary,
-                    onCheckedChange = { restoreLibrary = it }
+                    onCheckedChange = { restoreLibrary = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Reading progress",
                     checked = restoreProgress,
-                    onCheckedChange = { restoreProgress = it }
+                    onCheckedChange = { restoreProgress = it },
                 )
-                
+
                 CheckboxOption(
                     text = "App settings",
                     checked = restoreSettings,
-                    onCheckedChange = { restoreSettings = it }
+                    onCheckedChange = { restoreSettings = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Categories",
                     checked = restoreCategories,
-                    onCheckedChange = { restoreCategories = it }
+                    onCheckedChange = { restoreCategories = it },
                 )
-                
+
                 CheckboxOption(
                     text = "Tracking links",
                     checked = restoreTrackingLinks,
-                    onCheckedChange = { restoreTrackingLinks = it }
+                    onCheckedChange = { restoreTrackingLinks = it },
                 )
             }
         },
@@ -664,10 +677,10 @@ private fun RestoreOptionsDialog(
                             restoreProgress = restoreProgress,
                             restoreSettings = restoreSettings,
                             restoreCategories = restoreCategories,
-                            restoreTrackingLinks = restoreTrackingLinks
-                        )
+                            restoreTrackingLinks = restoreTrackingLinks,
+                        ),
                     )
-                }
+                },
             ) {
                 Text("Restore")
             }
@@ -676,7 +689,7 @@ private fun RestoreOptionsDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
 
@@ -684,21 +697,22 @@ private fun RestoreOptionsDialog(
 private fun CheckboxOption(
     text: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
         )
         Text(
             text = text,
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 8.dp),
         )
     }
 }
@@ -707,7 +721,7 @@ private fun formatFileSize(bytes: Long): String {
     val kb = 1024
     val mb = kb * 1024
     val gb = mb * 1024
-    
+
     return when {
         bytes >= gb -> String.format("%.1f GB", bytes.toDouble() / gb)
         bytes >= mb -> String.format("%.1f MB", bytes.toDouble() / mb)

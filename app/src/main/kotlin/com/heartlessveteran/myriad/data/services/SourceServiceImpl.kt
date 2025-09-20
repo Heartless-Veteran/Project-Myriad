@@ -8,9 +8,9 @@ import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.repository.SourceRepository
 import com.heartlessveteran.myriad.domain.services.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.first
 import java.util.Date
 import java.util.UUID
 
@@ -24,7 +24,7 @@ import java.util.UUID
  * - Foundation for future source plugin system
  */
 class SourceServiceImpl(
-    private val mangaDxSourceRepository: SourceRepository? = null
+    private val mangaDxSourceRepository: SourceRepository? = null,
 ) : SourceService {
     companion object {
         private const val TAG = "SourceServiceImpl"
@@ -257,8 +257,8 @@ class SourceServiceImpl(
 
     // MangaDx implementation methods (now using real SourceRepository)
 
-    private suspend fun getMangaDxLatestManga(page: Int): Result<List<Manga>> {
-        return if (mangaDxSourceRepository != null) {
+    private suspend fun getMangaDxLatestManga(page: Int): Result<List<Manga>> =
+        if (mangaDxSourceRepository != null) {
             try {
                 Log.d(TAG, "Getting latest manga from MangaDx via SourceRepository (page: $page)")
                 mangaDxSourceRepository.getLatestManga(page).first()
@@ -270,10 +270,9 @@ class SourceServiceImpl(
             Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
             Result.Success(generateSampleManga("MangaDx Latest", 5))
         }
-    }
 
-    private suspend fun getMangaDxPopularManga(page: Int): Result<List<Manga>> {
-        return if (mangaDxSourceRepository != null) {
+    private suspend fun getMangaDxPopularManga(page: Int): Result<List<Manga>> =
+        if (mangaDxSourceRepository != null) {
             try {
                 Log.d(TAG, "Getting popular manga from MangaDx via SourceRepository (page: $page)")
                 // For now, popular manga uses the same as latest - this can be enhanced later
@@ -286,10 +285,9 @@ class SourceServiceImpl(
             Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
             Result.Success(generateSampleManga("MangaDx Popular", 5))
         }
-    }
 
-    private suspend fun searchMangaDx(query: String): Result<List<Manga>> {
-        return if (mangaDxSourceRepository != null) {
+    private suspend fun searchMangaDx(query: String): Result<List<Manga>> =
+        if (mangaDxSourceRepository != null) {
             try {
                 Log.d(TAG, "Searching MangaDx via SourceRepository for: $query")
                 mangaDxSourceRepository.searchManga(query, 1).first()
@@ -301,7 +299,6 @@ class SourceServiceImpl(
             Log.w(TAG, "MangaDx SourceRepository not available, using fallback")
             Result.Success(generateSampleManga("MangaDx Search: $query", 3))
         }
-    }
 
     private suspend fun getMangaDxMangaDetails(mangaId: String): Result<Manga> {
         // TODO: Implement actual MangaDx details API

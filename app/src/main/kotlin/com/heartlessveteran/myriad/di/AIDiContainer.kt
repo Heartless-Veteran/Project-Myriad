@@ -1,11 +1,11 @@
 package com.heartlessveteran.myriad.di
 
+import com.heartlessveteran.myriad.data.cache.MemoryCache
 import com.heartlessveteran.myriad.data.services.OCRService
 import com.heartlessveteran.myriad.domain.usecase.GetRecommendationsUseCase
 import com.heartlessveteran.myriad.network.GeminiService
 import com.heartlessveteran.myriad.services.EnhancedAIService
 import com.heartlessveteran.myriad.services.SmartCacheService
-import com.heartlessveteran.myriad.data.cache.MemoryCache
 
 /**
  * Manual dependency injection container for AI Core features.
@@ -47,15 +47,12 @@ object AIDiContainer {
         }
 
     /**
-     * Get GetRecommendationsUseCase instance.
-     */
-    /**
      * Get GetRecommendationsUseCase with context.
      */
     fun getRecommendationsUseCase(context: android.content.Context): GetRecommendationsUseCase =
         recommendationsUseCase ?: synchronized(this) {
             recommendationsUseCase ?: GetRecommendationsUseCase(
-                mangaRepository = LibraryDiContainer.getMangaRepository(context)
+                mangaRepository = LibraryDiContainer.getMangaRepository(context),
             ).also { recommendationsUseCase = it }
         }
 
@@ -69,10 +66,10 @@ object AIDiContainer {
             NetworkModule.provideGeminiRetrofit(
                 NetworkModule.provideGeminiOkHttpClient(
                     NetworkModule.provideHttpLoggingInterceptor(),
-                    NetworkModule.provideGeminiAuthInterceptor()
+                    NetworkModule.provideGeminiAuthInterceptor(),
                 ),
-                NetworkModule.provideJson()
-            )
+                NetworkModule.provideJson(),
+            ),
         )
     }
 

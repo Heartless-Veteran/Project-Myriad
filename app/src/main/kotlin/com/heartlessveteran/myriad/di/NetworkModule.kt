@@ -91,9 +91,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @GeneralClient
-    fun provideGeneralOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient =
+    fun provideGeneralOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient
             .Builder()
             .addInterceptor(loggingInterceptor)

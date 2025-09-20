@@ -1,14 +1,14 @@
 package com.heartlessveteran.myriad.di
 
 import android.content.Context
+import com.heartlessveteran.myriad.data.services.BackupServiceImpl
 import com.heartlessveteran.myriad.data.services.DownloadServiceImpl
 import com.heartlessveteran.myriad.data.services.SourceServiceImpl
 import com.heartlessveteran.myriad.data.services.TrackingServiceImpl
-import com.heartlessveteran.myriad.data.services.BackupServiceImpl
+import com.heartlessveteran.myriad.domain.services.BackupService
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import com.heartlessveteran.myriad.domain.services.SourceService
 import com.heartlessveteran.myriad.domain.services.TrackingService
-import com.heartlessveteran.myriad.domain.services.BackupService
 
 /**
  * Manual dependency injection container for Download features.
@@ -48,7 +48,7 @@ object DownloadDiContainer {
     fun getSourceService(): SourceService =
         sourceService ?: synchronized(this) {
             sourceService ?: SourceServiceImpl(
-                mangaDxSourceRepository = BrowseDiContainer.sourceRepository
+                mangaDxSourceRepository = BrowseDiContainer.sourceRepository,
             ).also { sourceService = it }
         }
 
@@ -72,7 +72,7 @@ object DownloadDiContainer {
      * Clear and reset the cached service instances.
      *
      * Thread-safe: if the cached downloadService is a DownloadServiceImpl, its
-     * cleanup() method is invoked before all services are set to null. 
+     * cleanup() method is invoked before all services are set to null.
      * Intended for testing or resetting DI state.
      */
     fun clearInstances() {

@@ -3,8 +3,6 @@ package com.heartlessveteran.myriad.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -12,24 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
-import coil.compose.AsyncImage
-import com.heartlessveteran.myriad.ui.components.TapZoneOverlay
-import com.heartlessveteran.myriad.ui.components.executeTapAction
-import com.heartlessveteran.myriad.ui.components.HorizontalReader
-import com.heartlessveteran.myriad.ui.components.VerticalReader
 import com.heartlessveteran.myriad.ui.components.DoublePageReader
-import com.heartlessveteran.myriad.ui.theme.MyriadTheme
-import kotlin.math.max
-import kotlin.math.min
+import com.heartlessveteran.myriad.ui.components.HorizontalReader
+import com.heartlessveteran.myriad.ui.components.TapZoneOverlay
+import com.heartlessveteran.myriad.ui.components.VerticalReader
+import com.heartlessveteran.myriad.ui.components.executeTapAction
 
 /*
  * Enhanced manga reading screen with advanced features.
@@ -172,129 +160,130 @@ fun EnhancedReadingScreen(
                     onPageChanged = onPageChanged,
                     onMenuToggle = { isMenuVisible = !isMenuVisible },
                     onBookmarkToggle = { /* TODO: Implement bookmark toggle */ },
-                    onZoomIn = { 
-                        if (scale < 3f) scale += 0.5f 
+                    onZoomIn = {
+                        if (scale < 3f) scale += 0.5f
                     },
-                    onZoomOut = { 
-                        if (scale > 0.5f) scale -= 0.5f 
-                    }
+                    onZoomOut = {
+                        if (scale > 0.5f) scale -= 0.5f
+                    },
                 )
-            }
+            },
         ) {
             // Main reading content
             when (readerConfig.readingMode) {
                 ReadingMode.LEFT_TO_RIGHT, ReadingMode.RIGHT_TO_LEFT -> {
-                HorizontalReader(
-                    pages = pages,
-                    currentPage = currentPage,
-                    onPageChanged = onPageChanged,
-                    configuration = readerConfig,
-                    scale = scale,
-                    offsetX = offsetX,
-                    offsetY = offsetY,
-                    onScaleChange = { scale = it },
-                    onOffsetChange = { x, y ->
-                        offsetX = x
-                        offsetY = y
-                    },
-                    onMenuToggle = { isMenuVisible = !isMenuVisible },
-                )
+                    HorizontalReader(
+                        pages = pages,
+                        currentPage = currentPage,
+                        onPageChanged = onPageChanged,
+                        configuration = readerConfig,
+                        scale = scale,
+                        offsetX = offsetX,
+                        offsetY = offsetY,
+                        onScaleChange = { scale = it },
+                        onOffsetChange = { x, y ->
+                            offsetX = x
+                            offsetY = y
+                        },
+                        onMenuToggle = { isMenuVisible = !isMenuVisible },
+                    )
+                }
+                ReadingMode.VERTICAL, ReadingMode.WEBTOON -> {
+                    VerticalReader(
+                        pages = pages,
+                        currentPage = currentPage,
+                        onPageChanged = onPageChanged,
+                        configuration = readerConfig,
+                        onMenuToggle = { isMenuVisible = !isMenuVisible },
+                    )
+                }
+                ReadingMode.DOUBLE_PAGE -> {
+                    DoublePageReader(
+                        pages = pages,
+                        currentPage = currentPage,
+                        onPageChanged = onPageChanged,
+                        configuration = readerConfig,
+                        scale = scale,
+                        offsetX = offsetX,
+                        offsetY = offsetY,
+                        onScaleChange = { scale = it },
+                        onOffsetChange = { x, y ->
+                            offsetX = x
+                            offsetY = y
+                        },
+                        onMenuToggle = { isMenuVisible = !isMenuVisible },
+                    )
+                }
             }
-            ReadingMode.VERTICAL, ReadingMode.WEBTOON -> {
-                VerticalReader(
-                    pages = pages,
-                    currentPage = currentPage,
-                    onPageChanged = onPageChanged,
-                    configuration = readerConfig,
-                    onMenuToggle = { isMenuVisible = !isMenuVisible },
-                )
-            }
-            ReadingMode.DOUBLE_PAGE -> {
-                DoublePageReader(
-                    pages = pages,
-                    currentPage = currentPage,
-                    onPageChanged = onPageChanged,
-                    configuration = readerConfig,
-                    scale = scale,
-                    offsetX = offsetX,
-                    offsetY = offsetY,
-                    onScaleChange = { scale = it },
-                    onOffsetChange = { x, y ->
-                        offsetX = x
-                        offsetY = y
-                    },
-                    onMenuToggle = { isMenuVisible = !isMenuVisible },
-                )
-            }
-        }
 
-        // Menu overlay with simple UI
-        if (isMenuVisible) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                shadowElevation = 8.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+            // Menu overlay with simple UI
+            if (isMenuVisible) {
+                Surface(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                    shadowElevation = 8.dp,
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.padding(16.dp),
                     ) {
-                        IconButton(onClick = onBackPress) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            IconButton(onClick = onBackPress) {
+                                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            }
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = mangaTitle,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1,
+                                )
+                                Text(
+                                    text = chapterTitle,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 1,
+                                )
+                            }
+
+                            IconButton(onClick = { showSettings = true }) {
+                                Icon(Icons.Default.Settings, contentDescription = "Settings")
+                            }
                         }
-                        
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        // Page indicator
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Text(
-                                text = mangaTitle,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 1
+                                text = "${currentPage + 1}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.width(40.dp),
                             )
+
+                            Slider(
+                                value = currentPage.toFloat(),
+                                onValueChange = { onPageChanged(it.toInt()) },
+                                valueRange = 0f..(pages.size - 1).toFloat(),
+                                steps = if (pages.size > 2) pages.size - 2 else 0,
+                                modifier = Modifier.weight(1f),
+                            )
+
                             Text(
-                                text = chapterTitle,
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1
+                                text = "${pages.size}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.width(40.dp),
                             )
                         }
-                        
-                        IconButton(onClick = { showSettings = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Settings")
-                        }
-                    }
-                    
-                    // Page indicator
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "${currentPage + 1}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.width(40.dp)
-                        )
-                        
-                        Slider(
-                            value = currentPage.toFloat(),
-                            onValueChange = { onPageChanged(it.toInt()) },
-                            valueRange = 0f..(pages.size - 1).toFloat(),
-                            steps = if (pages.size > 2) pages.size - 2 else 0,
-                            modifier = Modifier.weight(1f)
-                        )
-                        
-                        Text(
-                            text = "${pages.size}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.width(40.dp)
-                        )
                     }
                 }
             }
-        }
         }
 
         // Settings dialog
@@ -312,7 +301,7 @@ fun EnhancedReadingScreen(
                     TextButton(onClick = { showSettings = false }) {
                         Text("Done")
                     }
-                }
+                },
             )
         }
     }
