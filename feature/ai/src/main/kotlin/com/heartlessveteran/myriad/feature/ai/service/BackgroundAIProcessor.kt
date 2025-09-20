@@ -127,7 +127,7 @@ class BackgroundAIProcessor {
      */
     fun cleanup() {
         aiScope.cancel()
-        aiDispatcher.close()
+        (aiDispatcher as? ExecutorCoroutineDispatcher)?.close()
     }
 }
 
