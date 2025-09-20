@@ -5,8 +5,6 @@ package com.heartlessveteran.myriad.utils
  */
 
 /**
- * Placeholder for future utility extension functions
+ * Returns `true` if the string is null or empty.
  */
-object Extensions {
-    // Utility functions will be added here as needed
-}
+fun String?.isNullOrEmpty(): Boolean = this == null || this.isEmpty()
