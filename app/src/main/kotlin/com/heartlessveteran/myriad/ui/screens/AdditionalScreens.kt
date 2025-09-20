@@ -828,6 +828,7 @@ fun SettingsScreen(
     onSectionChange: (SettingsSection) -> Unit = {},
     onNavigateToSourceManagement: () -> Unit = {},
     onNavigateToTrackingManagement: () -> Unit = {},
+    onNavigateToBackupRestore: () -> Unit = {},
 ) {
     var currentSection by remember { mutableStateOf<SettingsSection>(initialSection) }
 
@@ -885,7 +886,9 @@ fun SettingsScreen(
                         onNavigateToSourceManagement = onNavigateToSourceManagement,
                         onNavigateToTrackingManagement = onNavigateToTrackingManagement
                     )
-                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE -> StorageSettings()
+                    com.heartlessveteran.myriad.navigation.SettingsSection.STORAGE -> StorageSettings(
+                        onNavigateToBackupRestore = onNavigateToBackupRestore
+                    )
                     com.heartlessveteran.myriad.navigation.SettingsSection.AI -> AISettings()
                     com.heartlessveteran.myriad.navigation.SettingsSection.ABOUT -> AboutSettings()
                 }
@@ -1004,11 +1007,19 @@ private fun SourcesSettings(
 }
 
 @Composable
-private fun StorageSettings() {
+private fun StorageSettings(
+    onNavigateToBackupRestore: () -> Unit = {}
+) {
     SettingsSection(
-        title = "Storage Settings",
-        description = "Manage local storage and cache",
+        title = "Storage & Backup",
+        description = "Manage local storage, cache, and data backup",
     ) {
+        SettingsItem(
+            title = "Backup & Restore",
+            description = "Create backups and restore your data",
+            onClick = onNavigateToBackupRestore
+        )
+        
         SettingsItem(
             title = "Library Location",
             description = "Choose where your media is stored",

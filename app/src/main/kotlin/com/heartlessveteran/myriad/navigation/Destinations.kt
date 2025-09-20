@@ -27,6 +27,9 @@ sealed class Destination {
     data object TrackingManagement : Destination()
 
     @Serializable
+    data object BackupRestore : Destination()
+
+    @Serializable
     data object AICore : Destination()
 
     @Serializable
@@ -241,6 +244,7 @@ object NavigationRoutes {
     const val BROWSE = "browse"
     const val SOURCE_MANAGEMENT = "source_management"
     const val TRACKING_MANAGEMENT = "tracking_management"
+    const val BACKUP_RESTORE = "backup_restore"
     const val AI_CORE = "ai_core"
     const val READING = "reading/{mangaId}?chapterId={chapterId}&page={page}"
     const val WATCHING = "watching/{animeId}?episodeId={episodeId}&timestamp={timestamp}"

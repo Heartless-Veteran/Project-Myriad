@@ -178,6 +178,12 @@ fun MyriadNavigation(
                 )
             }
 
+            composable("backup_restore") {
+                BackupRestoreScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.AICore.route) {
                 AICoreScreen()
             }
@@ -192,6 +198,9 @@ fun MyriadNavigation(
                     },
                     onNavigateToTrackingManagement = {
                         navController.navigate("tracking_management")
+                    },
+                    onNavigateToBackupRestore = {
+                        navController.navigate("backup_restore")
                     }
                 )
             }

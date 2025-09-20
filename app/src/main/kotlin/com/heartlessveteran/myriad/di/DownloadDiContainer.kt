@@ -4,9 +4,11 @@ import android.content.Context
 import com.heartlessveteran.myriad.data.services.DownloadServiceImpl
 import com.heartlessveteran.myriad.data.services.SourceServiceImpl
 import com.heartlessveteran.myriad.data.services.TrackingServiceImpl
+import com.heartlessveteran.myriad.data.services.BackupServiceImpl
 import com.heartlessveteran.myriad.domain.services.DownloadService
 import com.heartlessveteran.myriad.domain.services.SourceService
 import com.heartlessveteran.myriad.domain.services.TrackingService
+import com.heartlessveteran.myriad.domain.services.BackupService
 
 /**
  * Manual dependency injection container for Download features.
@@ -16,6 +18,7 @@ import com.heartlessveteran.myriad.domain.services.TrackingService
  * - DownloadService for background downloads
  * - SourceService for online content discovery with real MangaDx integration
  * - TrackingService for progress tracking with external services
+ * - BackupService for data backup and restore
  * - Integration between download and source services
  */
 object DownloadDiContainer {
@@ -27,6 +30,9 @@ object DownloadDiContainer {
 
     @Volatile
     private var trackingService: TrackingService? = null
+
+    @Volatile
+    private var backupService: BackupService? = null
 
     /**
      * Get DownloadService instance.
@@ -55,6 +61,14 @@ object DownloadDiContainer {
         }
 
     /**
+     * Get BackupService instance.
+     */
+    fun getBackupService(context: Context): BackupService =
+        backupService ?: synchronized(this) {
+            backupService ?: BackupServiceImpl(context).also { backupService = it }
+        }
+
+    /**
      * Clear and reset the cached service instances.
      *
      * Thread-safe: if the cached downloadService is a DownloadServiceImpl, its
@@ -67,6 +81,7 @@ object DownloadDiContainer {
             downloadService = null
             sourceService = null
             trackingService = null
+            backupService = null
         }
     }
 }
