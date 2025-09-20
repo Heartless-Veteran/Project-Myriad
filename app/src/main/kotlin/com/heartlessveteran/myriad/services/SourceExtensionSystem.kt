@@ -6,8 +6,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Content types supported by sources
@@ -170,12 +168,9 @@ data class AggregatedSearchResult(
  * - Error handling and retry logic
  * - Source statistics and monitoring
  */
-@Singleton
-class SourceExtensionSystem
-    @Inject
-    constructor(
-        private val cacheService: SmartCacheService,
-    ) {
+class SourceExtensionSystem(
+    private val cacheService: SmartCacheService,
+) {
         companion object {
             private const val SOURCE_CACHE_KEY = "source_content"
             private const val SEARCH_CACHE_TTL = 15 * 60 * 1000L // 15 minutes

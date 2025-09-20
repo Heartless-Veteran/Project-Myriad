@@ -5,8 +5,6 @@ import com.heartlessveteran.myriad.domain.models.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Cache priority levels for different data types
@@ -65,12 +63,9 @@ data class CacheInfo(
  * - Compression support
  * - Tag-based cache management
  */
-@Singleton
-class SmartCacheService
-    @Inject
-    constructor(
-        private val cacheManager: MemoryCache,
-    ) {
+class SmartCacheService(
+    private val cacheManager: MemoryCache,
+) {
         companion object {
             private const val DEFAULT_MEMORY_LIMIT = 50 * 1024 * 1024L // 50MB
             private const val DEFAULT_DISK_LIMIT = 500 * 1024 * 1024L // 500MB

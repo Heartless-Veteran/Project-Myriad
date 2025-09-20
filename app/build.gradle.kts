@@ -139,6 +139,9 @@ dependencies {
 
     // ZIP handling for manga files
     implementation("net.lingala.zip4j:zip4j:2.11.5")
+    
+    // HTML parsing for web scraping
+    implementation("org.jsoup:jsoup:1.18.1")
 
     // OCR for translation
     implementation("com.google.mlkit:text-recognition:16.0.1")
