@@ -153,7 +153,7 @@ class UiStateTest {
         val state1 = UiState.Loading
         val state2 = UiState.Success(10)
 
-        val combined = combineUiStates(state1, state2) { a, b -> a + b }
+        val combined = combineUiStates(state1, state2) { a: Any?, b: Int -> b + 1 }
 
         assertTrue(combined is UiState.Loading)
     }

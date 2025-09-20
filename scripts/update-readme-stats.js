@@ -196,36 +196,9 @@ class ReadmeUpdater {
         }
 
         let readme = fs.readFileSync(this.readmePath, 'utf8');
-        const timestamp = new Date().toISOString().split('T')[0];
 
-        // Create statistics section
-        const statsSection = this.createStatsSection(timestamp);
-
-        // Find and replace existing stats section or add new one
-        const statsMarker = '<!-- PROJECT_STATS -->';
-        const endMarker = '<!-- /PROJECT_STATS -->';
-        
-        if (readme.includes(statsMarker)) {
-            // Replace existing stats section
-            const startIndex = readme.indexOf(statsMarker);
-            const endIndex = readme.indexOf(endMarker) + endMarker.length;
-            
-            if (endIndex > startIndex) {
-                readme = readme.substring(0, startIndex) + statsSection + readme.substring(endIndex);
-            } else {
-                readme += '\n\n' + statsSection;
-            }
-        } else {
-            // Add stats section before the first heading or at the end
-            const firstHeading = readme.indexOf('\n## ');
-            if (firstHeading !== -1) {
-                readme = readme.substring(0, firstHeading) + '\n\n' + statsSection + readme.substring(firstHeading);
-            } else {
-                readme += '\n\n' + statsSection;
-            }
-        }
-
-        // Update other dynamic content
+        // Only update badges, don't add manual statistics table
+        // The README now uses automated badges instead of manual tables
         readme = this.updateBadges(readme);
 
         fs.writeFileSync(this.readmePath, readme);
