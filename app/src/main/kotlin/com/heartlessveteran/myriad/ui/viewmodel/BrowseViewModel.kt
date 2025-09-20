@@ -2,7 +2,8 @@ package com.heartlessveteran.myriad.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.heartlessveteran.myriad.domain.model.Manga
+import com.heartlessveteran.myriad.domain.entities.Manga
+import com.heartlessveteran.myriad.domain.models.Result
 import com.heartlessveteran.myriad.domain.usecase.GetLatestMangaUseCase
 import com.heartlessveteran.myriad.domain.usecase.SearchMangaUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,14 +38,20 @@ class BrowseViewModel(
         getLatestMangaUseCase(1)
             .onEach { result ->
                 _uiState.update { currentState ->
-                    result.fold(
-                        onSuccess = { mangaList ->
-                            currentState.copy(isLoading = false, manga = mangaList, error = null, page = 1)
-                        },
-                        onFailure = { throwable ->
-                            currentState.copy(isLoading = false, error = throwable.localizedMessage ?: "An unexpected error occurred")
-                        },
-                    )
+                    when (result) {
+                        is Result.Success -> {
+                            currentState.copy(isLoading = false, manga = result.data, error = null, page = 1)
+                        }
+                        is Result.Error -> {
+                            currentState.copy(
+                                isLoading = false, 
+                                error = result.message ?: result.exception.message ?: "An unexpected error occurred"
+                            )
+                        }
+                        is Result.Loading -> {
+                            currentState.copy(isLoading = true, error = null)
+                        }
+                    }
                 }
             }.launchIn(viewModelScope)
     }
@@ -59,14 +66,20 @@ class BrowseViewModel(
         searchMangaUseCase(query, 1)
             .onEach { result ->
                 _uiState.update { currentState ->
-                    result.fold(
-                        onSuccess = { mangaList ->
-                            currentState.copy(isLoading = false, manga = mangaList, error = null, page = 1)
-                        },
-                        onFailure = { throwable ->
-                            currentState.copy(isLoading = false, error = throwable.localizedMessage ?: "An unexpected error occurred")
-                        },
-                    )
+                    when (result) {
+                        is Result.Success -> {
+                            currentState.copy(isLoading = false, manga = result.data, error = null, page = 1)
+                        }
+                        is Result.Error -> {
+                            currentState.copy(
+                                isLoading = false, 
+                                error = result.message ?: result.exception.message ?: "An unexpected error occurred"
+                            )
+                        }
+                        is Result.Loading -> {
+                            currentState.copy(isLoading = true, error = null)
+                        }
+                    }
                 }
             }.launchIn(viewModelScope)
     }

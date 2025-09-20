@@ -2,6 +2,8 @@ package com.heartlessveteran.myriad.domain.usecase
 
 import com.heartlessveteran.myriad.domain.entities.Manga
 import com.heartlessveteran.myriad.domain.models.Result
+import com.heartlessveteran.myriad.domain.services.DownloadService
+import com.heartlessveteran.myriad.domain.services.DownloadTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -12,8 +14,7 @@ import kotlinx.coroutines.withContext
  * from online sources, including queue management and validation.
  */
 class DownloadMangaUseCase(
-    // TODO: Inject DownloadService when implemented
-    // private val downloadService: DownloadService
+    private val downloadService: DownloadService,
 ) {
     /**
      * Download a manga and its chapters.
@@ -25,7 +26,7 @@ class DownloadMangaUseCase(
     suspend operator fun invoke(
         manga: Manga,
         chapters: List<String>? = null,
-    ): Result<com.heartlessveteran.myriad.domain.services.DownloadTask> {
+    ): Result<DownloadTask> {
         return withContext(Dispatchers.IO) {
             try {
                 // Validate manga
@@ -36,7 +37,7 @@ class DownloadMangaUseCase(
                     )
                 }
 
-                // TODO: Check if manga is from online source
+                // Check if manga is from online source
                 if (manga.isLocal) {
                     return@withContext Result.Error(
                         IllegalStateException("Cannot download local manga"),
@@ -44,13 +45,8 @@ class DownloadMangaUseCase(
                     )
                 }
 
-                // TODO: Delegate to DownloadService
-                // downloadService.enqueueMangaDownload(manga, chapters)
-
-                Result.Error(
-                    NotImplementedError("Download manga use case not yet implemented"),
-                    "Download functionality requires DownloadService implementation",
-                )
+                // Delegate to DownloadService
+                downloadService.enqueueMangaDownload(manga, chapters)
             } catch (e: Exception) {
                 Result.Error(e, "Failed to download manga: ${e.message}")
             }
