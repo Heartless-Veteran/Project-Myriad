@@ -84,37 +84,12 @@ class MangaRepositoryImpl @Inject constructor(
             Result.Error(e, "Failed to update read progress: ${e.message}")
         }
 
-    // File operations - Delegate to FileManagerService
+    // File operations - TODO: Implement when FileManagerService is available via Hilt
     override suspend fun importMangaFromFile(filePath: String): Result<Manga> =
-        when (val result = fileManagerService.importMangaFromFile(filePath)) {
-            is Result.Success -> {
-                // Save the imported manga to database
-                try {
-                    mangaDao.insertManga(result.data)
-                    Result.Success(result.data)
-                } catch (e: Exception) {
-                    Result.Error(e, "Failed to save imported manga to database: ${e.message}")
-                }
-            }
-            is Result.Error -> result
-            is Result.Loading -> result
-        }
+        Result.Error(Exception("Not implemented"), "FileManagerService not yet available via Hilt")
 
     override suspend fun scanLocalMangaDirectory(directoryPath: String): Result<List<Manga>> =
-        when (val result = fileManagerService.scanDirectoryForManga(directoryPath)) {
-            is Result.Success -> {
-                // Save all imported manga to database
-                try {
-                    val mangaList = result.data
-                    mangaDao.insertMangaList(mangaList)
-                    Result.Success(mangaList)
-                } catch (e: Exception) {
-                    Result.Error(e, "Failed to save scanned manga to database: ${e.message}")
-                }
-            }
-            is Result.Error -> result
-            is Result.Loading -> result
-        }
+        Result.Error(Exception("Not implemented"), "FileManagerService not yet available via Hilt")
 
     // Online source operations - Delegate to SourceService
     override suspend fun searchOnlineManga(

@@ -49,7 +49,7 @@ object LibraryDiContainer {
         mangaRepository ?: synchronized(this) {
             mangaRepository ?: MangaRepositoryImpl(
                 mangaDao = getDatabase(context).mangaDao(),
-                fileManagerService = getFileManagerService(context),
+                // TODO: Add FileManagerService when available via Hilt
             ).also { mangaRepository = it }
         }
 
