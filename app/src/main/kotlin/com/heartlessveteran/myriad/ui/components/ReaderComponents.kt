@@ -63,7 +63,7 @@ fun HorizontalReader(
     HorizontalPager(
         state = pagerState,
         modifier = modifier.fillMaxSize(),
-        reverseLayout = configuration.readingMode == com.heartlessveteran.myriad.ui.screens.ReadingMode.RIGHT_TO_LEFT
+        reverseLayout = configuration.readingMode == ReadingMode.RIGHT_TO_LEFT
     ) { pageIndex ->
         PageContent(
             imageUrl = pages[pageIndex],
