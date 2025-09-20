@@ -183,7 +183,7 @@ fun EnhancedReadingScreen(
         ) {
             // Main reading content
             when (readerConfig.readingMode) {
-            ReadingMode.LEFT_TO_RIGHT, ReadingMode.RIGHT_TO_LEFT -> {
+                ReadingMode.LEFT_TO_RIGHT, ReadingMode.RIGHT_TO_LEFT -> {
                 HorizontalReader(
                     pages = pages,
                     currentPage = currentPage,
