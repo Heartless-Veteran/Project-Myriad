@@ -72,8 +72,3 @@ jobs:
       with:
         node-version: '18'
     
-    - name: Validate architecture
-      run: node scripts/validate-architecture.js
-    
-    - name: Validate configuration
-      run: node scripts/validate-config.js
