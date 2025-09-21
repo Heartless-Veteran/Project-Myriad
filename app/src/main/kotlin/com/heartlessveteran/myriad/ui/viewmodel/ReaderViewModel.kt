@@ -21,7 +21,7 @@ data class ReaderUiState(
     val errorMessage: String? = null,
     val readingDirection: ReadingDirection = ReadingDirection.LEFT_TO_RIGHT,
     val zoomLevel: Float = 1f,
-    val isFullscreen: Boolean = false
+    val isFullscreen: Boolean = false,
 )
 
 /**
@@ -30,20 +30,36 @@ data class ReaderUiState(
 enum class ReadingDirection {
     LEFT_TO_RIGHT,
     RIGHT_TO_LEFT,
-    VERTICAL
+    VERTICAL,
 }
 
 /**
  * Events that can be sent from the UI
  */
 sealed class ReaderEvent {
-    data class LoadChapter(val sourceId: String, val chapterUrl: String) : ReaderEvent()
-    data class GoToPage(val pageIndex: Int) : ReaderEvent()
+    data class LoadChapter(
+        val sourceId: String,
+        val chapterUrl: String,
+    ) : ReaderEvent()
+
+    data class GoToPage(
+        val pageIndex: Int,
+    ) : ReaderEvent()
+
     data object NextPage : ReaderEvent()
+
     data object PreviousPage : ReaderEvent()
-    data class ChangeReadingDirection(val direction: ReadingDirection) : ReaderEvent()
-    data class ChangeZoom(val zoomLevel: Float) : ReaderEvent()
+
+    data class ChangeReadingDirection(
+        val direction: ReadingDirection,
+    ) : ReaderEvent()
+
+    data class ChangeZoom(
+        val zoomLevel: Float,
+    ) : ReaderEvent()
+
     data object ToggleFullscreen : ReaderEvent()
+
     data object ClearError : ReaderEvent()
 }
 
@@ -51,8 +67,12 @@ sealed class ReaderEvent {
  * One-time events for the UI
  */
 sealed class ReaderUiEvent {
-    data class ShowError(val message: String) : ReaderUiEvent()
+    data class ShowError(
+        val message: String,
+    ) : ReaderUiEvent()
+
     data object ChapterCompleted : ReaderUiEvent()
+
     data object NavigateBack : ReaderUiEvent()
 }
 
@@ -62,9 +82,8 @@ sealed class ReaderUiEvent {
  * Demonstrates usage of GetChapterPagesUseCase as per architecture requirements.
  */
 class ReaderViewModel(
-    private val getChapterPagesUseCase: GetChapterPagesUseCase
+    private val getChapterPagesUseCase: GetChapterPagesUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(ReaderUiState())
     val uiState: StateFlow<ReaderUiState> = _uiState.asStateFlow()
 
@@ -106,24 +125,29 @@ class ReaderViewModel(
     /**
      * Loads chapter pages using the use case
      */
-    private fun loadChapterPages(sourceId: String, chapterUrl: String) {
+    private fun loadChapterPages(
+        sourceId: String,
+        chapterUrl: String,
+    ) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
 
             when (val result = getChapterPagesUseCase(sourceId, chapterUrl)) {
                 is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(
-                        pages = result.data,
-                        currentPage = 0,
-                        isLoading = false
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            pages = result.data,
+                            currentPage = 0,
+                            isLoading = false,
+                        )
                 }
                 is Result.Error -> {
                     val errorMessage = result.message ?: "Failed to load chapter pages"
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = errorMessage
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = errorMessage,
+                        )
                     _uiEvents.trySend(ReaderUiEvent.ShowError(errorMessage))
                 }
                 is Result.Loading -> {
@@ -148,10 +172,11 @@ class ReaderViewModel(
      */
     private fun nextPage() {
         val currentState = _uiState.value
-        val nextIndex = when (currentState.readingDirection) {
-            ReadingDirection.LEFT_TO_RIGHT, ReadingDirection.VERTICAL -> currentState.currentPage + 1
-            ReadingDirection.RIGHT_TO_LEFT -> currentState.currentPage - 1
-        }
+        val nextIndex =
+            when (currentState.readingDirection) {
+                ReadingDirection.LEFT_TO_RIGHT, ReadingDirection.VERTICAL -> currentState.currentPage + 1
+                ReadingDirection.RIGHT_TO_LEFT -> currentState.currentPage - 1
+            }
 
         if (nextIndex >= currentState.pages.size) {
             // Chapter completed
@@ -166,10 +191,11 @@ class ReaderViewModel(
      */
     private fun previousPage() {
         val currentState = _uiState.value
-        val prevIndex = when (currentState.readingDirection) {
-            ReadingDirection.LEFT_TO_RIGHT, ReadingDirection.VERTICAL -> currentState.currentPage - 1
-            ReadingDirection.RIGHT_TO_LEFT -> currentState.currentPage + 1
-        }
+        val prevIndex =
+            when (currentState.readingDirection) {
+                ReadingDirection.LEFT_TO_RIGHT, ReadingDirection.VERTICAL -> currentState.currentPage - 1
+                ReadingDirection.RIGHT_TO_LEFT -> currentState.currentPage + 1
+            }
 
         if (prevIndex < 0) {
             // At the beginning of chapter

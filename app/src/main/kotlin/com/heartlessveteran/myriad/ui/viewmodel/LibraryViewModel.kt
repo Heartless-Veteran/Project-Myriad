@@ -24,17 +24,27 @@ data class LibraryUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val searchQuery: String = "",
-    val selectedGenre: String? = null
+    val selectedGenre: String? = null,
 )
 
 /**
  * Events that can be sent from the UI
  */
 sealed class LibraryEvent {
-    data class SearchManga(val query: String) : LibraryEvent()
-    data class FilterByGenre(val genre: String?) : LibraryEvent()
-    data class AddToLibrary(val manga: Manga) : LibraryEvent()
+    data class SearchManga(
+        val query: String,
+    ) : LibraryEvent()
+
+    data class FilterByGenre(
+        val genre: String?,
+    ) : LibraryEvent()
+
+    data class AddToLibrary(
+        val manga: Manga,
+    ) : LibraryEvent()
+
     data object Refresh : LibraryEvent()
+
     data object ClearError : LibraryEvent()
 }
 
@@ -42,8 +52,14 @@ sealed class LibraryEvent {
  * One-time events for the UI
  */
 sealed class LibraryUiEvent {
-    data class ShowError(val message: String) : LibraryUiEvent()
-    data class ShowSuccess(val message: String) : LibraryUiEvent()
+    data class ShowError(
+        val message: String,
+    ) : LibraryUiEvent()
+
+    data class ShowSuccess(
+        val message: String,
+    ) : LibraryUiEvent()
+
     data object NavigateToReader : LibraryUiEvent()
 }
 
@@ -55,9 +71,8 @@ sealed class LibraryUiEvent {
 class LibraryViewModel(
     private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
     private val getMangaDetailsUseCase: GetMangaDetailsUseCase,
-    private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase
+    private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(LibraryUiState())
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
@@ -65,21 +80,23 @@ class LibraryViewModel(
     val uiEvents = _uiEvents.receiveAsFlow()
 
     // StateFlow for library manga with automatic updates
-    val libraryManga: StateFlow<List<Manga>> = getLibraryMangaUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    val libraryManga: StateFlow<List<Manga>> =
+        getLibraryMangaUseCase()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList(),
+            )
 
     init {
         // Update UI state when library manga changes
         viewModelScope.launch {
             libraryManga.collect { manga ->
-                _uiState.value = _uiState.value.copy(
-                    manga = filterManga(manga, _uiState.value.searchQuery, _uiState.value.selectedGenre),
-                    isLoading = false
-                )
+                _uiState.value =
+                    _uiState.value.copy(
+                        manga = filterManga(manga, _uiState.value.searchQuery, _uiState.value.selectedGenre),
+                        isLoading = false,
+                    )
             }
         }
     }
@@ -115,17 +132,18 @@ class LibraryViewModel(
     fun getMangaDetails(mangaId: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            
+
             when (val result = getMangaDetailsUseCase(mangaId)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     // Handle success - could navigate to details screen
                 }
                 is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = result.message ?: "Failed to get manga details"
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = result.message ?: "Failed to get manga details",
+                        )
                     _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
                 }
                 is Result.Loading -> {
@@ -138,17 +156,18 @@ class LibraryViewModel(
     private fun addMangaToLibrary(manga: Manga) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            
+
             when (val result = addMangaToLibraryUseCase(manga)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(isLoading = false)
                     _uiEvents.trySend(LibraryUiEvent.ShowSuccess("Added to library"))
                 }
                 is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = result.message ?: "Failed to add manga to library"
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            errorMessage = result.message ?: "Failed to add manga to library",
+                        )
                     _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
                 }
                 is Result.Loading -> {
@@ -170,7 +189,11 @@ class LibraryViewModel(
         _uiState.value = _uiState.value.copy(manga = filtered)
     }
 
-    private fun filterManga(manga: List<Manga>, query: String, genre: String?): List<Manga> {
+    private fun filterManga(
+        manga: List<Manga>,
+        query: String,
+        genre: String?,
+    ): List<Manga> {
         var filtered = manga
 
         if (query.isNotBlank()) {
