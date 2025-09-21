@@ -54,7 +54,7 @@ jobs:
   dependency-check:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
     - name: Checkout code
@@ -69,15 +69,15 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    - name: Run dependency vulnerability check
-      run: ./gradlew dependencyCheckAnalyze || true
+    - name: Run OWASP dependency vulnerability check
+      run: ./gradlew :app:dependencyCheckAnalyze || true
 
     - name: Upload dependency check results
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: dependency-check-report
-        path: build/reports/dependency-check-report.html
+        path: app/build/reports/dependency-check/
         retention-days: 7
 
   secret-scan:

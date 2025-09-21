@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network Security Configuration for Project Myriad
+    Enforces HTTPS connections and implements certificate pinning for enhanced security
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <!-- Gemini API Configuration -->
+        <domain includeSubdomains="true">generativelanguage.googleapis.com</domain>
+        <domain includeSubdomains="true">makersuite.google.com</domain>
+        <pin-set expiration="2026-12-31">
+            <!-- Google's primary certificate pin -->
+            <pin digest="SHA-256">YZPgTZ+woNCCCIW3LH2CxQeLzB/1m42QcCTBSdgayjs=</pin>
+            <!-- Google's backup certificate pin -->
+            <pin digest="SHA-256">GSE8dNMJGHjOrOBNgGAxxDz5MQaLbKQ1dGYtYc+c4F4=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Debug configuration (only for debug builds) -->
+    <debug-overrides>
+        <trust-anchors>
+            <!-- Trust user-added CAs for debugging HTTPS traffic -->
+            <certificates src="user"/>
+            <certificates src="system"/>
+        </trust-anchors>
+    </debug-overrides>
+
+    <!-- Base configuration for all other domains -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>

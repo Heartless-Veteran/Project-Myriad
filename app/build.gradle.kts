@@ -15,6 +15,8 @@ plugins {
     id("io.gitlab.arturbosch.detekt") // Re-enabled for code quality checks
     id("org.jetbrains.dokka")
     id("jacoco")
+    // Security plugins
+    id("org.owasp.dependencycheck") version "11.1.0"
     // Firebase plugins commented out - optional feature
     // id("com.google.gms.google-services")
     // id("com.google.firebase.crashlytics")
@@ -228,3 +230,24 @@ tasks.register<JacocoReport>("jacocoTestReport") {
 
 // Dokka API Documentation Configuration - temporarily simplified
 // Full V2 configuration can be added later when plugin stabilizes
+
+// OWASP Dependency Check Configuration
+dependencyCheck {
+    // The path to the dependency-check database
+    autoUpdate = true
+    format = "ALL"
+    
+    // Fail build on CVSS score above threshold (disabled for now)
+    failBuildOnCVSS = 11.0f
+    
+    // Reports directory
+    outputDirectory = "${project.layout.buildDirectory.get()}/reports/dependency-check"
+    
+    // Analyzer configurations
+    analyzers {
+        experimentalEnabled = false
+        archiveEnabled = true
+        jarEnabled = true
+        nodeEnabled = false
+    }
+}
