@@ -7,8 +7,7 @@ plugins {
     // Temporarily disabled due to Kotlin 2.0 KAPT compatibility - using manual DI
     // id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
-    // Temporarily disabled for simple test app
-    // id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     // id("androidx.baselineprofile")
     // Code Quality plugins
     id("org.jlleitschuh.gradle.ktlint")
@@ -116,14 +115,13 @@ android {
     }
 
     buildFeatures {
-        // Compose disabled for simple test
-        // compose = true
+        compose = true
         buildConfig = true
     }
 
-    // composeOptions {
-    //     kotlinCompilerExtensionVersion = "1.5.15"
-    // }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
 
     packaging {
         resources {
@@ -136,7 +134,19 @@ dependencies {
     // Core Android - minimal dependencies for testing release build
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-    implementation("androidx.activity:activity:1.11.0")
+    implementation("androidx.activity:activity-compose:1.11.0")
+
+    // Compose BOM and UI
+    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+
+    // Core modules
+    implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
 
     // Baseline Profile dependency - commented out for now
     // baselineProfile(project(":baselineprofile"))
@@ -145,6 +155,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
 // Code Quality Configurations

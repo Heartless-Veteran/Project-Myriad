@@ -19,6 +19,8 @@ This document provides essential information for developers working on Project M
 
 ### Running the Application
 
+**📋 Complete Guide**: For detailed instructions on building APKs without Android Studio, see [`BUILD_WITHOUT_ANDROID_STUDIO.md`](BUILD_WITHOUT_ANDROID_STUDIO.md).
+
 #### Debug Build
 
 ```bash
