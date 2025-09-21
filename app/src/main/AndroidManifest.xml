@@ -5,9 +5,11 @@
 
     <application
         android:name=".TestApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:label="Myriad Release Test"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="false">
         
         <activity
             android:name=".TestActivity"

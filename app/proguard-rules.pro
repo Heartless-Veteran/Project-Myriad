@@ -79,3 +79,44 @@
     public static int d(...);
     public static int e(...);
 }
+
+# Security: Enhanced obfuscation and anti-tampering measures
+-repackageclasses 'o'
+-allowaccessmodification
+-mergeinterfacesaggressively
+-overloadaggressively
+
+# Security: Remove debug information
+-printmapping mapping.txt
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
+# Security: API key and sensitive data protection
+-keepclassmembers class com.heartlessveteran.myriad.BuildConfig {
+    public static final String GEMINI_API_KEY;
+}
+
+# Security: Hide internal implementation details
+-keep class com.heartlessveteran.myriad.** {
+    public *;
+}
+
+# Security: Remove unused resources and code
+-dontwarn java.lang.instrument.ClassFileTransformer
+-dontwarn sun.misc.SignalHandler
+
+# Security: Protect against reflection attacks
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
+
+# Security: Anti-debugging measures
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
+
+# Security: Remove test-related code in release builds
+-dontwarn junit.**
+-dontwarn org.junit.**
+-dontwarn org.hamcrest.**
+-dontwarn android.test.**
