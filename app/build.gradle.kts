@@ -236,13 +236,13 @@ dependencyCheck {
     // The path to the dependency-check database
     autoUpdate = true
     format = "ALL"
-    
+
     // Fail build on CVSS score above threshold (set to 7.0 for high-severity vulnerabilities)
     failBuildOnCVSS = 7.0f
-    
+
     // Reports directory
     outputDirectory = "${project.layout.buildDirectory.get()}/reports/dependency-check"
-    
+
     // Analyzer configurations
     analyzers {
         experimentalEnabled = false
