@@ -49,9 +49,6 @@ jobs:
     - name: Generate Dokka documentation
       run: ./gradlew app:dokkaGenerateModuleHtml --continue
     
-    - name: Update README statistics
-      run: node scripts/update-readme-stats.js
-    
     - name: Archive reports
       uses: actions/upload-artifact@v3
       if: always()
