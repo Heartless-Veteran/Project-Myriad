@@ -1,4 +1,6 @@
 name: Automated Documentation & Code Quality
+permissions:
+  contents: read
 
 on:
   push:
