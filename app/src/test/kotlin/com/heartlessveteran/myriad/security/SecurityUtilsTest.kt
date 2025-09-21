@@ -1,14 +1,13 @@
 package com.heartlessveteran.myriad.security
 
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 
 /**
  * Unit tests for SecurityUtils
  * Validates security utilities functionality
  */
 class SecurityUtilsTest {
-
     @Test
     fun `validateGeminiApiKey should return false for null or empty keys`() {
         assertFalse("Null key should be invalid", SecurityUtils.validateGeminiApiKey(null))
@@ -23,8 +22,14 @@ class SecurityUtilsTest {
 
     @Test
     fun `validateGeminiApiKey should return false for invalid format`() {
-        assertFalse("Wrong prefix should be invalid", SecurityUtils.validateGeminiApiKey("WRONG_PREFIX_1234567890123456789012345678901234"))
-        assertFalse("No prefix should be invalid", SecurityUtils.validateGeminiApiKey("1234567890123456789012345678901234567890"))
+        assertFalse(
+            "Wrong prefix should be invalid",
+            SecurityUtils.validateGeminiApiKey("WRONG_PREFIX_1234567890123456789012345678901234"),
+        )
+        assertFalse(
+            "No prefix should be invalid",
+            SecurityUtils.validateGeminiApiKey("1234567890123456789012345678901234567890"),
+        )
     }
 
     @Test
@@ -73,7 +78,7 @@ class SecurityUtilsTest {
         val input = "test input"
         val hash1 = SecurityUtils.generateSecureHash(input)
         val hash2 = SecurityUtils.generateSecureHash(input)
-        
+
         assertNotEquals("Hash should not be empty", "", hash1)
         assertEquals("Hash should be consistent", hash1, hash2)
         assertEquals("Hash should be 64 characters (SHA-256)", 64, hash1.length)
@@ -83,7 +88,7 @@ class SecurityUtilsTest {
     fun `generateSecureHash should produce different hashes for different inputs`() {
         val hash1 = SecurityUtils.generateSecureHash("input1")
         val hash2 = SecurityUtils.generateSecureHash("input2")
-        
+
         assertNotEquals("Different inputs should produce different hashes", hash1, hash2)
     }
 
