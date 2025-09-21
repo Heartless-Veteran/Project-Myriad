@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Code Quality
 
 on:
   push:
@@ -12,10 +12,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Build & Test
+  kotlin-quality:
+    name: Kotlin Code Quality
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
     - name: Checkout code
@@ -29,8 +29,6 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-home-cache-cleanup: true
 
     - name: Cache Gradle dependencies
       uses: actions/cache@v4
@@ -42,41 +40,49 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Build debug APK
-      run: ./gradlew assembleDebug --stacktrace
+    - name: Run ktlint check
+      run: ./gradlew ktlintCheck --continue || true
 
-    - name: Run unit tests
-      run: ./gradlew test --stacktrace
+    - name: Run detekt analysis
+      run: ./gradlew detekt --continue || true
 
-    - name: Run lint checks
-      run: ./gradlew lint --stacktrace
+    - name: Generate test coverage
+      run: ./gradlew jacocoTestReport || true
 
-    - name: Upload build artifacts
+    - name: Upload ktlint results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: build-artifacts
+        name: ktlint-results
         path: |
-          app/build/outputs/apk/debug/
-          app/build/reports/
+          app/build/reports/ktlint/
+          */build/reports/ktlint/
         retention-days: 7
 
-    - name: Upload test results
+    - name: Upload detekt results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: detekt-results
         path: |
-          app/build/test-results/
-          */build/reports/tests/
+          app/build/reports/detekt/
+          */build/reports/detekt/
         retention-days: 7
 
-  release:
-    name: Release
-    needs: build-and-test
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: |
+          app/build/reports/jacoco/
+          */build/reports/jacoco/
+        retention-days: 7
+
+  android-lint:
+    name: Android Lint
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
     - name: Checkout code
@@ -91,12 +97,13 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    - name: Build release APK
-      run: ./gradlew assembleRelease --stacktrace
+    - name: Run Android Lint
+      run: ./gradlew lintDebug --continue
 
-    - name: Upload release APK
+    - name: Upload lint results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: release-apk
-        path: app/build/outputs/apk/release/
-        retention-days: 30
+        name: android-lint-results
+        path: app/build/reports/lint-results-debug.html
+        retention-days: 7

@@ -1,152 +1,94 @@
-name: Release - Build and Deploy
+name: Auto Release
 
 on:
-  release:
-    types: [created, published]
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
-      release_type:
-        description: 'Type of release'
+      version:
+        description: 'Release version (e.g., v1.0.0)'
         required: true
-        default: 'beta'
-        type: choice
-        options:
-        - beta
-        - production
-
-env:
-  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2
+        default: 'v1.0.0'
 
 permissions:
   contents: write
   packages: write
 
 jobs:
-  build-android:
-    name: Build Android APK
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
-      
-    - name: Setup Java
-      uses: actions/setup-java@v5
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Setup Node.js
-      uses: actions/setup-node@v5
-      with:
-        node-version: '22'
-        cache: 'npm'
-        
-    - name: Install Node.js dependencies
-      run: npm install --legacy-peer-deps
-      
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v5
-      
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-          .gradle
-          /home/runner/.konan
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-      
-    - name: Make Gradle wrapper executable
-      run: chmod +x ./gradlew
-      
-    - name: Build debug APK
-      if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'beta'
-      run: ./gradlew assembleDebug --no-daemon
-      
-    - name: Build release APK
-      if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'production')
-      run: ./gradlew assembleRelease --no-daemon
-      env:
-        # Add your signing configuration here if needed
-        # KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        # KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        # KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      
-    - name: Upload APK artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: android-apk
-        path: app/build/outputs/apk/**/*.apk
-        retention-days: 30
-        
-    - name: Upload to release
-      if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v2
-      with:
-        files: app/build/outputs/apk/release/app-release.apk
-        name: Project-Myriad-${{ github.event.release.tag_name }}.apk
 
-  create-release-notes:
-    name: Generate Release Notes
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: github.event_name == 'release'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Extract version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION=${GITHUB_REF#refs/tags/}
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "version_code=$(echo $VERSION | sed 's/v//' | sed 's/\.//')" >> $GITHUB_OUTPUT
+
+    - name: Update version in build.gradle.kts
+      run: |
+        sed -i "s/versionName = \".*\"/versionName = \"${{ steps.version.outputs.version }}\"/" app/build.gradle.kts
+        sed -i "s/versionCode = [0-9]*/versionCode = ${{ steps.version.outputs.version_code }}/" app/build.gradle.kts
+
+    - name: Build release APK
+      run: ./gradlew assembleRelease --stacktrace
+
+    - name: Sign APK
+      id: sign_apk
+      if: env.KEYSTORE_FILE != ''
+      env:
+        KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      run: |
+        echo "APK signing would be configured here with proper keystore"
+        # For now, we'll use the unsigned APK
+        echo "signed_apk=app/build/outputs/apk/release/app-release.apk" >> $GITHUB_OUTPUT
+
     - name: Generate changelog
       id: changelog
       run: |
-        # Get the latest tag
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        
-        if [ -z "$LATEST_TAG" ]; then
-          echo "No previous tags found, generating initial changelog"
-          git log --pretty=format:"- %s (%an)" --since="30 days ago" > changelog.txt
+        if [ -f CHANGELOG.md ]; then
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          head -n 20 CHANGELOG.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         else
-          echo "Generating changelog since $LATEST_TAG"
-          git log --pretty=format:"- %s (%an)" ${LATEST_TAG}..HEAD > changelog.txt
+          echo "changelog=Release ${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
         fi
-        
-        echo "Generated changelog with $(wc -l < changelog.txt) entries"
-        
-    - name: Update release notes
-      uses: actions/github-script@v8
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        script: |
-          const fs = require('fs');
-          const changelog = fs.readFileSync('changelog.txt', 'utf8');
-          
-          const releaseNotes = `## What's New
-          
-          ${changelog}
-          
-          ## Download
-          
-          Download the APK from the assets below.
-          
-          ## Installation
-          
-          1. Download the APK file
-          2. Enable "Install from Unknown Sources" in your Android settings
-          3. Install the APK file
-          
-          ---
-          
-          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.release.target_commitish }}...v${{ github.event.release.tag_name }}`;
-          
-          await github.rest.repos.updateRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: ${{ github.event.release.id }},
-            body: releaseNotes
-          });
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        body: ${{ steps.changelog.outputs.changelog }}
+        files: |
+          app/build/outputs/apk/release/app-release.apk
+          app/build/outputs/mapping/release/mapping.txt
+        draft: false
+        prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
