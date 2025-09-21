@@ -44,7 +44,7 @@ import com.heartlessveteran.myriad.ui.viewmodel.LibraryViewModel
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
-    viewModel: LibraryViewModel? = null
+    viewModel: LibraryViewModel? = null,
 ) {
     // For now, we'll handle the case where no viewModel is provided
     // In a real implementation, this would be injected via DI
@@ -52,7 +52,7 @@ fun LibraryScreen(
         EmptyLibraryContent()
         return
     }
-    
+
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -77,21 +77,22 @@ fun LibraryScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Library") }
+                title = { Text("Library") },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
         ) {
             // Search field
             SearchField(
                 query = uiState.searchQuery,
-                onQueryChange = { viewModel.onEvent(LibraryEvent.SearchManga(it)) }
+                onQueryChange = { viewModel.onEvent(LibraryEvent.SearchManga(it)) },
             )
 
             // Content
@@ -107,7 +108,7 @@ fun LibraryScreen(
                         manga = uiState.manga,
                         onMangaClick = { mangaId ->
                             viewModel.getMangaDetails(mangaId)
-                        }
+                        },
                     )
                 }
             }
@@ -123,7 +124,7 @@ fun LibraryScreen(
 private fun SearchField(
     query: String,
     onQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
         value = query,
@@ -133,10 +134,10 @@ private fun SearchField(
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search"
+                contentDescription = "Search",
             )
         },
-        singleLine = true
+        singleLine = true,
     )
 }
 
@@ -148,16 +149,16 @@ private fun SearchField(
 private fun MangaList(
     manga: List<Manga>,
     onMangaClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(manga) { manga ->
             MangaItem(
                 manga = manga,
-                onClick = { onMangaClick(manga.id) }
+                onClick = { onMangaClick(manga.id) },
             )
         }
     }
@@ -172,35 +173,35 @@ private fun MangaList(
 private fun MangaItem(
     manga: Manga,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             Text(
                 text = manga.title,
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
-            
+
             if (manga.author.isNotBlank()) {
                 Text(
                     text = "By ${manga.author}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            
+
             if (manga.totalChapters > 0) {
                 Text(
                     text = "${manga.readChapters}/${manga.totalChapters} chapters",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -212,12 +213,10 @@ private fun MangaItem(
  * Centered loading indicator following Material Design guidelines.
  */
 @Composable
-private fun LoadingContent(
-    modifier: Modifier = Modifier
-) {
+private fun LoadingContent(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator()
     }
@@ -228,25 +227,23 @@ private fun LoadingContent(
  * Provides guidance to users when no manga is available.
  */
 @Composable
-private fun EmptyLibraryContent(
-    modifier: Modifier = Modifier
-) {
+private fun EmptyLibraryContent(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = "Your library is empty",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
             Text(
                 text = "Add some manga to get started",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
