@@ -8,12 +8,6 @@
         <!-- Gemini API Configuration -->
         <domain includeSubdomains="true">generativelanguage.googleapis.com</domain>
         <domain includeSubdomains="true">makersuite.google.com</domain>
-        <pin-set expiration="2026-12-31">
-            <!-- Google's primary certificate pin -->
-            <pin digest="SHA-256">YZPgTZ+woNCCCIW3LH2CxQeLzB/1m42QcCTBSdgayjs=</pin>
-            <!-- Google's backup certificate pin -->
-            <pin digest="SHA-256">GSE8dNMJGHjOrOBNgGAxxDz5MQaLbKQ1dGYtYc+c4F4=</pin>
-        </pin-set>
     </domain-config>
 
     <!-- Debug configuration (only for debug builds) -->
