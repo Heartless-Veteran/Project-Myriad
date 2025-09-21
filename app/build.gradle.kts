@@ -74,16 +74,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            
+
             // Link the signing configuration for release builds
             signingConfig = signingConfigs.getByName("release")
-            
+
             // Enable split APKs by ABI for smaller downloads
             ndk {
                 abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
             }
         }
-        
+
         debug {
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
@@ -135,10 +135,10 @@ dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
     implementation("androidx.activity:activity:1.11.0")
-    
+
     // Baseline Profile dependency - commented out for now
     // baselineProfile(project(":baselineprofile"))
-    
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
