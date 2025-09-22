@@ -1,15 +1,15 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.heartlessveteran.myriad.core.ui"
-    compileSdk = 36
+    compileSdk = libs.versions.compile.sdk.get().toInt()
 
     defaultConfig {
-        minSdk = 24
+        minSdk = libs.versions.min.sdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -38,7 +38,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
@@ -46,34 +46,30 @@ dependencies {
     implementation(project(":core:domain"))
     
     // Core Android
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-    implementation("androidx.activity:activity-compose:1.11.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.activity.compose)
     
     // Compose BOM and UI
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose.ui)
+    implementation(libs.compose.material.icons.extended)
     
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.4")
+    implementation(libs.androidx.navigation.compose)
     
     // ViewModel and LiveData
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     
     // Image Loading
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose)
     
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.bundles.android.testing)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.bundles.compose.ui.testing)
     
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation(libs.bundles.compose.ui.debug)
 }
