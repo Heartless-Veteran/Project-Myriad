@@ -1,1 +1,12 @@
-Fix null safety issues in this file and improve error handling
+REVIEW SUGGESTIONS TO APPLY:
+- File: app/src/main/kotlin/com/heartlessveteran/myriad/domain/entities/Manga.kt, Line: 15
+  Suggestion: Consider adding null safety checks for the title property
+
+- File: app/src/main/kotlin/com/heartlessveteran/myriad/data/repository/MangaRepository.kt, Line: 25
+  Suggestion: This method could benefit from coroutine exception handling
+
+
+General Review Comments:
+Please improve error handling and add proper null safety checks. /autofix
+
+Please apply these suggestions while maintaining code quality and functionality.
