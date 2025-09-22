@@ -28,6 +28,10 @@ import com.heartlessveteran.myriad.core.domain.usecase.SearchLibraryAnimeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.UpdateEpisodeProgressUseCase
 import com.heartlessveteran.myriad.feature.browser.viewmodel.GlobalSearchViewModel
 import com.heartlessveteran.myriad.feature.browser.viewmodel.PluginManagementViewModel
+import com.heartlessveteran.myriad.core.data.ai.AIProviderRegistry
+import com.heartlessveteran.myriad.core.data.ai.GeminiProvider
+import com.heartlessveteran.myriad.core.data.ai.OpenAIProvider
+import com.heartlessveteran.myriad.feature.ai.service.BackgroundAIProcessor
 
 /**
  * Manual dependency injection container.
@@ -137,5 +141,22 @@ class DIContainer(context: Context) {
 
     val globalSearchViewModel: GlobalSearchViewModel by lazy {
         GlobalSearchViewModel(searchManager)
+    }
+
+    // AI providers
+    val geminiProvider: GeminiProvider by lazy {
+        GeminiProvider()
+    }
+
+    val openAIProvider: OpenAIProvider by lazy {
+        OpenAIProvider()
+    }
+
+    val aiProviderRegistry: AIProviderRegistry by lazy {
+        AIProviderRegistry(geminiProvider, openAIProvider)
+    }
+
+    val backgroundAIProcessor: BackgroundAIProcessor by lazy {
+        BackgroundAIProcessor(aiProviderRegistry)
     }
 }
