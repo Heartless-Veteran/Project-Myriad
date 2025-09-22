@@ -1,0 +1,55 @@
+<resources>
+    <!-- Phase 5: Japanese localization (ja) -->
+    <string name="app_name">Project Myriad</string>
+    <string name="app_description">究極のマンガ・アニメプラットフォーム</string>
+    
+    <!-- Accessibility strings -->
+    <string name="accessibility_navigation_menu">ナビゲーションメニュー</string>
+    <string name="accessibility_search_button">マンガとアニメを検索</string>
+    <string name="accessibility_settings_button">設定を開く</string>
+    <string name="accessibility_back_button">戻る</string>
+    <string name="accessibility_manga_cover">マンガの表紙</string>
+    <string name="accessibility_anime_poster">アニメのポスター</string>
+    <string name="accessibility_reading_progress">読書進度：%1$d パーセント</string>
+    <string name="accessibility_loading">コンテンツを読み込み中</string>
+    
+    <!-- Navigation -->
+    <string name="nav_library">ライブラリ</string>
+    <string name="nav_browse">ブラウズ</string>
+    <string name="nav_reader">リーダー</string>
+    <string name="nav_settings">設定</string>
+    
+    <!-- Features -->
+    <string name="feature_vault_title">ヴォルト</string>
+    <string name="feature_vault_description">ローカルメディア管理</string>
+    <string name="feature_ai_title">AIコア</string>
+    <string name="feature_ai_description">OCR翻訳とスマート機能</string>
+    <string name="feature_browser_title">ブラウザー</string>
+    <string name="feature_browser_description">オンラインコンテンツ発見</string>
+    
+    <!-- Status messages -->
+    <string name="error_network_unavailable">ネットワーク接続が利用できません</string>
+    <string name="error_file_not_found">ファイルが見つかりません</string>
+    <string name="error_permission_denied">アクセス許可が拒否されました</string>
+    <string name="status_loading">読み込み中…</string>
+    <string name="status_offline">オフラインモード</string>
+    <string name="status_syncing">データを同期中…</string>
+    
+    <!-- Settings -->
+    <string name="settings_accessibility_title">アクセシビリティ</string>
+    <string name="settings_high_contrast_mode">ハイコントラストモード</string>
+    <string name="settings_large_text">大きなテキスト</string>
+    <string name="settings_screen_reader_support">スクリーンリーダーサポート</string>
+    <string name="settings_voice_navigation">音声ナビゲーション</string>
+    
+    <string name="settings_language_title">言語</string>
+    <string name="settings_language_auto">自動検出</string>
+    <string name="settings_language_english">英語</string>
+    <string name="settings_language_spanish">スペイン語</string>
+    <string name="settings_language_french">フランス語</string>
+    <string name="settings_language_german">ドイツ語</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">韓国語</string>
+    <string name="settings_language_chinese_simplified">簡体字中国語</string>
+    <string name="settings_language_chinese_traditional">繁体字中国語</string>
+</resources>

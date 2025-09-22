@@ -1,0 +1,55 @@
+<resources>
+    <!-- Phase 5: Spanish localization (es) -->
+    <string name="app_name">Project Myriad</string>
+    <string name="app_description">La Plataforma Definitiva de Manga y Anime</string>
+    
+    <!-- Accessibility strings -->
+    <string name="accessibility_navigation_menu">Menú de navegación</string>
+    <string name="accessibility_search_button">Buscar manga y anime</string>
+    <string name="accessibility_settings_button">Abrir configuración</string>
+    <string name="accessibility_back_button">Volver</string>
+    <string name="accessibility_manga_cover">Portada del manga</string>
+    <string name="accessibility_anime_poster">Póster del anime</string>
+    <string name="accessibility_reading_progress">Progreso de lectura: %1$d por ciento</string>
+    <string name="accessibility_loading">Cargando contenido</string>
+    
+    <!-- Navigation -->
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_browse">Explorar</string>
+    <string name="nav_reader">Lector</string>
+    <string name="nav_settings">Configuración</string>
+    
+    <!-- Features -->
+    <string name="feature_vault_title">La Bóveda</string>
+    <string name="feature_vault_description">Gestión de medios locales</string>
+    <string name="feature_ai_title">IA Central</string>
+    <string name="feature_ai_description">Traducción OCR y funciones inteligentes</string>
+    <string name="feature_browser_title">El Navegador</string>
+    <string name="feature_browser_description">Descubrimiento de contenido en línea</string>
+    
+    <!-- Status messages -->
+    <string name="error_network_unavailable">Conexión de red no disponible</string>
+    <string name="error_file_not_found">Archivo no encontrado</string>
+    <string name="error_permission_denied">Permiso denegado</string>
+    <string name="status_loading">Cargando…</string>
+    <string name="status_offline">Modo sin conexión</string>
+    <string name="status_syncing">Sincronizando datos…</string>
+    
+    <!-- Settings -->
+    <string name="settings_accessibility_title">Accesibilidad</string>
+    <string name="settings_high_contrast_mode">Modo de alto contraste</string>
+    <string name="settings_large_text">Texto grande</string>
+    <string name="settings_screen_reader_support">Soporte para lector de pantalla</string>
+    <string name="settings_voice_navigation">Navegación por voz</string>
+    
+    <string name="settings_language_title">Idioma</string>
+    <string name="settings_language_auto">Detectar automáticamente</string>
+    <string name="settings_language_english">Inglés</string>
+    <string name="settings_language_spanish">Español</string>
+    <string name="settings_language_french">Francés</string>
+    <string name="settings_language_german">Alemán</string>
+    <string name="settings_language_japanese">Japonés</string>
+    <string name="settings_language_korean">Coreano</string>
+    <string name="settings_language_chinese_simplified">Chino simplificado</string>
+    <string name="settings_language_chinese_traditional">Chino tradicional</string>
+</resources>

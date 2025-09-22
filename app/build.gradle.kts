@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -46,6 +47,13 @@ android {
         }
     }
 
+    // Phase 5: Localization support - Multi-language support  
+    androidResources {
+        localeFilters += listOf(
+            "en", "es", "fr", "de", "it", "pt", "ru", "ja", "ko", "zh-rCN", "zh-rTW", "ar", "hi"
+        )
+    }
+
     // Load signing properties from local.properties
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
@@ -78,6 +86,15 @@ android {
             // Link the signing configuration for release builds
             signingConfig = signingConfigs.getByName("release")
 
+            // Phase 4: Enhanced release optimizations
+            isDebuggable = false
+            isPseudoLocalesEnabled = false
+            isCrunchPngs = true
+
+            // Phase 5: Performance optimizations for release
+            buildConfigField("boolean", "ENABLE_LOGGING", "false")
+            buildConfigField("boolean", "ENABLE_ANALYTICS", "true")
+
             // Enable split APKs by ABI for smaller downloads
             ndk {
                 abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
@@ -88,6 +105,21 @@ android {
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
+            
+            // Phase 6: Enhanced debug configuration
+            isDebuggable = true
+            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+            buildConfigField("boolean", "ENABLE_ANALYTICS", "false")
+        }
+
+        // Phase 6: Staging build type for final QA
+        create("staging") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-STAGING"
+            isDebuggable = false
+            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+            buildConfigField("boolean", "ENABLE_ANALYTICS", "false")
         }
     }
 
