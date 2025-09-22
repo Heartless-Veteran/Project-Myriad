@@ -59,9 +59,9 @@ fun AIProviderSelector(
                         Text(
                             text = provider.name,
                             color = if (provider.isAvailable) {
-                                androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                                MaterialTheme.colorScheme.onSurface
                             } else {
-                                androidx.compose.material3.MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                             }
                         )
                     },
