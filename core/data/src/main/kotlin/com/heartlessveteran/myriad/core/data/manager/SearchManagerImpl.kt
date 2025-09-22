@@ -37,8 +37,9 @@ class SearchManagerImpl(
             }
 
             // Execute searches in parallel across all enabled sources
-            val searchResults = filteredSources.map { source ->
-                async {
+            val searchResults = coroutineScope {
+                filteredSources.map { source ->
+                    async {
                     try {
                         val result = source.searchManga(filters.query, page)
                         when (result) {
@@ -63,7 +64,8 @@ class SearchManagerImpl(
                         source.id to emptyList<SearchResult>()
                     }
                 }
-            }.awaitAll().toMap()
+                }.awaitAll().toMap()
+            }
 
             // Apply additional filters
             val filteredResults = searchResults.mapValues { (_, results) ->
@@ -125,8 +127,9 @@ class SearchManagerImpl(
             }
 
             // Get latest manga from all sources in parallel
-            val latestResults = sources.map { source ->
-                async {
+            val latestResults = coroutineScope {
+                sources.map { source ->
+                    async {
                     try {
                         val result = source.getLatestManga(page)
                         when (result) {
@@ -147,7 +150,8 @@ class SearchManagerImpl(
                         source.id to emptyList<SearchResult>()
                     }
                 }
-            }.awaitAll().toMap().filterValues { it.isNotEmpty() }
+                }.awaitAll().toMap().filterValues { it.isNotEmpty() }
+            }
 
             val totalCount = latestResults.values.sumOf { it.size }
             val groupedResults = GroupedSearchResults(
@@ -174,8 +178,9 @@ class SearchManagerImpl(
             }
 
             // Get popular manga from all sources in parallel
-            val popularResults = sources.map { source ->
-                async {
+            val popularResults = coroutineScope {
+                sources.map { source ->
+                    async {
                     try {
                         val result = source.getPopularManga(page)
                         when (result) {
@@ -196,7 +201,8 @@ class SearchManagerImpl(
                         source.id to emptyList<SearchResult>()
                     }
                 }
-            }.awaitAll().toMap().filterValues { it.isNotEmpty() }
+                }.awaitAll().toMap().filterValues { it.isNotEmpty() }
+            }
 
             val totalCount = popularResults.values.sumOf { it.size }
             val groupedResults = GroupedSearchResults(
