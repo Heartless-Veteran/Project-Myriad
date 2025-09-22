@@ -216,11 +216,12 @@ class AnimeLibraryViewModel(
         var filtered = anime
 
         if (query.isNotBlank()) {
-            filtered = filtered.filter { 
-                it.title.contains(query, ignoreCase = true) ||
-                it.alternativeTitles.any { title -> title.contains(query, ignoreCase = true) } ||
-                it.description.contains(query, ignoreCase = true)
-            }
+            filtered =
+                filtered.filter {
+                    it.title.contains(query, ignoreCase = true) ||
+                        it.alternativeTitles.any { title -> title.contains(query, ignoreCase = true) } ||
+                        it.description.contains(query, ignoreCase = true)
+                }
         }
 
         if (genre != null) {

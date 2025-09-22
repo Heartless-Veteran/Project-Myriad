@@ -51,7 +51,7 @@ fun GlobalSearchScreen(
                 title = { Text("Browse") },
                 actions = {
                     IconButton(onClick = onNavigateToPlugins) {
-                        Icon(Icons.Default.Extension, contentDescription = "Manage Plugins")
+                        Icon(Icons.Default.Settings, contentDescription = "Manage Plugins")
                     }
                 }
             )
@@ -91,13 +91,13 @@ fun GlobalSearchScreen(
                     selected = uiState.selectedTab == SearchTab.LATEST,
                     onClick = { viewModel.selectTab(SearchTab.LATEST) },
                     text = { Text("Latest") },
-                    icon = { Icon(Icons.Default.Update, contentDescription = null) }
+                    icon = { Icon(Icons.Default.Refresh, contentDescription = null) }
                 )
                 Tab(
                     selected = uiState.selectedTab == SearchTab.POPULAR,
                     onClick = { viewModel.selectTab(SearchTab.POPULAR) },
                     text = { Text("Popular") },
-                    icon = { Icon(Icons.Default.TrendingUp, contentDescription = null) }
+                    icon = { Icon(Icons.Default.Star, contentDescription = null) }
                 )
             }
 
@@ -142,8 +142,8 @@ fun GlobalSearchScreen(
                                 Icon(
                                     when (uiState.selectedTab) {
                                         SearchTab.SEARCH -> Icons.Default.Search
-                                        SearchTab.LATEST -> Icons.Default.Update
-                                        SearchTab.POPULAR -> Icons.Default.TrendingUp
+                                        SearchTab.LATEST -> Icons.Default.Refresh
+                                        SearchTab.POPULAR -> Icons.Default.Star
                                     },
                                     contentDescription = null,
                                     modifier = Modifier.size(64.dp),

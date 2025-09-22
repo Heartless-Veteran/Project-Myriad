@@ -2,6 +2,9 @@ package com.heartlessveteran.myriad
 
 import android.content.Context
 import androidx.room.Room
+import com.heartlessveteran.myriad.core.data.ai.AIProviderRegistry
+import com.heartlessveteran.myriad.core.data.ai.GeminiProvider
+import com.heartlessveteran.myriad.core.data.ai.OpenAIProvider
 import com.heartlessveteran.myriad.core.data.database.MyriadDatabase
 import com.heartlessveteran.myriad.core.data.manager.PluginManagerImpl
 import com.heartlessveteran.myriad.core.data.manager.SearchManagerImpl
@@ -26,28 +29,26 @@ import com.heartlessveteran.myriad.core.domain.usecase.GetMangaDetailsUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetNextUnwatchedEpisodeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.SearchLibraryAnimeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.UpdateEpisodeProgressUseCase
+import com.heartlessveteran.myriad.feature.ai.service.BackgroundAIProcessor
 import com.heartlessveteran.myriad.feature.browser.viewmodel.GlobalSearchViewModel
 import com.heartlessveteran.myriad.feature.browser.viewmodel.PluginManagementViewModel
-import com.heartlessveteran.myriad.core.data.ai.AIProviderRegistry
-import com.heartlessveteran.myriad.core.data.ai.GeminiProvider
-import com.heartlessveteran.myriad.core.data.ai.OpenAIProvider
-import com.heartlessveteran.myriad.feature.ai.service.BackgroundAIProcessor
 
 /**
  * Manual dependency injection container.
  * Temporary solution while KSP/Hilt compatibility issues are resolved.
  * Follows the same architectural patterns as Hilt would provide.
  */
-class DIContainer(context: Context) {
-
+class DIContainer(
+    context: Context,
+) {
     // Database layer
     private val database: MyriadDatabase by lazy {
-        Room.databaseBuilder(
-            context.applicationContext,
-            MyriadDatabase::class.java,
-            MyriadDatabase.DATABASE_NAME
-        )
-            .fallbackToDestructiveMigration()
+        Room
+            .databaseBuilder(
+                context.applicationContext,
+                MyriadDatabase::class.java,
+                MyriadDatabase.DATABASE_NAME,
+            ).fallbackToDestructiveMigration()
             .build()
     }
 

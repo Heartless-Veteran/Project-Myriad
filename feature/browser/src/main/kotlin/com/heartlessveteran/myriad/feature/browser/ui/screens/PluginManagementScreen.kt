@@ -90,7 +90,7 @@ fun PluginManagementScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                Icons.Default.Extension,
+                                Icons.Default.Settings,
                                 contentDescription = null,
                                 modifier = Modifier.size(64.dp),
                                 tint = MaterialTheme.colorScheme.outline
@@ -252,7 +252,7 @@ private fun PluginCard(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Icon(
-                        if (plugin.isEnabled) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                        if (plugin.isEnabled) Icons.Default.CheckCircle else Icons.Default.Close,
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
                         tint = if (plugin.isEnabled) 

@@ -22,12 +22,21 @@ plugins {
 
 android {
     namespace = "com.heartlessveteran.myriad"
-    compileSdk = libs.versions.compile.sdk.get().toInt()
+    compileSdk =
+        libs.versions.compile.sdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "com.heartlessveteran.myriad"
-        minSdk = libs.versions.min.sdk.get().toInt()
-        targetSdk = libs.versions.target.sdk.get().toInt()
+        minSdk =
+            libs.versions.min.sdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.target.sdk
+                .get()
+                .toInt()
         versionCode = 2 // Increment for new release
         versionName = "1.0.1" // Updated to new user-facing version
 
@@ -110,7 +119,9 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion =
+            libs.versions.compose.compiler
+                .get()
     }
 
     packaging {

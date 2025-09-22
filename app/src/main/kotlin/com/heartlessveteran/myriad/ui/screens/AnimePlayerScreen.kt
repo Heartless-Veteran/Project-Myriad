@@ -31,9 +31,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.heartlessveteran.myriad.ui.components.EnhancedVideoPlayerControls
 import com.heartlessveteran.myriad.ui.viewmodel.AnimePlayerEvent
 import com.heartlessveteran.myriad.ui.viewmodel.AnimePlayerViewModel
-import com.heartlessveteran.myriad.ui.components.EnhancedVideoPlayerControls
 
 /**
  * Anime player screen that displays video content using ExoPlayer.
@@ -53,15 +53,17 @@ fun AnimePlayerScreen(
     val uiState by viewModel?.uiState?.collectAsState() ?: return
 
     // Create ExoPlayer instance
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context)
-            .build()
-            .apply {
-                // Configure player settings
-                playWhenReady = true
-                repeatMode = Player.REPEAT_MODE_OFF
-            }
-    }
+    val exoPlayer =
+        remember {
+            ExoPlayer
+                .Builder(context)
+                .build()
+                .apply {
+                    // Configure player settings
+                    playWhenReady = true
+                    repeatMode = Player.REPEAT_MODE_OFF
+                }
+        }
 
     // Load the episode when the screen is displayed
     LaunchedEffect(animeId, episodeId) {
@@ -75,7 +77,7 @@ fun AnimePlayerScreen(
                 val mediaItem = MediaItem.fromUri(path)
                 exoPlayer.setMediaItem(mediaItem)
                 exoPlayer.prepare()
-                
+
                 // Restore playback position if available
                 if (episode.watchProgress > 0) {
                     exoPlayer.seekTo(episode.watchProgress)
@@ -92,8 +94,8 @@ fun AnimePlayerScreen(
             viewModel?.onEvent(
                 AnimePlayerEvent.UpdateProgress(
                     episodeId,
-                    currentPosition
-                )
+                    currentPosition,
+                ),
             )
             exoPlayer.release()
         }
@@ -106,7 +108,7 @@ fun AnimePlayerScreen(
                 title = {
                     Text(
                         text = uiState.currentEpisode?.title ?: "Loading...",
-                        color = Color.White
+                        color = Color.White,
                     )
                 },
                 navigationIcon = {
@@ -114,42 +116,44 @@ fun AnimePlayerScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = Color.White,
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black.copy(alpha = 0.7f)
-                )
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Black.copy(alpha = 0.7f),
+                    ),
             )
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(paddingValues),
         ) {
             if (uiState.isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "Loading episode...",
                         color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             } else if (uiState.errorMessage != null) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = uiState.errorMessage ?: "Unknown error",
                         color = Color.Red,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             } else {
@@ -158,23 +162,24 @@ fun AnimePlayerScreen(
                     factory = { context ->
                         PlayerView(context).apply {
                             player = exoPlayer
-                            layoutParams = FrameLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
-                            )
+                            layoutParams =
+                                FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                )
                             useController = false // We'll use our custom controls
                             controllerAutoShow = false
                             controllerHideOnTouch = false
                         }
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
-                
+
                 // Enhanced custom controls overlay
                 EnhancedVideoPlayerControls(
                     uiState = uiState,
                     onEvent = { event -> viewModel?.onEvent(event) },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }

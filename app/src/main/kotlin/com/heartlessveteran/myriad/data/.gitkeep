@@ -1,0 +1,8 @@
+# Data Layer
+This directory contains the data layer implementation following Clean Architecture principles.
+
+## Structure
+- `database/` - Room database, DAOs, and entities
+- `repository/` - Repository implementations
+- `di/` - Dependency injection modules
+- `network/` - Network-related data sources
