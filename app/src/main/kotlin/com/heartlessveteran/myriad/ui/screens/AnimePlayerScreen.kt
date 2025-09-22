@@ -33,6 +33,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.heartlessveteran.myriad.ui.viewmodel.AnimePlayerEvent
 import com.heartlessveteran.myriad.ui.viewmodel.AnimePlayerViewModel
+import com.heartlessveteran.myriad.ui.components.EnhancedVideoPlayerControls
 
 /**
  * Anime player screen that displays video content using ExoPlayer.
@@ -161,11 +162,18 @@ fun AnimePlayerScreen(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                             )
-                            useController = true
-                            controllerAutoShow = true
-                            controllerHideOnTouch = true
+                            useController = false // We'll use our custom controls
+                            controllerAutoShow = false
+                            controllerHideOnTouch = false
                         }
                     },
+                    modifier = Modifier.fillMaxSize()
+                )
+                
+                // Enhanced custom controls overlay
+                EnhancedVideoPlayerControls(
+                    uiState = uiState,
+                    onEvent = { event -> viewModel?.onEvent(event) },
                     modifier = Modifier.fillMaxSize()
                 )
             }
