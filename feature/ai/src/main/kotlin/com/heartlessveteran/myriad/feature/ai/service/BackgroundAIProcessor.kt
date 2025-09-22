@@ -1,13 +1,18 @@
 package com.heartlessveteran.myriad.feature.ai.service
 
+import com.heartlessveteran.myriad.core.data.ai.AIProviderRegistry
+import com.heartlessveteran.myriad.core.domain.model.Result
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
 /**
  * Enhanced AI Service that ensures all AI processing happens off the main thread.
  * Implements proper isolation for resource-intensive AI operations like OCR and translation.
+ * Now uses the configurable AI provider system.
  */
-class BackgroundAIProcessor {
+class BackgroundAIProcessor(
+    private val aiProviderRegistry: AIProviderRegistry
+) {
     
     // Dedicated dispatcher for AI operations to avoid blocking main thread
     private val aiDispatcher = Executors.newFixedThreadPool(2) { thread ->
@@ -22,9 +27,11 @@ class BackgroundAIProcessor {
     
     /**
      * Process OCR translation in background with proper resource management
+     * Now uses the selected AI provider from the registry
      */
     suspend fun processOCRTranslation(
         imageData: ByteArray,
+        providerName: String? = null,
         onProgress: (Int) -> Unit = {},
         onComplete: (String) -> Unit,
         onError: (Exception) -> Unit
@@ -33,19 +40,23 @@ class BackgroundAIProcessor {
             try {
                 onProgress(10)
                 
-                // Simulate OCR processing - replace with actual ML Kit implementation
-                delay(1000) // Text recognition
+                val provider = providerName?.let { 
+                    aiProviderRegistry.getProviderByName(it) 
+                } ?: aiProviderRegistry.getDefaultProvider()
+                
                 onProgress(50)
                 
-                delay(800) // Language detection
-                onProgress(80)
+                val result = provider.translateText(imageData)
                 
-                delay(500) // Translation
                 onProgress(100)
                 
                 // Return result on main thread
                 withContext(Dispatchers.Main) {
-                    onComplete("Translated text placeholder")
+                    when (result) {
+                        is Result.Success -> onComplete(result.data)
+                        is Result.Error -> onError(result.exception as? Exception ?: Exception("Wrapped throwable", result.exception))
+                        is Result.Loading -> {} // Should not happen
+                    }
                 }
                 
             } catch (e: Exception) {
@@ -58,20 +69,29 @@ class BackgroundAIProcessor {
     
     /**
      * Process art style matching in background
+     * Now uses the selected AI provider from the registry
      */
     suspend fun processArtStyleMatching(
         imageData: ByteArray,
+        providerName: String? = null,
         onComplete: (List<String>) -> Unit,
         onError: (Exception) -> Unit
     ) {
         aiScope.launch {
             try {
-                // Simulate art style analysis
-                delay(1500)
+                val provider = providerName?.let { 
+                    aiProviderRegistry.getProviderByName(it) 
+                } ?: aiProviderRegistry.getDefaultProvider()
+                
+                val result = provider.analyzeArtStyle(imageData)
                 
                 // Return results on main thread
                 withContext(Dispatchers.Main) {
-                    onComplete(listOf("Shounen", "Modern", "Digital"))
+                    when (result) {
+                        is Result.Success -> onComplete(result.data)
+                        is Result.Error -> onError(Exception(result.exception))
+                        is Result.Loading -> {} // Should not happen
+                    }
                 }
                 
             } catch (e: Exception) {
@@ -84,20 +104,29 @@ class BackgroundAIProcessor {
     
     /**
      * Generate AI recommendations in background
+     * Now uses the selected AI provider from the registry
      */
     suspend fun generateRecommendations(
         userPreferences: Map<String, Any>,
+        providerName: String? = null,
         onComplete: (List<String>) -> Unit,
         onError: (Exception) -> Unit
     ) {
         aiScope.launch {
             try {
-                // Simulate recommendation processing
-                delay(2000)
+                val provider = providerName?.let { 
+                    aiProviderRegistry.getProviderByName(it) 
+                } ?: aiProviderRegistry.getDefaultProvider()
+                
+                val result = provider.generateRecommendations(userPreferences)
                 
                 // Return results on main thread
                 withContext(Dispatchers.Main) {
-                    onComplete(listOf("Recommended Manga 1", "Recommended Manga 2"))
+                    when (result) {
+                        is Result.Success -> onComplete(result.data)
+                        is Result.Error -> onError(Exception(result.exception))
+                        is Result.Loading -> {} // Should not happen
+                    }
                 }
                 
             } catch (e: Exception) {
