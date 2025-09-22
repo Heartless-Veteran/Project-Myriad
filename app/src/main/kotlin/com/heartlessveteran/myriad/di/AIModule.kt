@@ -16,7 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AIModule {
-
     @Provides
     @Singleton
     fun provideGeminiProvider(): GeminiProvider = GeminiProvider()
@@ -29,6 +28,6 @@ object AIModule {
     @Singleton
     fun provideAIProviderRegistry(
         geminiProvider: GeminiProvider,
-        openAIProvider: OpenAIProvider
+        openAIProvider: OpenAIProvider,
     ): AIProviderRegistry = AIProviderRegistry(geminiProvider, openAIProvider)
 }

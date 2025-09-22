@@ -1,7 +1,7 @@
 package com.heartlessveteran.myriad.di
 
-import com.heartlessveteran.myriad.core.domain.usecase.GetChapterPagesUseCase
 import com.heartlessveteran.myriad.core.domain.repository.Source
+import com.heartlessveteran.myriad.core.domain.usecase.GetChapterPagesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,12 +15,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
-
     @Provides
     @Singleton
-    fun provideGetChapterPagesUseCase(
-        sources: Map<String, @JvmSuppressWildcards Source>
-    ): GetChapterPagesUseCase = GetChapterPagesUseCase(sources)
+    fun provideGetChapterPagesUseCase(sources: Map<String, @JvmSuppressWildcards Source>): GetChapterPagesUseCase =
+        GetChapterPagesUseCase(sources)
 
     @Provides
     @Singleton

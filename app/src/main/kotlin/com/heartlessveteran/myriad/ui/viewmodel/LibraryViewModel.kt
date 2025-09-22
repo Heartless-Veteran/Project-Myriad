@@ -7,6 +7,7 @@ import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.usecase.AddMangaToLibraryUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetLibraryMangaUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetMangaDetailsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 /**
@@ -72,142 +72,144 @@ sealed class LibraryUiEvent {
  * Uses Hilt dependency injection.
  */
 @HiltViewModel
-class LibraryViewModel @Inject constructor(
-    private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
-    private val getMangaDetailsUseCase: GetMangaDetailsUseCase,
-    private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(LibraryUiState())
-    val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
+class LibraryViewModel
+    @Inject
+    constructor(
+        private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
+        private val getMangaDetailsUseCase: GetMangaDetailsUseCase,
+        private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(LibraryUiState())
+        val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
-    private val _uiEvents = Channel<LibraryUiEvent>()
-    val uiEvents = _uiEvents.receiveAsFlow()
+        private val _uiEvents = Channel<LibraryUiEvent>()
+        val uiEvents = _uiEvents.receiveAsFlow()
 
-    // StateFlow for library manga with automatic updates
-    val libraryManga: StateFlow<List<Manga>> =
-        getLibraryMangaUseCase()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList(),
-            )
+        // StateFlow for library manga with automatic updates
+        val libraryManga: StateFlow<List<Manga>> =
+            getLibraryMangaUseCase()
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = emptyList(),
+                )
 
-    init {
-        // Update UI state when library manga changes
-        viewModelScope.launch {
-            libraryManga.collect { manga ->
-                _uiState.value =
-                    _uiState.value.copy(
-                        manga = filterManga(manga, _uiState.value.searchQuery, _uiState.value.selectedGenre),
-                        isLoading = false,
-                    )
-            }
-        }
-    }
-
-    /**
-     * Handles events from the UI
-     */
-    fun onEvent(event: LibraryEvent) {
-        when (event) {
-            is LibraryEvent.SearchManga -> {
-                _uiState.value = _uiState.value.copy(searchQuery = event.query)
-                applyFilters()
-            }
-            is LibraryEvent.FilterByGenre -> {
-                _uiState.value = _uiState.value.copy(selectedGenre = event.genre)
-                applyFilters()
-            }
-            is LibraryEvent.AddToLibrary -> {
-                addMangaToLibrary(event.manga)
-            }
-            LibraryEvent.Refresh -> {
-                refreshLibrary()
-            }
-            LibraryEvent.ClearError -> {
-                _uiState.value = _uiState.value.copy(errorMessage = null)
-            }
-        }
-    }
-
-    /**
-     * Gets manga details by ID
-     */
-    fun getMangaDetails(mangaId: String) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-
-            when (val result = getMangaDetailsUseCase(mangaId)) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    // Handle success - could navigate to details screen
-                }
-                is Result.Error -> {
+        init {
+            // Update UI state when library manga changes
+            viewModelScope.launch {
+                libraryManga.collect { manga ->
                     _uiState.value =
                         _uiState.value.copy(
+                            manga = filterManga(manga, _uiState.value.searchQuery, _uiState.value.selectedGenre),
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to get manga details",
                         )
-                    _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
                 }
             }
         }
-    }
 
-    private fun addMangaToLibrary(manga: Manga) {
-        viewModelScope.launch {
+        /**
+         * Handles events from the UI
+         */
+        fun onEvent(event: LibraryEvent) {
+            when (event) {
+                is LibraryEvent.SearchManga -> {
+                    _uiState.value = _uiState.value.copy(searchQuery = event.query)
+                    applyFilters()
+                }
+                is LibraryEvent.FilterByGenre -> {
+                    _uiState.value = _uiState.value.copy(selectedGenre = event.genre)
+                    applyFilters()
+                }
+                is LibraryEvent.AddToLibrary -> {
+                    addMangaToLibrary(event.manga)
+                }
+                LibraryEvent.Refresh -> {
+                    refreshLibrary()
+                }
+                LibraryEvent.ClearError -> {
+                    _uiState.value = _uiState.value.copy(errorMessage = null)
+                }
+            }
+        }
+
+        /**
+         * Gets manga details by ID
+         */
+        fun getMangaDetails(mangaId: String) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+
+                when (val result = getMangaDetailsUseCase(mangaId)) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        // Handle success - could navigate to details screen
+                    }
+                    is Result.Error -> {
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = result.message ?: "Failed to get manga details",
+                            )
+                        _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
+                    }
+                    is Result.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+                }
+            }
+        }
+
+        private fun addMangaToLibrary(manga: Manga) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+
+                when (val result = addMangaToLibraryUseCase(manga)) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _uiEvents.trySend(LibraryUiEvent.ShowSuccess("Added to library"))
+                    }
+                    is Result.Error -> {
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = result.message ?: "Failed to add manga to library",
+                            )
+                        _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
+                    }
+                    is Result.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+                }
+            }
+        }
+
+        private fun refreshLibrary() {
             _uiState.value = _uiState.value.copy(isLoading = true)
+            // Library data is automatically refreshed via Flow
+            // This could trigger a refresh from remote sources if needed
+        }
 
-            when (val result = addMangaToLibraryUseCase(manga)) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    _uiEvents.trySend(LibraryUiEvent.ShowSuccess("Added to library"))
-                }
-                is Result.Error -> {
-                    _uiState.value =
-                        _uiState.value.copy(
-                            isLoading = false,
-                            errorMessage = result.message ?: "Failed to add manga to library",
-                        )
-                    _uiEvents.trySend(LibraryUiEvent.ShowError(result.message ?: "Unknown error"))
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
-                }
+        private fun applyFilters() {
+            val currentManga = libraryManga.value
+            val filtered = filterManga(currentManga, _uiState.value.searchQuery, _uiState.value.selectedGenre)
+            _uiState.value = _uiState.value.copy(manga = filtered)
+        }
+
+        private fun filterManga(
+            manga: List<Manga>,
+            query: String,
+            genre: String?,
+        ): List<Manga> {
+            var filtered = manga
+
+            if (query.isNotBlank()) {
+                filtered = filtered.filter { it.title.contains(query, ignoreCase = true) }
             }
+
+            if (genre != null) {
+                filtered = filtered.filter { it.genres.contains(genre) }
+            }
+
+            return filtered
         }
     }
-
-    private fun refreshLibrary() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
-        // Library data is automatically refreshed via Flow
-        // This could trigger a refresh from remote sources if needed
-    }
-
-    private fun applyFilters() {
-        val currentManga = libraryManga.value
-        val filtered = filterManga(currentManga, _uiState.value.searchQuery, _uiState.value.selectedGenre)
-        _uiState.value = _uiState.value.copy(manga = filtered)
-    }
-
-    private fun filterManga(
-        manga: List<Manga>,
-        query: String,
-        genre: String?,
-    ): List<Manga> {
-        var filtered = manga
-
-        if (query.isNotBlank()) {
-            filtered = filtered.filter { it.title.contains(query, ignoreCase = true) }
-        }
-
-        if (genre != null) {
-            filtered = filtered.filter { it.genres.contains(genre) }
-        }
-
-        return filtered
-    }
-}
