@@ -274,6 +274,93 @@ Project Myriad follows **Clean Architecture** principles with clear separation b
 
 For detailed feature implementation status, see [ARCHITECTURE_STATUS.md](ARCHITECTURE_STATUS.md).
 
+## Plugin-Based Source System
+
+Project Myriad implements a plugin-based architecture for manga sources, enabling support for multiple content providers through a clean, extensible system.
+
+### Plugin Architecture Overview
+
+The plugin system consists of several key components:
+
+#### 1. **Source Interface**
+All manga sources implement the `Source` interface in the domain layer:
+
+```kotlin
+interface Source {
+    val id: String
+    val name: String
+    val lang: String
+    val baseUrl: String
+    
+    suspend fun getLatestManga(page: Int): Result<List<Manga>>
+    suspend fun searchManga(query: String, page: Int): Result<List<Manga>>
+    suspend fun getMangaDetails(url: String): Result<Manga>
+    suspend fun getChapterPages(url: String): Result<List<String>>
+    suspend fun getPopularManga(page: Int): Result<List<Manga>>
+    suspend fun getChapterList(manga: Manga): Result<List<MangaChapter>>
+}
+```
+
+#### 2. **Plugin Management**
+- **Plugin Entity**: Database storage for plugin metadata and state
+- **PluginManager**: Manages plugin installation, enabling/disabling, and source loading
+- **PluginRepository**: Data access layer for plugin persistence
+
+#### 3. **Global Search System**
+- **SearchManager**: Aggregates search results across all enabled sources
+- **Parallel Processing**: Searches execute concurrently across sources
+- **Graceful Degradation**: Individual source failures don't break overall search
+- **Result Grouping**: Results are grouped by source for clear presentation
+
+#### 4. **User Interface**
+- **Plugin Management Screen**: Enable/disable, install/uninstall plugins
+- **Global Search Screen**: Unified search with source filtering and tabs
+
+### Adding New Sources
+
+To add a new manga source:
+
+1. **Implement the Source interface**:
+```kotlin
+class YourMangaSource : Source {
+    override val id: String = "your_source"
+    override val name: String = "Your Manga Source"
+    override val lang: String = "en"
+    override val baseUrl: String = "https://api.yourmanga.com"
+    
+    // Implement all required methods...
+}
+```
+
+2. **Register in PluginManager**:
+Add your source to the `sourceRegistry` in `PluginManagerImpl`:
+```kotlin
+private val sourceRegistry = mapOf(
+    "local" to { LocalSource() },
+    "sample_online" to { SampleOnlineSource() },
+    "your_source" to { YourMangaSource() }
+)
+```
+
+3. **Create Plugin Entry**:
+Add plugin metadata in `initializeDefaultPlugins()` method.
+
+### Error Handling
+
+The plugin system implements robust error handling:
+
+- **Individual Source Failures**: One failing source doesn't break the entire search
+- **Network Timeouts**: Gracefully handled with user feedback
+- **Invalid Responses**: Proper error propagation with meaningful messages
+- **Plugin State Management**: Database persistence ensures consistent state
+
+### Performance Considerations
+
+- **Parallel Execution**: All sources are queried simultaneously using Kotlin Coroutines
+- **Result Streaming**: Uses Flow for reactive UI updates
+- **Caching**: Plugin state cached in Room database
+- **Lazy Loading**: Source instances created only when needed
+
 ## Contributing Guidelines
 
 - Follow the established architecture patterns

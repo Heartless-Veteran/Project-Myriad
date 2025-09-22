@@ -3,11 +3,17 @@ package com.heartlessveteran.myriad
 import android.content.Context
 import androidx.room.Room
 import com.heartlessveteran.myriad.core.data.database.MyriadDatabase
+import com.heartlessveteran.myriad.core.data.manager.PluginManagerImpl
+import com.heartlessveteran.myriad.core.data.manager.SearchManagerImpl
 import com.heartlessveteran.myriad.core.data.repository.AnimeRepositoryImpl
 import com.heartlessveteran.myriad.core.data.repository.MangaRepositoryImpl
+import com.heartlessveteran.myriad.core.data.repository.PluginRepositoryImpl
 import com.heartlessveteran.myriad.core.data.source.LocalAnimeSource
+import com.heartlessveteran.myriad.core.domain.manager.PluginManager
+import com.heartlessveteran.myriad.core.domain.manager.SearchManager
 import com.heartlessveteran.myriad.core.domain.repository.AnimeRepository
 import com.heartlessveteran.myriad.core.domain.repository.MangaRepository
+import com.heartlessveteran.myriad.core.domain.repository.PluginRepository
 import com.heartlessveteran.myriad.core.domain.repository.Source
 import com.heartlessveteran.myriad.core.domain.usecase.AddAnimeToLibraryUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.AddMangaToLibraryUseCase
@@ -20,6 +26,8 @@ import com.heartlessveteran.myriad.core.domain.usecase.GetMangaDetailsUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetNextUnwatchedEpisodeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.SearchLibraryAnimeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.UpdateEpisodeProgressUseCase
+import com.heartlessveteran.myriad.feature.browser.viewmodel.GlobalSearchViewModel
+import com.heartlessveteran.myriad.feature.browser.viewmodel.PluginManagementViewModel
 
 /**
  * Manual dependency injection container.
@@ -41,10 +49,24 @@ class DIContainer(context: Context) {
 
     private val mangaDao by lazy { database.mangaDao() }
     private val chapterDao by lazy { database.chapterDao() }
+    private val pluginDao by lazy { database.pluginDao() }
 
     // Repository layer
+    val pluginRepository: PluginRepository by lazy {
+        PluginRepositoryImpl(pluginDao)
+    }
+
     val mangaRepository: MangaRepository by lazy {
         MangaRepositoryImpl(mangaDao, chapterDao)
+    }
+
+    // Manager layer
+    val pluginManager: PluginManager by lazy {
+        PluginManagerImpl(pluginRepository)
+    }
+
+    val searchManager: SearchManager by lazy {
+        SearchManagerImpl(pluginManager)
     }
 
     // Sources (placeholder for now)
@@ -106,5 +128,14 @@ class DIContainer(context: Context) {
 
     val searchLibraryAnimeUseCase: SearchLibraryAnimeUseCase by lazy {
         SearchLibraryAnimeUseCase(animeRepository)
+    }
+
+    // Browser ViewModels
+    val pluginManagementViewModel: PluginManagementViewModel by lazy {
+        PluginManagementViewModel(pluginManager)
+    }
+
+    val globalSearchViewModel: GlobalSearchViewModel by lazy {
+        GlobalSearchViewModel(searchManager)
     }
 }

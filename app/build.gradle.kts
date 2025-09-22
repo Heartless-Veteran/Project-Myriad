@@ -153,6 +153,9 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
 
+    // Feature modules
+    implementation(project(":feature:browser"))
+
     // Media3 ExoPlayer for video playback
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui)
