@@ -26,6 +26,6 @@ object UseCaseModule {
     @Singleton
     fun provideSources(): Map<String, Source> {
         // TODO: Initialize actual sources when implemented
-        return emptyMap()
+        throw NotImplementedError("Sources are not yet implemented")
     }
 }
