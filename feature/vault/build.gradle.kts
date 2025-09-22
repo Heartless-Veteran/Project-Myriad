@@ -65,6 +65,9 @@ dependencies {
     // Archive processing
     implementation("net.lingala.zip4j:zip4j:2.11.5")
     
+    // Background downloads
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
