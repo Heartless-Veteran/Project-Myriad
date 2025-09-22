@@ -174,20 +174,42 @@ fun AIProviderDemoScreen(
                         LazyColumn {
                             when (val data = aiOperationState.data) {
                                 is List<*> -> {
-                                    items(data.filterIsInstance<String>()) { item ->
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(vertical = 2.dp),
-                                            colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                                            )
-                                        ) {
-                                            Text(
-                                                text = item,
-                                                modifier = Modifier.padding(12.dp),
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
+                                    // Check if all elements are String
+                                    val allStrings = data.all { it is String }
+                                    if (allStrings) {
+                                        @Suppress("UNCHECKED_CAST")
+                                        val stringList = data as List<String>
+                                        items(stringList) { item ->
+                                            Card(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(vertical = 2.dp),
+                                                colors = CardDefaults.cardColors(
+                                                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = item,
+                                                    modifier = Modifier.padding(12.dp),
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        item {
+                                            Card(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                colors = CardDefaults.cardColors(
+                                                    containerColor = MaterialTheme.colorScheme.errorContainer
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = "Error: Received a list with non-string elements.",
+                                                    modifier = Modifier.padding(12.dp),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -203,6 +225,23 @@ fun AIProviderDemoScreen(
                                                 text = data,
                                                 modifier = Modifier.padding(12.dp),
                                                 style = MaterialTheme.typography.bodyMedium
+                                            )
+                                        }
+                                    }
+                                }
+                                else -> {
+                                    item {
+                                        Card(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = MaterialTheme.colorScheme.errorContainer
+                                            )
+                                        ) {
+                                            Text(
+                                                text = "Error: Unexpected result type: ${data?.let { it::class.simpleName } ?: "null"}",
+                                                modifier = Modifier.padding(12.dp),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onErrorContainer
                                             )
                                         }
                                     }
