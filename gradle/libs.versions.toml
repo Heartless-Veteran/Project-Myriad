@@ -39,7 +39,7 @@ coil = "2.7.0"
 media3 = "1.8.0"
 
 # Dependency Injection
-hilt = "2.48"
+hilt = "2.57.1"
 
 # Code Quality
 ktlint = "13.1.0"
@@ -47,7 +47,7 @@ detekt = "1.23.8"
 dokka = "2.0.0"
 
 # Security
-owasp-dependency-check = "11.1.0"
+owasp-dependency-check = "12.1.5"
 
 # Performance
 baseline-profile = "1.4.1"
