@@ -3,7 +3,8 @@ package com.heartlessveteran.myriad.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.heartlessveteran.myriad.DIContainer
-import com.heartlessveteran.myriad.feature.ai.viewmodel.AIViewModel
+// TODO: Re-enable when AI module is implemented
+// import com.heartlessveteran.myriad.feature.ai.viewmodel.AIViewModel
 
 /**
  * ViewModelFactory that uses manual dependency injection.
@@ -27,11 +28,12 @@ class ViewModelFactory(
                     getChapterPagesUseCase = diContainer.getChapterPagesUseCase,
                 ) as T
             }
-            AIViewModel::class.java -> {
-                AIViewModel(
-                    aiProviderRegistry = diContainer.aiProviderRegistry,
-                ) as T
-            }
+            // TODO: Re-enable when AI module is implemented
+            // AIViewModel::class.java -> {
+            //     AIViewModel(
+            //         aiProviderRegistry = diContainer.aiProviderRegistry,
+            //     ) as T
+            // }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
 }

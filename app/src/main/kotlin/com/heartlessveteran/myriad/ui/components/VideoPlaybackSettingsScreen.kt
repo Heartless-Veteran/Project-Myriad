@@ -43,7 +43,7 @@ fun VideoPlaybackSettingsScreen(
         item {
             SettingsSection(
                 title = "Audio & Subtitle Presets",
-                icon = Icons.Default.VolumeUp,
+                icon = Icons.Default.Settings,
             ) {
                 AudioSubtitlePreferences(
                     settings = settings,
@@ -56,7 +56,7 @@ fun VideoPlaybackSettingsScreen(
         item {
             SettingsSection(
                 title = "Frame Rate",
-                icon = Icons.Default.VideoSettings,
+                icon = Icons.Default.Settings,
             ) {
                 FrameRateSettings(
                     settings = settings,
@@ -69,7 +69,7 @@ fun VideoPlaybackSettingsScreen(
         item {
             SettingsSection(
                 title = "Playback Speed",
-                icon = Icons.Default.Speed,
+                icon = Icons.Default.Settings,
             ) {
                 PlaybackSpeedSettings(
                     settings = settings,
@@ -82,7 +82,7 @@ fun VideoPlaybackSettingsScreen(
         item {
             SettingsSection(
                 title = "Subtitle Styling",
-                icon = Icons.Default.Subtitles,
+                icon = Icons.Default.Settings,
             ) {
                 SubtitleStylingSettings(
                     settings = settings,
@@ -95,7 +95,7 @@ fun VideoPlaybackSettingsScreen(
         item {
             SettingsSection(
                 title = "Chapter & Scene Navigation",
-                icon = Icons.Default.PlaylistPlay,
+                icon = Icons.Default.PlayArrow,
             ) {
                 ChapterNavigationSettings(
                     settings = settings,

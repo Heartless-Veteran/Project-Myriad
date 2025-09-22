@@ -29,9 +29,11 @@ import com.heartlessveteran.myriad.core.domain.usecase.GetMangaDetailsUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetNextUnwatchedEpisodeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.SearchLibraryAnimeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.UpdateEpisodeProgressUseCase
-import com.heartlessveteran.myriad.feature.ai.service.BackgroundAIProcessor
 import com.heartlessveteran.myriad.feature.browser.viewmodel.GlobalSearchViewModel
 import com.heartlessveteran.myriad.feature.browser.viewmodel.PluginManagementViewModel
+
+// TODO: Re-enable when AI module is implemented
+// import com.heartlessveteran.myriad.feature.ai.service.BackgroundAIProcessor
 
 /**
  * Manual dependency injection container.
@@ -157,7 +159,8 @@ class DIContainer(
         AIProviderRegistry(geminiProvider, openAIProvider)
     }
 
-    val backgroundAIProcessor: BackgroundAIProcessor by lazy {
-        BackgroundAIProcessor(aiProviderRegistry)
-    }
+    // TODO: Re-enable when AI module is implemented
+    // val backgroundAIProcessor: BackgroundAIProcessor by lazy {
+    //     BackgroundAIProcessor(aiProviderRegistry)
+    // }
 }

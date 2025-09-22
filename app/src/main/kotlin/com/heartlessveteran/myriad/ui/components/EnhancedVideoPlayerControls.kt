@@ -81,7 +81,7 @@ private fun MainPlaybackControls(
             enabled = uiState.hasPreviousEpisode,
         ) {
             Icon(
-                imageVector = Icons.Default.SkipPrevious,
+                imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Previous Episode",
                 tint = Color.White,
                 modifier = Modifier.size(40.dp),
@@ -93,7 +93,7 @@ private fun MainPlaybackControls(
             onClick = { onEvent(AnimePlayerEvent.PlayPause) },
         ) {
             Icon(
-                imageVector = if (uiState.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                imageVector = if (uiState.isPlaying) Icons.Default.PlayArrow else Icons.Default.PlayArrow,
                 contentDescription = if (uiState.isPlaying) "Pause" else "Play",
                 tint = Color.White,
                 modifier = Modifier.size(56.dp),
@@ -106,7 +106,7 @@ private fun MainPlaybackControls(
             enabled = uiState.hasNextEpisode,
         ) {
             Icon(
-                imageVector = Icons.Default.SkipNext,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Next Episode",
                 tint = Color.White,
                 modifier = Modifier.size(40.dp),
@@ -219,7 +219,7 @@ private fun BottomControlBar(
             onClick = { onEvent(AnimePlayerEvent.ToggleFullscreen) },
         ) {
             Icon(
-                imageVector = if (uiState.isFullscreen) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+                imageVector = if (uiState.isFullscreen) Icons.Default.Close else Icons.Default.Add,
                 contentDescription = if (uiState.isFullscreen) "Exit Fullscreen" else "Enter Fullscreen",
                 tint = Color.White,
             )
@@ -243,7 +243,7 @@ private fun SideQuickControls(
         Box {
             IconButton(onClick = { expanded = true }) {
                 Icon(
-                    imageVector = Icons.Default.Speed,
+                    imageVector = Icons.Default.Settings,
                     contentDescription = "Playback Speed",
                     tint = Color.White,
                 )
