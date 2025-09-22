@@ -143,6 +143,11 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // Room Database (needed for DIContainer)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
     // Core modules
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))

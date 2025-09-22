@@ -4,14 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.usecase.GetChapterPagesUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * UI state for the reader screen
@@ -82,10 +80,9 @@ sealed class ReaderUiEvent {
  * ViewModel for the manga reader screen.
  * Follows MVVM architecture and handles chapter page loading and navigation.
  * Demonstrates usage of GetChapterPagesUseCase as per architecture requirements.
- * Uses Hilt for dependency injection.
+ * Uses manual dependency injection.
  */
-@HiltViewModel
-class ReaderViewModel @Inject constructor(
+class ReaderViewModel(
     private val getChapterPagesUseCase: GetChapterPagesUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReaderUiState())

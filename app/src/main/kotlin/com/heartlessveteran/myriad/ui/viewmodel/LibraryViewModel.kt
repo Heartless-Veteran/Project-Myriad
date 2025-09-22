@@ -7,7 +7,6 @@ import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.usecase.AddMangaToLibraryUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetLibraryMangaUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetMangaDetailsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * UI state for the library screen
@@ -69,10 +67,9 @@ sealed class LibraryUiEvent {
  * ViewModel for the library screen.
  * Follows MVVM architecture with Clean Architecture use cases.
  * Exposes UI state via StateFlow and handles events properly.
- * Uses Hilt for dependency injection.
+ * Uses manual dependency injection.
  */
-@HiltViewModel
-class LibraryViewModel @Inject constructor(
+class LibraryViewModel(
     private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
     private val getMangaDetailsUseCase: GetMangaDetailsUseCase,
     private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase,

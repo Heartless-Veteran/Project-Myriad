@@ -1,15 +1,18 @@
 package com.heartlessveteran.myriad
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
 
 /**
  * Application class for Project Myriad.
- * Annotated with @HiltAndroidApp to enable Hilt dependency injection.
+ * Uses manual dependency injection temporarily due to KSP compatibility issues.
  */
-@HiltAndroidApp
 class MyriadApplication : Application() {
+    
+    lateinit var diContainer: DIContainer
+        private set
+    
     override fun onCreate() {
         super.onCreate()
+        diContainer = DIContainer(this)
     }
 }

@@ -47,7 +47,7 @@ fun LibraryScreen(
     viewModel: LibraryViewModel? = null,
 ) {
     // For now, we'll handle the case where no viewModel is provided
-    // In a real implementation, this would be injected via DI
+    // In a real implementation, this would be created with proper DI
     if (viewModel == null) {
         EmptyLibraryContent()
         return
