@@ -45,7 +45,7 @@ fun AIProviderSelector(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier
-                .menuAnchor(type = androidx.compose.material3.MenuAnchorType.PrimaryNotEditable)
+                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
         )
         
