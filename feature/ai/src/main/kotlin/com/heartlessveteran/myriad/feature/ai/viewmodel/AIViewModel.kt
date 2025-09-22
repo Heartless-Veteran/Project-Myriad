@@ -106,6 +106,6 @@ class AIViewModel(
 sealed class AIOperationState {
     object Idle : AIOperationState()
     object Loading : AIOperationState()
-    data class Success<T>(val data: T) : AIOperationState()
+    data class Success(val data: Any) : AIOperationState()
     data class Error(val message: String) : AIOperationState()
 }
