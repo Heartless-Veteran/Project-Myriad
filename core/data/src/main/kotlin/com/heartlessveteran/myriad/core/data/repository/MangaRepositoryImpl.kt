@@ -1,34 +1,29 @@
 package com.heartlessveteran.myriad.core.data.repository
 
+import com.heartlessveteran.myriad.core.data.database.ChapterDao
+import com.heartlessveteran.myriad.core.data.database.MangaDao
 import com.heartlessveteran.myriad.core.domain.entities.Manga
 import com.heartlessveteran.myriad.core.domain.entities.MangaChapter
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.MangaRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import java.util.*
 
 /**
  * Implementation of MangaRepository interface.
- * Handles data operations for manga entities using local database.
+ * Handles data operations for manga entities using Room database.
  * Follows Clean Architecture by implementing domain repository interface.
  */
 class MangaRepositoryImpl(
-    // TODO: Inject actual DAO when database is properly configured
-    // private val mangaDao: MangaDao,
-    // private val chapterDao: ChapterDao
+    private val mangaDao: MangaDao,
+    private val chapterDao: ChapterDao
 ) : MangaRepository {
 
-    // Temporary in-memory storage for demonstration
-    private val libraryManga = mutableListOf<Manga>()
-    private val chapters = mutableMapOf<String, List<MangaChapter>>()
-
-    override fun getLibraryManga(): Flow<List<Manga>> = flow {
-        emit(libraryManga.filter { it.isInLibrary })
-    }
+    override fun getLibraryManga(): Flow<List<Manga>> = mangaDao.getLibraryManga()
 
     override suspend fun getMangaById(id: String): Result<Manga> {
         return try {
-            val manga = libraryManga.find { it.id == id }
+            val manga = mangaDao.getMangaById(id)
             if (manga != null) {
                 Result.Success(manga)
             } else {
@@ -44,12 +39,7 @@ class MangaRepositoryImpl(
 
     override suspend fun saveManga(manga: Manga): Result<Unit> {
         return try {
-            val existingIndex = libraryManga.indexOfFirst { it.id == manga.id }
-            if (existingIndex != -1) {
-                libraryManga[existingIndex] = manga
-            } else {
-                libraryManga.add(manga)
-            }
+            mangaDao.insertManga(manga)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to save manga: ${e.message}")
@@ -58,16 +48,9 @@ class MangaRepositoryImpl(
 
     override suspend fun removeManga(mangaId: String): Result<Unit> {
         return try {
-            val removed = libraryManga.removeIf { it.id == mangaId }
-            if (removed) {
-                chapters.remove(mangaId)
-                Result.Success(Unit)
-            } else {
-                Result.Error(
-                    NoSuchElementException("Manga not found"),
-                    "Manga with ID '$mangaId' not found"
-                )
-            }
+            mangaDao.deleteMangaById(mangaId)
+            chapterDao.deleteChaptersForManga(mangaId)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to remove manga: ${e.message}")
         }
@@ -75,20 +58,9 @@ class MangaRepositoryImpl(
 
     override suspend fun updateReadingProgress(mangaId: String, readChapters: Int): Result<Unit> {
         return try {
-            val mangaIndex = libraryManga.indexOfFirst { it.id == mangaId }
-            if (mangaIndex != -1) {
-                val manga = libraryManga[mangaIndex]
-                libraryManga[mangaIndex] = manga.copy(
-                    readChapters = readChapters,
-                    lastReadDate = java.util.Date()
-                )
-                Result.Success(Unit)
-            } else {
-                Result.Error(
-                    NoSuchElementException("Manga not found"),
-                    "Manga with ID '$mangaId' not found"
-                )
-            }
+            val currentDate = Date().time
+            mangaDao.updateReadingProgress(mangaId, readChapters, currentDate)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to update reading progress: ${e.message}")
         }
@@ -96,11 +68,10 @@ class MangaRepositoryImpl(
 
     override suspend fun toggleFavorite(mangaId: String): Result<Manga> {
         return try {
-            val mangaIndex = libraryManga.indexOfFirst { it.id == mangaId }
-            if (mangaIndex != -1) {
-                val manga = libraryManga[mangaIndex]
+            val manga = mangaDao.getMangaById(mangaId)
+            if (manga != null) {
                 val updatedManga = manga.copy(isFavorite = !manga.isFavorite)
-                libraryManga[mangaIndex] = updatedManga
+                mangaDao.updateManga(updatedManga)
                 Result.Success(updatedManga)
             } else {
                 Result.Error(
@@ -113,46 +84,21 @@ class MangaRepositoryImpl(
         }
     }
 
-    override fun searchLibraryManga(query: String): Flow<List<Manga>> = flow {
-        val filtered = libraryManga.filter { manga ->
-            manga.isInLibrary && (
-                manga.title.contains(query, ignoreCase = true) ||
-                manga.author.contains(query, ignoreCase = true) ||
-                manga.genres.any { it.contains(query, ignoreCase = true) }
-            )
-        }
-        emit(filtered)
-    }
+    override fun searchLibraryManga(query: String): Flow<List<Manga>> = 
+        mangaDao.searchLibraryManga(query)
 
-    override fun getMangaByGenre(genre: String): Flow<List<Manga>> = flow {
-        val filtered = libraryManga.filter { manga ->
-            manga.isInLibrary && manga.genres.any { it.equals(genre, ignoreCase = true) }
-        }
-        emit(filtered)
-    }
+    override fun getMangaByGenre(genre: String): Flow<List<Manga>> = 
+        mangaDao.getMangaByGenre(genre)
 
-    override fun getRecentlyReadManga(limit: Int): Flow<List<Manga>> = flow {
-        val recentlyRead = libraryManga
-            .filter { it.isInLibrary && it.lastReadDate != null }
-            .sortedByDescending { it.lastReadDate }
-            .take(limit)
-        emit(recentlyRead)
-    }
+    override fun getRecentlyReadManga(limit: Int): Flow<List<Manga>> = 
+        mangaDao.getRecentlyReadManga(limit)
 
-    override fun getChaptersForManga(mangaId: String): Flow<List<MangaChapter>> = flow {
-        emit(chapters[mangaId] ?: emptyList())
-    }
+    override fun getChaptersForManga(mangaId: String): Flow<List<MangaChapter>> = 
+        chapterDao.getChaptersForManga(mangaId)
 
     override suspend fun saveChapter(chapter: MangaChapter): Result<Unit> {
         return try {
-            val mangaChapters = chapters[chapter.mangaId]?.toMutableList() ?: mutableListOf()
-            val existingIndex = mangaChapters.indexOfFirst { it.id == chapter.id }
-            if (existingIndex != -1) {
-                mangaChapters[existingIndex] = chapter
-            } else {
-                mangaChapters.add(chapter)
-            }
-            chapters[chapter.mangaId] = mangaChapters
+            chapterDao.insertChapter(chapter)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to save chapter: ${e.message}")
@@ -165,31 +111,9 @@ class MangaRepositoryImpl(
         lastReadPage: Int
     ): Result<Unit> {
         return try {
-            var updated = false
-            chapters.forEach { (mangaId, chapterList) ->
-                val chapterIndex = chapterList.indexOfFirst { it.id == chapterId }
-                if (chapterIndex != -1) {
-                    val chapter = chapterList[chapterIndex]
-                    val updatedChapter = chapter.copy(
-                        isRead = isRead,
-                        lastReadPage = lastReadPage,
-                        dateRead = if (isRead) java.util.Date() else null
-                    )
-                    chapters[mangaId] = chapterList.toMutableList().apply {
-                        set(chapterIndex, updatedChapter)
-                    }
-                    updated = true
-                    return@forEach
-                }
-            }
-            if (updated) {
-                Result.Success(Unit)
-            } else {
-                Result.Error(
-                    NoSuchElementException("Chapter not found"),
-                    "Chapter with ID '$chapterId' not found"
-                )
-            }
+            val dateRead = if (isRead) Date().time else null
+            chapterDao.updateChapterProgress(chapterId, isRead, lastReadPage, dateRead)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to update chapter progress: ${e.message}")
         }
