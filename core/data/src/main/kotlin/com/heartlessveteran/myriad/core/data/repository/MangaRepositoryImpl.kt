@@ -9,13 +9,16 @@ import com.heartlessveteran.myriad.core.domain.repository.MangaRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of MangaRepository interface.
  * Handles data operations for manga entities using Room database.
  * Follows Clean Architecture by implementing domain repository interface.
  */
-class MangaRepositoryImpl(
+@Singleton
+class MangaRepositoryImpl @Inject constructor(
     private val mangaDao: MangaDao,
     private val chapterDao: ChapterDao
 ) : MangaRepository {

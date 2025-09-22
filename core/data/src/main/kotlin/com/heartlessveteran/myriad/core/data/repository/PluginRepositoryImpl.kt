@@ -5,10 +5,13 @@ import com.heartlessveteran.myriad.core.domain.entities.Plugin
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.PluginRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 /**
  * Implementation of PluginRepository using Room database
  */
-class PluginRepositoryImpl(
+@Singleton
+class PluginRepositoryImpl @Inject constructor(
     private val pluginDao: PluginDao
 ) : PluginRepository {
 

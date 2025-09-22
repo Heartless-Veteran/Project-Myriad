@@ -13,13 +13,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of AnimeRepository interface.
  * Handles data operations for anime using local and remote sources.
  * Follows Clean Architecture principles by implementing domain interface.
  */
-class AnimeRepositoryImpl(
+@Singleton
+class AnimeRepositoryImpl @Inject constructor(
     private val localAnimeSource: LocalAnimeSource
 ) : AnimeRepository {
 

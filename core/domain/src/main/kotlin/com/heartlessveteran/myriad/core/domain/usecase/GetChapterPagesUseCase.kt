@@ -2,14 +2,17 @@ package com.heartlessveteran.myriad.core.domain.usecase
 
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.Source
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Use case for getting chapter pages from a source.
  * This use case handles the business logic for fetching chapter pages.
  * Following Clean Architecture, it coordinates between the domain and data layers.
  */
-class GetChapterPagesUseCase(
-    private val sources: Map<String, Source>
+@Singleton
+class GetChapterPagesUseCase @Inject constructor(
+    private val sources: Map<String, @JvmSuppressWildcards Source>
 ) {
     /**
      * Executes the use case to get chapter pages
