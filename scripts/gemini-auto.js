@@ -15,6 +15,60 @@ const { execSync } = require('child_process');
 console.log('🤖 Gemini Auto - AI Code Fixer');
 console.log('===============================\n');
 
+// Parse command line arguments
+function parseArguments() {
+  const args = process.argv.slice(2);
+  const options = {
+    reviewMode: false,
+    categories: [],
+    dryRun: false,
+    files: [],
+    help: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    
+    if (arg === '--review-mode') {
+      options.reviewMode = true;
+    } else if (arg === '--categories' && i + 1 < args.length) {
+      options.categories = args[i + 1].split(',').map(c => c.trim());
+      i++;
+    } else if (arg === '--files' && i + 1 < args.length) {
+      options.files = args[i + 1].split(',').map(f => f.trim());
+      i++;
+    } else if (arg === '--dry-run') {
+      options.dryRun = true;
+    } else if (arg === '--help' || arg === '-h') {
+      options.help = true;
+    }
+  }
+
+  return options;
+}
+
+const cliOptions = parseArguments();
+
+if (cliOptions.help) {
+  console.log(`
+Usage: node scripts/gemini-auto.js [options]
+
+Options:
+  --review-mode         Enable review mode with enhanced context
+  --categories <list>   Comma-separated list of fix categories (security,performance,style,architecture,testing)
+  --files <list>        Comma-separated list of specific files to analyze
+  --dry-run            Analyze only, don't apply fixes
+  --help               Show this help message
+
+Examples:
+  node scripts/gemini-auto.js
+  node scripts/gemini-auto.js --review-mode --categories security,performance
+  node scripts/gemini-auto.js --files "app/src/main/kotlin/MyFile.kt"
+  node scripts/gemini-auto.js --dry-run
+  `);
+  process.exit(0);
+}
+
 // Load configuration
 function loadConfiguration() {
   const defaultConfig = {
@@ -25,16 +79,45 @@ function loadConfiguration() {
     severityThreshold: 'medium',
     includePatterns: ['app/src/main/**/*.kt', 'src/**/*.js', 'src/**/*.ts', 'scripts/**/*.js'],
     excludePatterns: ['**/test/**', '**/build/**', '**/node_modules/**'],
-    modelSelection: { defaultModel: 'gemini-1.5-flash', complexTaskModel: 'gemini-1.5-pro' }
+    modelSelection: { defaultModel: 'gemini-1.5-flash', complexTaskModel: 'gemini-1.5-pro' },
+    reviewMode: false,
+    reviewContext: ''
   };
 
   try {
     if (fs.existsSync('.gemini-rules.json')) {
       const customConfig = JSON.parse(fs.readFileSync('.gemini-rules.json', 'utf8'));
-      return { ...defaultConfig, ...customConfig };
+      defaultConfig = { ...defaultConfig, ...customConfig };
     }
   } catch (error) {
     console.log('⚠️ Error loading .gemini-rules.json, using defaults:', error.message);
+  }
+  
+  // Apply CLI options
+  if (cliOptions.categories.length > 0) {
+    // Reset all categories to false, then enable specified ones
+    defaultConfig.fixCategories = { security: false, performance: false, style: false, architecture: false, testing: false };
+    cliOptions.categories.forEach(category => {
+      if (defaultConfig.fixCategories.hasOwnProperty(category)) {
+        defaultConfig.fixCategories[category] = true;
+      }
+    });
+  }
+  
+  // Enable review mode if specified
+  if (cliOptions.reviewMode) {
+    defaultConfig.reviewMode = true;
+    
+    // Load review context if available
+    if (fs.existsSync('.gemini-review-context.txt')) {
+      defaultConfig.reviewContext = fs.readFileSync('.gemini-review-context.txt', 'utf8');
+      console.log('📖 Loaded review context for enhanced AI analysis');
+    }
+    
+    if (process.env.GEMINI_REVIEW_CONTEXT) {
+      defaultConfig.reviewContext = process.env.GEMINI_REVIEW_CONTEXT;
+      console.log('📖 Loaded review context from environment variable');
+    }
   }
   
   return defaultConfig;
@@ -130,6 +213,20 @@ function matchesPattern(filePath, patterns) {
 }
 
 function findFilesToAnalyze() {
+  // If files are specified via CLI, use those
+  if (cliOptions.files.length > 0) {
+    const specifiedFiles = cliOptions.files.filter(file => {
+      if (!fs.existsSync(file)) {
+        console.log(`⚠️ Specified file not found: ${file}`);
+        return false;
+      }
+      return true;
+    });
+    
+    console.log(`📋 Using CLI-specified files: ${specifiedFiles.length} files`);
+    return specifiedFiles;
+  }
+
   const files = [];
 
   // Enhanced file discovery with pattern matching
@@ -495,6 +592,12 @@ function createFixPrompt(fileContent, fileName, lintIssues = []) {
   
   let prompt = `You are an expert ${getLanguageName(fileExt)} code fixer. Please analyze the following code and provide ONLY the fixed code with improvements.\n\n`;
   
+  // Add review context if in review mode
+  if (config.reviewMode && config.reviewContext) {
+    prompt += `REVIEW CONTEXT:\n${config.reviewContext}\n\n`;
+    prompt += `Please prioritize applying the suggestions from the code review above.\n\n`;
+  }
+  
   prompt += `ENABLED FIX CATEGORIES (only apply fixes from these categories):\n`;
   if (enabledCategories.includes('security')) prompt += `- SECURITY: Fix potential vulnerabilities and apply security best practices\n`;
   if (enabledCategories.includes('performance')) prompt += `- PERFORMANCE: Optimize code for better performance and efficiency\n`;
@@ -604,14 +707,27 @@ async function fixFile(filePath) {
     issue.file.includes(filePath) || filePath.includes(path.basename(issue.file))
   );
   
-  // Removed redundant per-file lint issue check (handled by pre-check)
+  // Combine linting issues and basic issues for comprehensive analysis
+  const allIssues = [...(lintIssues?.messages || [])];
+  const basicIssues = detectBasicCodeIssues(filePath, originalContent);
+  allIssues.push(...basicIssues);
+  
+  // In review mode, proceed even without detected issues (review context may suggest improvements)
+  if (allIssues.length === 0 && !config.reviewMode) {
+    console.log(`✅ No issues found in: ${path.basename(filePath)}`);
+    return false;
+  }
+
+  if (cliOptions.dryRun) {
+    console.log(`🔍 DRY RUN - Would analyze ${path.basename(filePath)} with ${allIssues.length} issues`);
+    console.log(`   Categories: ${Object.keys(config.fixCategories).filter(c => config.fixCategories[c]).join(', ')}`);
+    if (config.reviewMode) {
+      console.log(`   📖 Review context available`);
+    }
+    return false;
+  }
 
   try {
-    // Combine linting issues and basic issues for comprehensive analysis
-    const allIssues = [...(lintIssues?.messages || [])];
-    const basicIssues = detectBasicCodeIssues(filePath, originalContent);
-    allIssues.push(...basicIssues);
-    
     const prompt = createFixPrompt(originalContent, filePath, allIssues);
     const fixedContent = await callGeminiAPI(prompt, filePath, originalContent, allIssues.length);
 

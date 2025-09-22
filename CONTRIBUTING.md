@@ -306,6 +306,35 @@ For new features:
 - **Ask questions** - if something isn't clear, ask for clarification
 - **Test the changes** - pull and verify the functionality works
 - **Approve promptly** - don't let good PRs sit idle
+- **Use Auto-Fix** - Include `/autofix` to trigger automated improvements
+
+### Auto-Fix Triggers
+
+Use these commands in review comments to trigger automated fixes:
+
+```markdown
+/autofix                    # Apply all suggested improvements
+/fix                        # Alternative trigger command
+/apply-suggestions          # Apply specific suggestions
+Please fix the issues above # Natural language trigger
+```
+
+**Example Usage:**
+```markdown
+The error handling in UserService.kt could be improved. 
+Consider adding proper null safety checks.
+
+/autofix
+```
+
+The automated system will:
+1. Analyze your suggestions using AI
+2. Apply appropriate fixes
+3. Run quality checks
+4. Commit changes if safe
+5. Comment back with results
+
+See [PR Review Auto-Fix Documentation](../docs/PR_REVIEW_AUTOFIX.md) for details.
 
 ## 📜 Commit Message Format
 

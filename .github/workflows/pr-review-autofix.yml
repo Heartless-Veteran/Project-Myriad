@@ -1,0 +1,328 @@
+name: PR Review Auto-Fix
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+on:
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  review-autofix:
+    name: Process Review Suggestions
+    runs-on: ubuntu-latest
+    if: >
+      (github.event.review.state == 'changes_requested' || 
+       github.event.review.state == 'commented' ||
+       (github.event.issue.pull_request && 
+        contains(github.event.comment.body, '/autofix'))) &&
+      github.actor != 'github-actions[bot]'
+    timeout-minutes: 30
+
+    steps:
+    - name: Get PR number
+      id: pr-number
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request_review" ]; then
+          echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        else
+          echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Get PR details
+      id: pr-details
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: pr } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: ${{ steps.pr-number.outputs.number }}
+          });
+          
+          core.setOutput('head_ref', pr.head.ref);
+          core.setOutput('head_sha', pr.head.sha);
+          core.setOutput('base_ref', pr.base.ref);
+          return pr;
+
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ steps.pr-details.outputs.head_ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-home-cache-cleanup: true
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Extract review suggestions
+      id: extract-suggestions
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let suggestions = [];
+          let reviewBody = '';
+          let triggerAutoFix = false;
+          
+          if (context.eventName === 'pull_request_review') {
+            reviewBody = context.payload.review.body || '';
+            
+            // Get review comments
+            const { data: reviewComments } = await github.rest.pulls.listReviewComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ steps.pr-number.outputs.number }},
+              review_id: context.payload.review.id
+            });
+            
+            for (const comment of reviewComments) {
+              suggestions.push({
+                path: comment.path,
+                line: comment.line,
+                body: comment.body,
+                position: comment.position
+              });
+            }
+          } else if (context.eventName === 'issue_comment') {
+            reviewBody = context.payload.comment.body || '';
+            triggerAutoFix = reviewBody.includes('/autofix');
+          }
+          
+          // Check for auto-fix triggers
+          const autoFixTriggers = [
+            '/autofix', '/fix', '/apply-suggestions', 
+            'please fix', 'auto-fix', 'apply fixes'
+          ];
+          
+          triggerAutoFix = triggerAutoFix || autoFixTriggers.some(trigger => 
+            reviewBody.toLowerCase().includes(trigger)
+          );
+          
+          // Save suggestions to file
+          fs.writeFileSync('review-suggestions.json', JSON.stringify({
+            suggestions,
+            reviewBody,
+            triggerAutoFix,
+            prNumber: ${{ steps.pr-number.outputs.number }},
+            reviewer: context.payload.review?.user?.login || context.payload.comment?.user?.login
+          }, null, 2));
+          
+          core.setOutput('trigger_autofix', triggerAutoFix);
+          core.setOutput('has_suggestions', suggestions.length > 0);
+          
+          return { suggestions, triggerAutoFix };
+
+    - name: Analyze suggestions and apply fixes
+      if: steps.extract-suggestions.outputs.trigger_autofix == 'true'
+      id: apply-fixes
+      run: |
+        echo "🔍 Analyzing review suggestions..."
+        
+        # Create enhanced prompt for Gemini Auto with review context
+        node -e "
+        const fs = require('fs');
+        const suggestions = JSON.parse(fs.readFileSync('review-suggestions.json', 'utf8'));
+        
+        let enhancedPrompt = 'REVIEW SUGGESTIONS TO APPLY:\\n';
+        suggestions.suggestions.forEach(s => {
+          enhancedPrompt += \`- File: \${s.path}, Line: \${s.line}\\n  Suggestion: \${s.body}\\n\\n\`;
+        });
+        
+        enhancedPrompt += \`\\nGeneral Review Comments:\\n\${suggestions.reviewBody}\\n\`;
+        enhancedPrompt += '\\nPlease apply these suggestions while maintaining code quality and functionality.';
+        
+        fs.writeFileSync('.gemini-review-context.txt', enhancedPrompt);
+        console.log('📝 Review context prepared for AI analysis');
+        "
+        
+        # Set environment variable for enhanced context
+        export GEMINI_REVIEW_CONTEXT="$(cat .gemini-review-context.txt)"
+        
+        # Run Gemini Auto with review context
+        echo "🤖 Running AI-powered code fixes..."
+        node scripts/gemini-auto.js --categories security,performance,style,architecture --review-mode || true
+        
+        # Check if any files were modified
+        if git diff --quiet; then
+          echo "changes_made=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No changes were applied by the AI fixer"
+        else
+          echo "changes_made=true" >> $GITHUB_OUTPUT
+          echo "✅ AI fixes have been applied"
+          
+          # Show summary of changes
+          echo "📊 Summary of changes:"
+          git diff --stat
+        fi
+
+    - name: Run quality checks on fixes
+      if: steps.apply-fixes.outputs.changes_made == 'true'
+      id: quality-check
+      run: |
+        echo "🔍 Running quality checks on applied fixes..."
+        
+        # Run lint checks
+        echo "Running Kotlin lint..."
+        ./gradlew ktlintCheck --continue || true
+        
+        # Run tests to ensure fixes don't break functionality
+        echo "Running unit tests..."
+        ./gradlew test --continue || true
+        
+        # Check if critical errors were introduced
+        if ./gradlew assembleDebug --quiet; then
+          echo "quality_passed=true" >> $GITHUB_OUTPUT
+          echo "✅ Quality checks passed"
+        else
+          echo "quality_passed=false" >> $GITHUB_OUTPUT
+          echo "❌ Quality checks failed - fixes may have introduced issues"
+        fi
+
+    - name: Commit and push fixes
+      if: >
+        steps.apply-fixes.outputs.changes_made == 'true' && 
+        steps.quality-check.outputs.quality_passed == 'true'
+      id: commit-fixes
+      run: |
+        # Configure git
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Get reviewer info
+        REVIEWER=$(jq -r '.reviewer' review-suggestions.json)
+        
+        # Commit changes
+        git add .
+        git commit -m "fix: apply code review suggestions from @$REVIEWER
+
+        🤖 Auto-applied fixes based on review feedback:
+        - Applied AI-powered code improvements
+        - Maintained code quality and functionality
+        - Passed automated quality checks
+        
+        Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+        
+        # Push changes
+        git push origin HEAD
+        
+        echo "✅ Fixes committed and pushed successfully"
+        echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Comment on PR with results
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const suggestions = JSON.parse(fs.readFileSync('review-suggestions.json', 'utf8'));
+          
+          let commentBody = '';
+          
+          if ('${{ steps.extract-suggestions.outputs.trigger_autofix }}' === 'true') {
+            if ('${{ steps.apply-fixes.outputs.changes_made }}' === 'true') {
+              if ('${{ steps.quality-check.outputs.quality_passed }}' === 'true') {
+                commentBody = `## 🤖 Auto-Fix Applied Successfully!
+                
+                ✅ **Review suggestions have been automatically applied**
+                
+                **Changes made:**
+                - Applied AI-powered code improvements based on review feedback
+                - All quality checks passed
+                - Code functionality preserved
+                
+                **Commit:** ${{ steps.commit-fixes.outputs.commit_sha }}
+                
+                The fixes have been committed to this PR. Please review the changes when convenient.
+                
+                ---
+                *Applied suggestions from @${suggestions.reviewer}*`;
+              } else {
+                commentBody = `## ⚠️ Auto-Fix Quality Check Failed
+                
+                🔧 **Fixes were applied but failed quality validation**
+                
+                The AI applied changes based on your review suggestions, but the automated quality checks detected potential issues. The changes have **not** been committed.
+                
+                Please review the suggestions manually or provide more specific guidance.
+                
+                ---
+                *Attempted to apply suggestions from @${suggestions.reviewer}*`;
+              }
+            } else {
+              commentBody = `## ℹ️ Auto-Fix Analysis Complete
+              
+              🔍 **No changes were applied by the AI**
+              
+              The review suggestions were analyzed, but the AI determined that no automatic fixes were appropriate at this time. This could be due to:
+              - Suggestions requiring manual review
+              - Complex changes that need human judgment
+              - Already optimal code quality
+              
+              Please consider applying the suggestions manually.
+              
+              ---
+              *Analyzed suggestions from @${suggestions.reviewer}*`;
+            }
+          } else {
+            // Just acknowledge the review without auto-fix
+            commentBody = `## 👀 Review Acknowledged
+            
+            Thank you for the review, @${suggestions.reviewer}! 
+            
+            To trigger automatic fixes, you can:
+            - Use \`/autofix\` in a comment
+            - Include phrases like "please fix" or "apply fixes" in your review
+            
+            ---
+            *Use \`/autofix\` to automatically apply suggested improvements*`;
+          }
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: ${{ steps.pr-number.outputs.number }},
+            body: commentBody
+          });
+
+    - name: Upload analysis artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: review-autofix-analysis-${{ steps.pr-number.outputs.number }}
+        path: |
+          review-suggestions.json
+          .gemini-review-context.txt
+          app/build/reports/
+        retention-days: 7

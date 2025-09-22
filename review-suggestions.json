@@ -1,0 +1,18 @@
+{
+  "suggestions": [
+    {
+      "path": "app/src/main/kotlin/com/heartlessveteran/myriad/domain/entities/Manga.kt",
+      "line": 15,
+      "body": "Consider adding null safety checks for the title property"
+    },
+    {
+      "path": "app/src/main/kotlin/com/heartlessveteran/myriad/data/repository/MangaRepository.kt",
+      "line": 25,
+      "body": "This method could benefit from coroutine exception handling"
+    }
+  ],
+  "reviewBody": "Please improve error handling and add proper null safety checks. /autofix",
+  "triggerAutoFix": true,
+  "prNumber": 123,
+  "reviewer": "test-reviewer"
+}
