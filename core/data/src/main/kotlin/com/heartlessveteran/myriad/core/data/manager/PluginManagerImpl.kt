@@ -1,6 +1,7 @@
 package com.heartlessveteran.myriad.core.data.manager
 
 import com.heartlessveteran.myriad.core.data.source.LocalSource
+import com.heartlessveteran.myriad.core.data.source.MangaDxSource
 import com.heartlessveteran.myriad.core.data.source.SampleOnlineSource
 import com.heartlessveteran.myriad.core.domain.entities.Plugin
 import com.heartlessveteran.myriad.core.domain.entities.PluginType
@@ -22,7 +23,8 @@ class PluginManagerImpl(
     // Registry of available source implementations
     private val sourceRegistry = mapOf(
         "local" to { LocalSource() },
-        "sample_online" to { SampleOnlineSource() }
+        "sample_online" to { SampleOnlineSource() },
+        "mangadx" to { MangaDxSource() }
     )
 
     override fun getAllPlugins(): Flow<List<Plugin>> {
@@ -87,6 +89,22 @@ class PluginManagerImpl(
                 type = PluginType.MANGA
             )
 
+            // Create MangaDX plugin
+            val mangaDxPlugin = Plugin(
+                id = "mangadx",
+                name = "MangaDX",
+                author = "Project Myriad",
+                version = "1.0.0",
+                description = "Official MangaDX source for online manga reading",
+                language = "en",
+                baseUrl = "https://api.mangadx.org",
+                isEnabled = true,
+                isInstalled = true,
+                lastUpdated = Date(),
+                dateInstalled = Date(),
+                type = PluginType.MANGA
+            )
+
             // Create sample online plugin
             val onlinePlugin = Plugin(
                 id = "sample_online",
@@ -96,7 +114,7 @@ class PluginManagerImpl(
                 description = "Sample online manga source for demonstration",
                 language = "en",
                 baseUrl = "https://api.sample-manga.com",
-                isEnabled = true,
+                isEnabled = false, // Disabled by default since MangaDX is now available
                 isInstalled = true,
                 lastUpdated = Date(),
                 dateInstalled = Date(),
@@ -105,6 +123,7 @@ class PluginManagerImpl(
 
             // Install default plugins
             pluginRepository.savePlugin(localPlugin)
+            pluginRepository.savePlugin(mangaDxPlugin)
             pluginRepository.savePlugin(onlinePlugin)
 
             Result.Success(Unit)

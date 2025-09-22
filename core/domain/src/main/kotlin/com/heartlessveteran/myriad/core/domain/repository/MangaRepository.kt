@@ -112,4 +112,36 @@ interface MangaRepository {
         isRead: Boolean,
         lastReadPage: Int = 0
     ): Result<Unit>
+
+    /**
+     * Gets a specific chapter by ID
+     *
+     * @param chapterId Chapter identifier
+     * @return Chapter or null if not found
+     */
+    suspend fun getChapterById(chapterId: String): MangaChapter?
+
+    /**
+     * Updates a manga entity
+     *
+     * @param manga Manga to update
+     * @return Result indicating success or error
+     */
+    suspend fun updateManga(manga: Manga): Result<Unit>
+
+    /**
+     * Updates a chapter entity
+     *
+     * @param chapter Chapter to update
+     * @return Result indicating success or error
+     */
+    suspend fun updateChapter(chapter: MangaChapter): Result<Unit>
+
+    /**
+     * Gets chapters for a manga as a suspending function
+     *
+     * @param mangaId Manga identifier
+     * @return List of chapters for the manga
+     */
+    suspend fun getChaptersForManga(mangaId: String): List<MangaChapter>
 }

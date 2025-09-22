@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":core:data"))
     
     // Compose BOM and Core Dependencies
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -62,10 +62,16 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
     
+    // Archive processing
+    implementation("net.lingala.zip4j:zip4j:2.11.5")
+    
+    // Background downloads
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     
     debugImplementation("androidx.compose.ui:ui-tooling")
