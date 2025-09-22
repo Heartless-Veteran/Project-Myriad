@@ -54,7 +54,7 @@ class BackgroundAIProcessor(
                 withContext(Dispatchers.Main) {
                     when (result) {
                         is Result.Success -> onComplete(result.data)
-                        is Result.Error -> onError(Exception(result.exception))
+                        is Result.Error -> onError(result.exception as? Exception ?: Exception("Wrapped throwable", result.exception))
                         is Result.Loading -> {} // Should not happen
                     }
                 }
