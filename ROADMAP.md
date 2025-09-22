@@ -115,9 +115,9 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 **Status**: Architecture Prepared  
 **Focus**: AI-powered features and intelligent content processing
 
-#### 🧠 AI Core Features (Gemini Integration Ready)
+#### 🧠 AI Core Features 
 - [ ] **OCR Translation Pipeline**
-  - [ ] Advanced text detection and extraction using Gemini Vision
+  - [ ] Advanced text detection and extraction using AI Vision
   - [ ] Multi-language translation with context awareness
   - [ ] Cultural adaptation and localization
   - [ ] Custom dictionary and terminology management
@@ -309,7 +309,6 @@ This roadmap consolidates all development plans, tasks, and timelines for Projec
 
 ### Technical Guides
 - [**Requirements Specification**](docs/requirements.md) - Detailed technical requirements and constraints  
-- [**Gemini AI Integration**](docs/GEMINI_API.md) - AI features setup and usage
 - [**Dependency Management**](docs/dependency-management.md) - Package management strategy
 - [**Architecture Overview**](README.md#architecture) - System design and principles
 

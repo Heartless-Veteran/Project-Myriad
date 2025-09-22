@@ -35,15 +35,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        // Load Gemini API key from local.properties
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            localProperties.load(localPropertiesFile.inputStream())
-        }
-
-        buildConfigField("String", "GEMINI_API_KEY", "\"${localProperties.getProperty("geminiApiKey", "")}\"")
     }
 
     // Load signing properties from local.properties

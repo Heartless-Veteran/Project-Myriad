@@ -24,9 +24,6 @@ Welcome to **Project Myriad** - The Definitive Manga and Anime Platform! We're e
    ```bash
    # Copy the example local properties file
    cp local.properties.example local.properties
-   
-   # Add your Gemini API key
-   echo "geminiApiKey=YOUR_GEMINI_API_KEY_HERE" >> local.properties
    ```
 
 3. **Build the Project**

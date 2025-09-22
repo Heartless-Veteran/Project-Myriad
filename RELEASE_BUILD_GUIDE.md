@@ -54,9 +54,6 @@ You will be prompted for:
 Create or update `local.properties` with your signing credentials:
 
 ```properties
-# Google Gemini API Key
-geminiApiKey=your_gemini_api_key_here
-
 # Release Signing Configuration
 MYRIAD_RELEASE_STORE_PASSWORD=your_keystore_password_here
 MYRIAD_RELEASE_KEY_PASSWORD=your_key_alias_password_here
