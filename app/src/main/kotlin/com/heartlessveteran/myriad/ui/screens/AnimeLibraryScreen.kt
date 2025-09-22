@@ -63,7 +63,7 @@ fun AnimeLibraryScreen(
                 is AnimeLibraryUiEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(
                         message = event.message,
-                        withDismissAction = true
+                        withDismissAction = true,
                     )
                 }
                 is AnimeLibraryUiEvent.NavigateToAnimeDetails -> {
@@ -80,31 +80,34 @@ fun AnimeLibraryScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Anime Library") }
+                title = { Text("Anime Library") },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         when {
             uiState.isLoading -> {
                 LoadingContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                 )
             }
             uiState.anime.isEmpty() -> {
                 EmptyAnimeLibraryContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                 )
             }
             else -> {
                 AnimeLibraryContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                     anime = uiState.anime,
                     searchQuery = uiState.searchQuery,
                     onSearchQueryChange = { query ->
@@ -112,7 +115,7 @@ fun AnimeLibraryScreen(
                     },
                     onAnimeClick = { anime ->
                         viewModel.onEvent(AnimeLibraryEvent.AnimeClicked(anime))
-                    }
+                    },
                 )
             }
         }
@@ -133,7 +136,7 @@ private fun AnimeLibraryContent(
 ) {
     Column(
         modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Search bar
         OutlinedTextField(
@@ -144,21 +147,21 @@ private fun AnimeLibraryContent(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
+                    contentDescription = "Search",
                 )
             },
-            singleLine = true
+            singleLine = true,
         )
 
         // Anime list
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(anime) { animeItem ->
                 AnimeListItem(
                     anime = animeItem,
-                    onClick = { onAnimeClick(animeItem) }
+                    onClick = { onAnimeClick(animeItem) },
                 )
             }
         }
@@ -178,42 +181,43 @@ private fun AnimeListItem(
 ) {
     Card(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = anime.title,
                 style = MaterialTheme.typography.titleMedium,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
-            
+
             if (anime.description.isNotBlank()) {
                 Text(
                     text = anime.description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
-            
+
             // Episode progress
-            val progressText = if (anime.totalEpisodes > 0) {
-                "${anime.watchedEpisodes}/${anime.totalEpisodes} episodes"
-            } else {
-                "${anime.watchedEpisodes} episodes watched"
-            }
-            
+            val progressText =
+                if (anime.totalEpisodes > 0) {
+                    "${anime.watchedEpisodes}/${anime.totalEpisodes} episodes"
+                } else {
+                    "${anime.watchedEpisodes} episodes watched"
+                }
+
             Text(
                 text = progressText,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
-            
+
             // Genres
             if (anime.genres.isNotEmpty()) {
                 Text(
@@ -221,7 +225,7 @@ private fun AnimeListItem(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

@@ -1,0 +1,7 @@
+# Network Layer
+This directory contains network-related implementations.
+
+## Structure
+- `api/` - API service interfaces
+- `dto/` - Data transfer objects
+- `interceptors/` - Network interceptors

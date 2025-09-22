@@ -1,0 +1,7 @@
+# Domain Layer
+This directory contains the domain layer following Clean Architecture principles.
+
+## Structure
+- `entities/` - Business entities and models
+- `repositories/` - Repository interfaces
+- `usecases/` - Business logic use cases

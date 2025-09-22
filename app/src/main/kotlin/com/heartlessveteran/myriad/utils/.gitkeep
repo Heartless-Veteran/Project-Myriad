@@ -1,0 +1,7 @@
+# Utils Layer
+This directory contains utility functions and helpers.
+
+## Structure
+- `extensions/` - Kotlin extension functions
+- `constants/` - Application constants
+- `helpers/` - Helper functions and utilities

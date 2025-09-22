@@ -1,0 +1,37 @@
+{
+  "name": "project-myriad",
+  "version": "1.0.0",
+  "description": "The Definitive Manga and Anime Platform - Android Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "node scripts/test-workflow.js",
+    "validate-architecture": "node scripts/validate-architecture.js",
+    "validate-config": "node scripts/validate-config.js",
+    "update-readme": "node scripts/update-readme-stats.js",
+    "analyze": "node scripts/analyze.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Heartless-Veteran/Project-Myriad.git"
+  },
+  "keywords": [
+    "android",
+    "kotlin",
+    "manga",
+    "anime",
+    "jetpack-compose",
+    "clean-architecture",
+    "ai",
+    "ocr"
+  ],
+  "author": "HeartlessVeteran2",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Heartless-Veteran/Project-Myriad/issues"
+  },
+  "homepage": "https://github.com/Heartless-Veteran/Project-Myriad#readme",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -95,10 +95,11 @@ class AnimeEpisodeListViewModel(
                         _uiState.value = _uiState.value.copy(anime = animeResult.data)
                     }
                     is Result.Error -> {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            errorMessage = animeResult.message ?: "Failed to load anime details"
-                        )
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = animeResult.message ?: "Failed to load anime details",
+                            )
                         return@launch
                     }
                     is Result.Loading -> {
@@ -108,16 +109,18 @@ class AnimeEpisodeListViewModel(
 
                 // Load episodes
                 getAnimeEpisodesUseCase(animeId).collect { episodes ->
-                    _uiState.value = _uiState.value.copy(
-                        episodes = episodes.sortedBy { it.episodeNumber },
-                        isLoading = false
-                    )
+                    _uiState.value =
+                        _uiState.value.copy(
+                            episodes = episodes.sortedBy { it.episodeNumber },
+                            isLoading = false,
+                        )
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Failed to load episodes: ${e.message}"
-                )
+                _uiState.value =
+                    _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "Failed to load episodes: ${e.message}",
+                    )
             }
         }
     }

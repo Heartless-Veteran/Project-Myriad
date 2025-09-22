@@ -7,10 +7,9 @@ import android.app.Application
  * Uses manual dependency injection temporarily due to KSP compatibility issues.
  */
 class MyriadApplication : Application() {
-    
     lateinit var diContainer: DIContainer
         private set
-    
+
     override fun onCreate() {
         super.onCreate()
         diContainer = DIContainer(this)
