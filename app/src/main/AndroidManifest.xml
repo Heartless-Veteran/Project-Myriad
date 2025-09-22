@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".TestApplication"
+        android:name=".MyriadApplication"
         android:allowBackup="false"
         android:label="Myriad Release Test"
         android:theme="@style/AppTheme"

@@ -80,6 +80,7 @@ sealed class ReaderUiEvent {
  * ViewModel for the manga reader screen.
  * Follows MVVM architecture and handles chapter page loading and navigation.
  * Demonstrates usage of GetChapterPagesUseCase as per architecture requirements.
+ * Uses manual dependency injection.
  */
 class ReaderViewModel(
     private val getChapterPagesUseCase: GetChapterPagesUseCase,

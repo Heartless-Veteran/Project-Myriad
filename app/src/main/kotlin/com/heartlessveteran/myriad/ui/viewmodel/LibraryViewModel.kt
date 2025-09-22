@@ -67,6 +67,7 @@ sealed class LibraryUiEvent {
  * ViewModel for the library screen.
  * Follows MVVM architecture with Clean Architecture use cases.
  * Exposes UI state via StateFlow and handles events properly.
+ * Uses manual dependency injection.
  */
 class LibraryViewModel(
     private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
