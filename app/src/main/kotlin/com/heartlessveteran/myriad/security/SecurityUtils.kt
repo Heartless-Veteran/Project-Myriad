@@ -12,9 +12,6 @@ import java.util.regex.Pattern
 object SecurityUtils {
     private const val TAG = "SecurityUtils"
 
-    // API Key validation patterns
-    private val GEMINI_API_KEY_PATTERN = Pattern.compile("^AIza[0-9A-Za-z\\-_]{35}$")
-
     // Common security patterns to detect
     private val SECURITY_THREATS =
         listOf(
@@ -22,28 +19,6 @@ object SecurityUtils {
             "(?i)(api[_-]?key|apikey)\\s*[:=]\\s*[^\\s]+",
             "(?i)(secret|token)\\s*[:=]\\s*[^\\s]+",
         )
-
-    /**
-     * Validates if the provided API key has the correct format for Gemini API
-     */
-    fun validateGeminiApiKey(apiKey: String?): Boolean {
-        if (apiKey.isNullOrBlank()) {
-            Log.w(TAG, "API key is null or empty")
-            return false
-        }
-
-        if (apiKey.length < 39) {
-            Log.w(TAG, "API key is too short")
-            return false
-        }
-
-        if (!GEMINI_API_KEY_PATTERN.matcher(apiKey).matches()) {
-            Log.w(TAG, "API key format is invalid")
-            return false
-        }
-
-        return true
-    }
 
     /**
      * Sanitizes input strings to prevent injection attacks

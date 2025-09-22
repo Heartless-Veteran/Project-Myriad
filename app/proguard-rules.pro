@@ -91,11 +91,6 @@
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
 
-# Security: API key and sensitive data protection
--keepclassmembers class com.heartlessveteran.myriad.BuildConfig {
-    public static final String GEMINI_API_KEY;
-}
-
 # Security: Hide internal implementation details
 -keep class com.heartlessveteran.myriad.** {
     public *;

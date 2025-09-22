@@ -127,11 +127,7 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern, buil
    ./gradlew installDebug
    ```
 
-3. **Optional: Configure AI Features**
-   ```bash
-   cp local.properties.example local.properties
-   echo "geminiApiKey=YOUR_API_KEY_HERE" >> local.properties
-   ```
+
 
 📖 **[Complete Development Setup Guide](DEVELOPMENT.md)**
 
@@ -157,12 +153,6 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern, buil
 📋 **[Detailed Roadmap & Timeline](ROADMAP.md)**
 
 ---
-
-## 🤖 AI-Powered Development
-
-**Gemini Auto Enhanced**: AI-powered code fixing system with language-specific analysis and automated issue resolution.
-
-📖 **[Complete Setup Guide & Documentation](docs/GEMINI_AUTO.md)**
 
 ---
 

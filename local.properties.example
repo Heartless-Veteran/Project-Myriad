@@ -5,17 +5,6 @@
 #    It contains sensitive information like API keys and signing credentials.
 #    Always add "local.properties" to your .gitignore file.
 
-# Google Gemini API Key
-# ---------------------
-# Get your API key from: https://makersuite.google.com/app/apikey
-# 
-# Security Requirements:
-# - Must start with "AIza" followed by 35 characters
-# - Should be kept confidential and not shared
-# - Rotate periodically for security
-#
-geminiApiKey=your_gemini_api_key_here
-
 # Release Signing Configuration
 # -----------------------------
 # These properties are used for signing release builds
@@ -46,9 +35,7 @@ MYRIAD_RELEASE_KEY_PASSWORD=your_key_alias_password_here
 
 # Security Checklist:
 # -------------------
-# □ API key is valid and starts with "AIza"
 # □ Keystore passwords are strong and unique
 # □ Keystore file is backed up securely
 # □ This file is in .gitignore
 # □ Passwords are stored in password manager
-# □ Team members have their own API keys (don't share)

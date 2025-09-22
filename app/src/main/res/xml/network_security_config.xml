@@ -5,9 +5,7 @@
 -->
 <network-security-config>
     <domain-config cleartextTrafficPermitted="false">
-        <!-- Gemini API Configuration -->
-        <domain includeSubdomains="true">generativelanguage.googleapis.com</domain>
-        <domain includeSubdomains="true">makersuite.google.com</domain>
+        <!-- Future API endpoints can be configured here -->
     </domain-config>
 
     <!-- Debug configuration (only for debug builds) -->

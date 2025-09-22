@@ -78,9 +78,6 @@ java -version
 
 **Step 1**: Create `local.properties` in project root:
 ```properties
-# Google Gemini API Key
-geminiApiKey=your_actual_api_key_here
-
 # Release Signing Configuration  
 MYRIAD_RELEASE_STORE_PASSWORD=your_keystore_password
 MYRIAD_RELEASE_KEY_PASSWORD=your_key_password

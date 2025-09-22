@@ -180,12 +180,6 @@ This document outlines the detailed technical requirements and constraints for P
 
 ### Required APIs
 
-**Gemini AI (Google):**
-- **Purpose**: OCR, translation, content analysis
-- **Requirements**: Valid API key, internet connectivity
-- **Limits**: Rate limiting, quota management
-- **Fallback**: Offline mode for core functionality
-
 **Android System APIs:**
 - **Storage Access Framework**: File system access
 - **MediaStore**: Media file metadata

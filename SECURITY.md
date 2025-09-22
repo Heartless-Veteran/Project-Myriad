@@ -35,7 +35,6 @@ The following versions of Project Myriad are currently being supported with secu
 
 This security policy covers:
 - **Mobile Application**: Android APK security vulnerabilities
-- **API Integrations**: Gemini API and other third-party service integrations
 - **Data Storage**: Local database and file storage security
 - **Network Communications**: HTTPS and certificate pinning issues
 - **Build Process**: Supply chain and dependency vulnerabilities
