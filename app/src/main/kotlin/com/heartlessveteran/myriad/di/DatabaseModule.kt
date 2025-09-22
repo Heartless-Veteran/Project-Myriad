@@ -20,18 +20,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): MyriadDatabase {
-        return Room
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): MyriadDatabase =
+        Room
             .databaseBuilder(
                 context.applicationContext,
                 MyriadDatabase::class.java,
                 MyriadDatabase.DATABASE_NAME,
             ).fallbackToDestructiveMigration()
             .build()
-    }
 
     @Provides
     fun provideMangaDao(database: MyriadDatabase): MangaDao = database.mangaDao()

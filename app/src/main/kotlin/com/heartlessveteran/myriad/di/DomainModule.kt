@@ -17,16 +17,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DomainModule {
+    @Binds
+    @Singleton
+    abstract fun bindPluginManager(pluginManagerImpl: PluginManagerImpl): PluginManager
 
     @Binds
     @Singleton
-    abstract fun bindPluginManager(
-        pluginManagerImpl: PluginManagerImpl
-    ): PluginManager
-
-    @Binds
-    @Singleton
-    abstract fun bindSearchManager(
-        searchManagerImpl: SearchManagerImpl
-    ): SearchManager
+    abstract fun bindSearchManager(searchManagerImpl: SearchManagerImpl): SearchManager
 }

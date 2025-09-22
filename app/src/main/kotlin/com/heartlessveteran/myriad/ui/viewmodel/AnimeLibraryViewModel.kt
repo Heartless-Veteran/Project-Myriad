@@ -8,6 +8,7 @@ import com.heartlessveteran.myriad.core.domain.usecase.AddAnimeToLibraryUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetAnimeDetailsUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.GetLibraryAnimeUseCase
 import com.heartlessveteran.myriad.core.domain.usecase.SearchLibraryAnimeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 /**
@@ -80,157 +80,159 @@ sealed class AnimeLibraryUiEvent {
  * Uses Hilt dependency injection.
  */
 @HiltViewModel
-class AnimeLibraryViewModel @Inject constructor(
-    private val getLibraryAnimeUseCase: GetLibraryAnimeUseCase,
-    private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
-    private val addAnimeToLibraryUseCase: AddAnimeToLibraryUseCase,
-    private val searchLibraryAnimeUseCase: SearchLibraryAnimeUseCase,
-) : ViewModel() {
-    private val _uiState = MutableStateFlow(AnimeLibraryUiState())
-    val uiState: StateFlow<AnimeLibraryUiState> = _uiState.asStateFlow()
+class AnimeLibraryViewModel
+    @Inject
+    constructor(
+        private val getLibraryAnimeUseCase: GetLibraryAnimeUseCase,
+        private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
+        private val addAnimeToLibraryUseCase: AddAnimeToLibraryUseCase,
+        private val searchLibraryAnimeUseCase: SearchLibraryAnimeUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow(AnimeLibraryUiState())
+        val uiState: StateFlow<AnimeLibraryUiState> = _uiState.asStateFlow()
 
-    private val _uiEvent = Channel<AnimeLibraryUiEvent>()
-    val uiEvent = _uiEvent.receiveAsFlow()
+        private val _uiEvent = Channel<AnimeLibraryUiEvent>()
+        val uiEvent = _uiEvent.receiveAsFlow()
 
-    // StateFlow for library anime with automatic updates
-    val libraryAnime: StateFlow<List<Anime>> =
-        getLibraryAnimeUseCase()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList(),
-            )
+        // StateFlow for library anime with automatic updates
+        val libraryAnime: StateFlow<List<Anime>> =
+            getLibraryAnimeUseCase()
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = emptyList(),
+                )
 
-    init {
-        // Update UI state when library anime changes
-        viewModelScope.launch {
-            libraryAnime.collect { anime ->
-                _uiState.value =
-                    _uiState.value.copy(
-                        anime = filterAnime(anime, _uiState.value.searchQuery, _uiState.value.selectedGenre),
-                        isLoading = false,
-                    )
-            }
-        }
-    }
-
-    /**
-     * Handles events from the UI
-     */
-    fun onEvent(event: AnimeLibraryEvent) {
-        when (event) {
-            is AnimeLibraryEvent.SearchQueryChanged -> {
-                _uiState.value = _uiState.value.copy(searchQuery = event.query)
-                applyFilters()
-            }
-            is AnimeLibraryEvent.FilterByGenre -> {
-                _uiState.value = _uiState.value.copy(selectedGenre = event.genre)
-                applyFilters()
-            }
-            is AnimeLibraryEvent.AddToLibrary -> {
-                addAnimeToLibrary(event.anime)
-            }
-            is AnimeLibraryEvent.AnimeClicked -> {
-                handleAnimeClick(event.anime)
-            }
-            AnimeLibraryEvent.Refresh -> {
-                refreshLibrary()
-            }
-            AnimeLibraryEvent.ClearError -> {
-                _uiState.value = _uiState.value.copy(errorMessage = null)
-            }
-        }
-    }
-
-    /**
-     * Gets anime details by ID
-     */
-    fun getAnimeDetails(animeId: String) {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-
-            when (val result = getAnimeDetailsUseCase(animeId)) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    _uiEvent.trySend(AnimeLibraryUiEvent.NavigateToAnimeDetails(animeId))
-                }
-                is Result.Error -> {
+        init {
+            // Update UI state when library anime changes
+            viewModelScope.launch {
+                libraryAnime.collect { anime ->
                     _uiState.value =
                         _uiState.value.copy(
+                            anime = filterAnime(anime, _uiState.value.searchQuery, _uiState.value.selectedGenre),
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to get anime details",
                         )
-                    _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar(result.message ?: "Unknown error"))
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
                 }
             }
         }
-    }
 
-    private fun handleAnimeClick(anime: Anime) {
-        // Navigate to anime details or player based on context
-        // For now, just show anime details
-        getAnimeDetails(anime.id)
-    }
+        /**
+         * Handles events from the UI
+         */
+        fun onEvent(event: AnimeLibraryEvent) {
+            when (event) {
+                is AnimeLibraryEvent.SearchQueryChanged -> {
+                    _uiState.value = _uiState.value.copy(searchQuery = event.query)
+                    applyFilters()
+                }
+                is AnimeLibraryEvent.FilterByGenre -> {
+                    _uiState.value = _uiState.value.copy(selectedGenre = event.genre)
+                    applyFilters()
+                }
+                is AnimeLibraryEvent.AddToLibrary -> {
+                    addAnimeToLibrary(event.anime)
+                }
+                is AnimeLibraryEvent.AnimeClicked -> {
+                    handleAnimeClick(event.anime)
+                }
+                AnimeLibraryEvent.Refresh -> {
+                    refreshLibrary()
+                }
+                AnimeLibraryEvent.ClearError -> {
+                    _uiState.value = _uiState.value.copy(errorMessage = null)
+                }
+            }
+        }
 
-    private fun addAnimeToLibrary(anime: Anime) {
-        viewModelScope.launch {
+        /**
+         * Gets anime details by ID
+         */
+        fun getAnimeDetails(animeId: String) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+
+                when (val result = getAnimeDetailsUseCase(animeId)) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _uiEvent.trySend(AnimeLibraryUiEvent.NavigateToAnimeDetails(animeId))
+                    }
+                    is Result.Error -> {
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = result.message ?: "Failed to get anime details",
+                            )
+                        _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar(result.message ?: "Unknown error"))
+                    }
+                    is Result.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+                }
+            }
+        }
+
+        private fun handleAnimeClick(anime: Anime) {
+            // Navigate to anime details or player based on context
+            // For now, just show anime details
+            getAnimeDetails(anime.id)
+        }
+
+        private fun addAnimeToLibrary(anime: Anime) {
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+
+                when (val result = addAnimeToLibraryUseCase(anime)) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                        _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar("Added to library"))
+                    }
+                    is Result.Error -> {
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                errorMessage = result.message ?: "Failed to add anime to library",
+                            )
+                        _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar(result.message ?: "Unknown error"))
+                    }
+                    is Result.Loading -> {
+                        _uiState.value = _uiState.value.copy(isLoading = true)
+                    }
+                }
+            }
+        }
+
+        private fun refreshLibrary() {
             _uiState.value = _uiState.value.copy(isLoading = true)
+            // Library data is automatically refreshed via Flow
+            // This could trigger a refresh from remote sources if needed
+        }
 
-            when (val result = addAnimeToLibraryUseCase(anime)) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(isLoading = false)
-                    _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar("Added to library"))
-                }
-                is Result.Error -> {
-                    _uiState.value =
-                        _uiState.value.copy(
-                            isLoading = false,
-                            errorMessage = result.message ?: "Failed to add anime to library",
-                        )
-                    _uiEvent.trySend(AnimeLibraryUiEvent.ShowSnackbar(result.message ?: "Unknown error"))
-                }
-                is Result.Loading -> {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
-                }
+        private fun applyFilters() {
+            val currentAnime = libraryAnime.value
+            val filtered = filterAnime(currentAnime, _uiState.value.searchQuery, _uiState.value.selectedGenre)
+            _uiState.value = _uiState.value.copy(anime = filtered)
+        }
+
+        private fun filterAnime(
+            anime: List<Anime>,
+            query: String,
+            genre: String?,
+        ): List<Anime> {
+            var filtered = anime
+
+            if (query.isNotBlank()) {
+                filtered =
+                    filtered.filter {
+                        it.title.contains(query, ignoreCase = true) ||
+                            it.alternativeTitles.any { title -> title.contains(query, ignoreCase = true) } ||
+                            it.description.contains(query, ignoreCase = true)
+                    }
             }
+
+            if (genre != null) {
+                filtered = filtered.filter { it.genres.contains(genre) }
+            }
+
+            return filtered
         }
     }
-
-    private fun refreshLibrary() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
-        // Library data is automatically refreshed via Flow
-        // This could trigger a refresh from remote sources if needed
-    }
-
-    private fun applyFilters() {
-        val currentAnime = libraryAnime.value
-        val filtered = filterAnime(currentAnime, _uiState.value.searchQuery, _uiState.value.selectedGenre)
-        _uiState.value = _uiState.value.copy(anime = filtered)
-    }
-
-    private fun filterAnime(
-        anime: List<Anime>,
-        query: String,
-        genre: String?,
-    ): List<Anime> {
-        var filtered = anime
-
-        if (query.isNotBlank()) {
-            filtered =
-                filtered.filter {
-                    it.title.contains(query, ignoreCase = true) ||
-                        it.alternativeTitles.any { title -> title.contains(query, ignoreCase = true) } ||
-                        it.description.contains(query, ignoreCase = true)
-                }
-        }
-
-        if (genre != null) {
-            filtered = filtered.filter { it.genres.contains(genre) }
-        }
-
-        return filtered
-    }
-}

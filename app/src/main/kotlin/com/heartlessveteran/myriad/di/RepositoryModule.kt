@@ -19,22 +19,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindMangaRepository(mangaRepositoryImpl: MangaRepositoryImpl): MangaRepository
 
     @Binds
     @Singleton
-    abstract fun bindMangaRepository(
-        mangaRepositoryImpl: MangaRepositoryImpl
-    ): MangaRepository
+    abstract fun bindAnimeRepository(animeRepositoryImpl: AnimeRepositoryImpl): AnimeRepository
 
     @Binds
     @Singleton
-    abstract fun bindAnimeRepository(
-        animeRepositoryImpl: AnimeRepositoryImpl
-    ): AnimeRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindPluginRepository(
-        pluginRepositoryImpl: PluginRepositoryImpl
-    ): PluginRepository
+    abstract fun bindPluginRepository(pluginRepositoryImpl: PluginRepositoryImpl): PluginRepository
 }
