@@ -153,6 +153,11 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
 
+    // Media3 ExoPlayer for video playback
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
+
     // Baseline Profile dependency - commented out for now
     // baselineProfile(project(":baselineprofile"))
 
