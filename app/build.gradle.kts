@@ -1,21 +1,20 @@
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    // Temporarily disabled due to Kotlin 2.0 KAPT compatibility - using manual DI
-    // id("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("org.jetbrains.kotlin.plugin.compose")
-    // id("androidx.baselineprofile")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
+    // alias(libs.plugins.baseline.profile)
     // Code Quality plugins
-    id("org.jlleitschuh.gradle.ktlint")
-    id("io.gitlab.arturbosch.detekt") // Re-enabled for code quality checks
-    id("org.jetbrains.dokka")
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
     id("jacoco")
     // Security plugins
-    id("org.owasp.dependencycheck") version "11.1.0"
+    alias(libs.plugins.owasp.dependency.check)
     // Firebase plugins commented out - optional feature
     // id("com.google.gms.google-services")
     // id("com.google.firebase.crashlytics")
@@ -23,12 +22,12 @@ plugins {
 
 android {
     namespace = "com.heartlessveteran.myriad"
-    compileSdk = 36
+    compileSdk = libs.versions.compile.sdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.heartlessveteran.myriad"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = libs.versions.min.sdk.get().toInt()
+        targetSdk = libs.versions.target.sdk.get().toInt()
         versionCode = 2 // Increment for new release
         versionName = "1.0.1" // Updated to new user-facing version
 
@@ -120,7 +119,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     packaging {
@@ -131,17 +130,18 @@ android {
 }
 
 dependencies {
-    // Core Android - minimal dependencies for testing release build
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-    implementation("androidx.activity:activity-compose:1.11.0")
+    // Core Android
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.activity.compose)
 
     // Compose BOM and UI
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose.ui)
+
+    // Hilt Dependency Injection
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Core modules
     implementation(project(":core:ui"))
@@ -152,14 +152,12 @@ dependencies {
     // baselineProfile(project(":baselineprofile"))
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.bundles.android.testing)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.bundles.compose.ui.testing)
 
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation(libs.bundles.compose.ui.debug)
 }
 
 // Code Quality Configurations
