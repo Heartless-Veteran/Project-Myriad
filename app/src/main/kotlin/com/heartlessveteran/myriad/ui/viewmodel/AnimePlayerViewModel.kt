@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * UI state for the anime player screen with enhanced video playback features
@@ -188,9 +190,10 @@ sealed class AnimePlayerUiEvent {
 /**
  * ViewModel for the anime player screen.
  * Handles video playback state, episode management, and progress tracking.
- * Uses manual dependency injection.
+ * Uses Hilt dependency injection.
  */
-class AnimePlayerViewModel(
+@HiltViewModel
+class AnimePlayerViewModel @Inject constructor(
     private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
     private val getAnimeEpisodesUseCase: GetAnimeEpisodesUseCase,
     private val updateEpisodeProgressUseCase: UpdateEpisodeProgressUseCase,

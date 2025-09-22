@@ -4,13 +4,16 @@ import com.heartlessveteran.myriad.core.domain.entities.Manga
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.MangaRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Use case for getting library manga.
  * Handles business logic for retrieving user's manga library.
  * Returns reactive Flow for automatic UI updates when data changes.
  */
-class GetLibraryMangaUseCase(
+@Singleton
+class GetLibraryMangaUseCase @Inject constructor(
     private val mangaRepository: MangaRepository
 ) {
     /**
@@ -27,7 +30,8 @@ class GetLibraryMangaUseCase(
  * Use case for getting manga details by ID.
  * Handles business logic for retrieving specific manga information.
  */
-class GetMangaDetailsUseCase(
+@Singleton
+class GetMangaDetailsUseCase @Inject constructor(
     private val mangaRepository: MangaRepository
 ) {
     /**
@@ -52,7 +56,8 @@ class GetMangaDetailsUseCase(
  * Use case for adding manga to library.
  * Handles business logic for saving manga to the local database.
  */
-class AddMangaToLibraryUseCase(
+@Singleton
+class AddMangaToLibraryUseCase @Inject constructor(
     private val mangaRepository: MangaRepository
 ) {
     /**

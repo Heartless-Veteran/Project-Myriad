@@ -10,11 +10,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of SearchManager for global search across all enabled sources
  */
-class SearchManagerImpl(
+@Singleton
+class SearchManagerImpl @Inject constructor(
     private val pluginManager: PluginManager
 ) : SearchManager {
 

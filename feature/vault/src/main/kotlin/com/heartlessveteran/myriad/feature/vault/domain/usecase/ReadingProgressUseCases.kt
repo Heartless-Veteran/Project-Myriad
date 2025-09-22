@@ -43,7 +43,7 @@ class UpdateReadingProgressUseCase(
             // Update manga progress
             val manga = mangaRepository.getMangaById(mangaId)
             if (manga != null) {
-                val allChapters = mangaRepository.getChaptersForManga(mangaId)
+                val allChapters = mangaRepository.getChaptersForMangaList(mangaId)
                 val readChapters = allChapters.count { it.isRead }
                 
                 val updatedManga = manga.copy(

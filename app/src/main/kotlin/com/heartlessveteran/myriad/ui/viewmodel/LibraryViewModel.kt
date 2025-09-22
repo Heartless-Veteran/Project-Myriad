@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * UI state for the library screen
@@ -67,9 +69,10 @@ sealed class LibraryUiEvent {
  * ViewModel for the library screen.
  * Follows MVVM architecture with Clean Architecture use cases.
  * Exposes UI state via StateFlow and handles events properly.
- * Uses manual dependency injection.
+ * Uses Hilt dependency injection.
  */
-class LibraryViewModel(
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
     private val getLibraryMangaUseCase: GetLibraryMangaUseCase,
     private val getMangaDetailsUseCase: GetMangaDetailsUseCase,
     private val addMangaToLibraryUseCase: AddMangaToLibraryUseCase,

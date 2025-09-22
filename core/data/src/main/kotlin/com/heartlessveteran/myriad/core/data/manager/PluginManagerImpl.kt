@@ -12,11 +12,14 @@ import com.heartlessveteran.myriad.core.domain.repository.Source
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Date
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of PluginManager for managing source plugins
  */
-class PluginManagerImpl(
+@Singleton
+class PluginManagerImpl @Inject constructor(
     private val pluginRepository: PluginRepository
 ) : PluginManager {
 

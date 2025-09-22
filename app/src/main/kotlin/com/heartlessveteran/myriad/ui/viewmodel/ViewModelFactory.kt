@@ -9,7 +9,15 @@ import com.heartlessveteran.myriad.DIContainer
 /**
  * ViewModelFactory that uses manual dependency injection.
  * Creates ViewModels with required dependencies from DIContainer.
+ * 
+ * @deprecated This class is deprecated in favor of Hilt dependency injection.
+ * ViewModels are now annotated with @HiltViewModel and injected automatically.
+ * This class will be removed once all ViewModels are migrated to Hilt.
  */
+@Deprecated(
+    message = "Use Hilt @HiltViewModel annotation instead",
+    replaceWith = ReplaceWith("hiltViewModel()")
+)
 class ViewModelFactory(
     private val diContainer: DIContainer,
 ) : ViewModelProvider.Factory {

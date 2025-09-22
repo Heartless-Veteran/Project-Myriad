@@ -5,13 +5,16 @@ import com.heartlessveteran.myriad.core.domain.entities.AnimeEpisode
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.AnimeRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Use case for getting library anime.
  * Handles business logic for retrieving user's anime library.
  * Returns reactive Flow for automatic UI updates when data changes.
  */
-class GetLibraryAnimeUseCase(
+@Singleton
+class GetLibraryAnimeUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -28,7 +31,8 @@ class GetLibraryAnimeUseCase(
  * Use case for getting anime details by ID.
  * Handles business logic for retrieving specific anime information.
  */
-class GetAnimeDetailsUseCase(
+@Singleton
+class GetAnimeDetailsUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -53,7 +57,8 @@ class GetAnimeDetailsUseCase(
  * Use case for adding anime to library.
  * Handles business logic for saving anime to the local database.
  */
-class AddAnimeToLibraryUseCase(
+@Singleton
+class AddAnimeToLibraryUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -80,7 +85,8 @@ class AddAnimeToLibraryUseCase(
  * Use case for getting anime episodes.
  * Handles business logic for retrieving episodes for a specific anime.
  */
-class GetAnimeEpisodesUseCase(
+@Singleton
+class GetAnimeEpisodesUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -98,7 +104,8 @@ class GetAnimeEpisodesUseCase(
  * Use case for updating episode watch progress.
  * Handles business logic for tracking viewing progress.
  */
-class UpdateEpisodeProgressUseCase(
+@Singleton
+class UpdateEpisodeProgressUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -129,7 +136,8 @@ class UpdateEpisodeProgressUseCase(
  * Use case for getting next unwatched episode.
  * Handles business logic for binge-watching functionality.
  */
-class GetNextUnwatchedEpisodeUseCase(
+@Singleton
+class GetNextUnwatchedEpisodeUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -154,7 +162,8 @@ class GetNextUnwatchedEpisodeUseCase(
  * Use case for importing anime from file.
  * Handles business logic for local file import and metadata extraction.
  */
-class ImportAnimeFromFileUseCase(
+@Singleton
+class ImportAnimeFromFileUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**
@@ -192,7 +201,8 @@ class ImportAnimeFromFileUseCase(
  * Use case for searching library anime.
  * Handles business logic for anime search functionality.
  */
-class SearchLibraryAnimeUseCase(
+@Singleton
+class SearchLibraryAnimeUseCase @Inject constructor(
     private val animeRepository: AnimeRepository
 ) {
     /**

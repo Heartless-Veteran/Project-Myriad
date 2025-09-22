@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 /**
  * UI state for the anime episode list screen
@@ -54,9 +56,10 @@ sealed class AnimeEpisodeListUiEvent {
 /**
  * ViewModel for the anime episode list screen.
  * Handles loading and displaying episodes for a specific anime.
- * Uses manual dependency injection.
+ * Uses Hilt dependency injection.
  */
-class AnimeEpisodeListViewModel(
+@HiltViewModel
+class AnimeEpisodeListViewModel @Inject constructor(
     private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase,
     private val getAnimeEpisodesUseCase: GetAnimeEpisodesUseCase,
 ) : ViewModel() {

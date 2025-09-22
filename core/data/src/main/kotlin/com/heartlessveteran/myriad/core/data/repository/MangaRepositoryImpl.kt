@@ -7,14 +7,18 @@ import com.heartlessveteran.myriad.core.domain.entities.MangaChapter
 import com.heartlessveteran.myriad.core.domain.model.Result
 import com.heartlessveteran.myriad.core.domain.repository.MangaRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Implementation of MangaRepository interface.
  * Handles data operations for manga entities using Room database.
  * Follows Clean Architecture by implementing domain repository interface.
  */
-class MangaRepositoryImpl(
+@Singleton
+class MangaRepositoryImpl @Inject constructor(
     private val mangaDao: MangaDao,
     private val chapterDao: ChapterDao
 ) : MangaRepository {
@@ -116,6 +120,36 @@ class MangaRepositoryImpl(
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e, "Failed to update chapter progress: ${e.message}")
+        }
+    }
+
+    override suspend fun getChaptersForMangaList(mangaId: String): List<MangaChapter> {
+        return chapterDao.getChaptersForManga(mangaId).first()
+    }
+
+    override suspend fun getChapterById(chapterId: String): MangaChapter? {
+        return try {
+            chapterDao.getChapterById(chapterId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun updateManga(manga: Manga): Result<Unit> {
+        return try {
+            mangaDao.updateManga(manga)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, "Failed to update manga: ${e.message}")
+        }
+    }
+
+    override suspend fun updateChapter(chapter: MangaChapter): Result<Unit> {
+        return try {
+            chapterDao.updateChapter(chapter)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, "Failed to update chapter: ${e.message}")
         }
     }
 }

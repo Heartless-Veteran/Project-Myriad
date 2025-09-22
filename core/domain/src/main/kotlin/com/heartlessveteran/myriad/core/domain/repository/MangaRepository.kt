@@ -143,5 +143,5 @@ interface MangaRepository {
      * @param mangaId Manga identifier
      * @return List of chapters for the manga
      */
-    suspend fun getChaptersForManga(mangaId: String): List<MangaChapter>
+    suspend fun getChaptersForMangaList(mangaId: String): List<MangaChapter>
 }
