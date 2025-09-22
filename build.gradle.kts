@@ -1,35 +1,20 @@
 // Top-level build file for Project Myriad - Pure Android Kotlin Application
 
-buildscript {
-    extra.apply {
-        set("buildToolsVersion", "35.0.0")
-        set("minSdkVersion", 24)
-        set("compileSdkVersion", 35)
-        set("targetSdkVersion", 35)
-        set("kotlinVersion", "2.1.0")
-        set("composeVersion", "2024.02.00")
-        set("hiltVersion", "2.48")
-        set("roomVersion", "2.6.1")
-        set("retrofitVersion", "2.9.0")
-        set("coilVersion", "2.5.0")
-    }
-}
-
 plugins {
-    id("com.android.application") version "8.13.0" apply false
-    id("com.android.library") version "8.13.0" apply false
-    id("com.android.test") version "8.13.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.20" apply false
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3" apply false
-    // Temporarily disabled due to Kotlin 2.0 KAPT compatibility
-    // id("com.google.dagger.hilt.android") version "2.57.1" apply false
-    id("androidx.baselineprofile") version "1.4.1" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.ksp) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.baseline.profile) apply false
     // Code Quality plugins
-    id("org.jlleitschuh.gradle.ktlint") version "13.1.0" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
-    id("org.jetbrains.dokka") version "2.0.0" apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.owasp.dependency.check) apply false
     // Firebase plugins - optional features
     // id("com.google.gms.google-services") version "4.4.0" apply false
     // id("com.google.firebase.crashlytics") version "2.9.9" apply false
