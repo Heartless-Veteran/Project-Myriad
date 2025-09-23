@@ -99,7 +99,7 @@ fi
 print_status "Attempting to build release APK for size analysis..."
 if ./gradlew assembleRelease --no-daemon --quiet 2>/dev/null; then
     # Check APK size
-    APK_SIZE=$(stat -c%s "app/build/outputs/apk/release/app-release.apk" 2>/dev/null || echo "0")
+    APK_SIZE=$(wc -c < "app/build/outputs/apk/release/app-release.apk" 2>/dev/null || echo "0")
     APK_SIZE_MB=$((APK_SIZE / 1024 / 1024))
 
     if [ $APK_SIZE_MB -gt 0 ]; then
