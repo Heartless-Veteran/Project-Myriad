@@ -67,7 +67,8 @@ jobs:
       run: ./gradlew test --stacktrace
 
     - name: Generate test coverage report
-      run: ./gradlew jacocoTestReport --continue || true
+      run: ./gradlew jacocoTestReport --continue
+      continue-on-error: true
 
     # Upload all artifacts
     - name: Upload build artifacts
