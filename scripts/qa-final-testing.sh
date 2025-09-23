@@ -225,7 +225,7 @@ if ./gradlew assembleRelease --no-daemon --quiet 2>/dev/null; then
     print_status "Attempting Android App Bundle generation..."
     if ./gradlew bundleRelease --no-daemon --quiet 2>/dev/null; then
         if [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
-            AAB_SIZE=$(wc -c < "app/build/outputs/bundle/release/app-release.aab" 2>/dev/null || echo "0")
+            AAB_SIZE=$( (wc -c < "app/build/outputs/bundle/release/app-release.aab" 2>/dev/null || echo "0") | xargs )
             AAB_SIZE_MB=$((AAB_SIZE / 1024 / 1024))
             print_status "✓ Android App Bundle created: ${AAB_SIZE_MB}MB"
         else
