@@ -135,7 +135,8 @@ jobs:
         node-version: '18'
 
     - name: Run architecture validation
-      run: node scripts/validate-architecture.js || true
+      if: ${{ exists('scripts/validate-architecture.js') }}
+      run: node scripts/validate-architecture.js
 
     - name: Update README statistics
       run: node scripts/update-readme-stats.js || true
