@@ -56,8 +56,8 @@ Project Myriad uses a **streamlined automated workflow system** that runs on eve
 ```yaml
 # Runs on: push, PR, daily schedule
 # Jobs:
-# - build-and-quality: Build APK, ktlint, detekt, Android lint, unit tests, coverage
-# - documentation: Dokka generation, architecture validation, README stats
+# - build-and-quality: Build APK, ktlint, detekt, Android lint, unit tests, test coverage reporting
+# - documentation: Dokka generation, architecture validation, README stats, Node.js validation scripts
 # - release: Release APK generation (main branch only)
 ```
 
