@@ -2,62 +2,51 @@
     <!-- Phase 5: Accessibility themes for WCAG 2.1 AA compliance -->
     
     <!-- High contrast theme for accessibility -->
-    <style name="Theme.Myriad.HighContrast" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@android:color/black</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorPrimaryContainer">@android:color/white</item>
-        <item name="colorOnPrimaryContainer">@android:color/black</item>
-        <item name="colorSecondary">@android:color/black</item>
-        <item name="colorOnSecondary">@android:color/white</item>
-        <item name="colorSurface">@android:color/white</item>
-        <item name="colorOnSurface">@android:color/black</item>
-        <item name="colorBackground">@android:color/white</item>
-        <item name="colorOnBackground">@android:color/black</item>
+    <style name="Theme.Myriad.HighContrast" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:colorAccent">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:textColorSecondary">@android:color/black</item>
     </style>
     
     <!-- Large text theme for accessibility -->
-    <style name="Theme.Myriad.LargeText" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Myriad.LargeText" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:textSize">18sp</item>
-        <item name="textAppearanceHeadline1">@style/TextAppearance.Myriad.Headline1.Large</item>
-        <item name="textAppearanceHeadline2">@style/TextAppearance.Myriad.Headline2.Large</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.Myriad.Body1.Large</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.Myriad.Body2.Large</item>
-        <item name="textAppearanceButton">@style/TextAppearance.Myriad.Button.Large</item>
+        <!-- Note: Custom text appearances can be applied programmatically -->
     </style>
     
     <!-- Text appearances for large text accessibility -->
-    <style name="TextAppearance.Myriad.Headline1.Large" parent="TextAppearance.Material3.HeadlineLarge">
+    <style name="TextAppearance.Myriad.Headline1.Large" parent="@android:style/TextAppearance.Material.Headline">
         <item name="android:textSize">36sp</item>
     </style>
     
-    <style name="TextAppearance.Myriad.Headline2.Large" parent="TextAppearance.Material3.HeadlineMedium">
+    <style name="TextAppearance.Myriad.Headline2.Large" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textSize">32sp</item>
     </style>
     
-    <style name="TextAppearance.Myriad.Body1.Large" parent="TextAppearance.Material3.BodyLarge">
+    <style name="TextAppearance.Myriad.Body1.Large" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">20sp</item>
     </style>
     
-    <style name="TextAppearance.Myriad.Body2.Large" parent="TextAppearance.Material3.BodyMedium">
+    <style name="TextAppearance.Myriad.Body2.Large" parent="@android:style/TextAppearance.Material.Body2">
         <item name="android:textSize">18sp</item>
     </style>
     
-    <style name="TextAppearance.Myriad.Button.Large" parent="TextAppearance.Material3.LabelLarge">
+    <style name="TextAppearance.Myriad.Button.Large" parent="@android:style/TextAppearance.Material.Button">
         <item name="android:textSize">18sp</item>
         <item name="android:textAllCaps">false</item>
     </style>
     
     <!-- Phase 5: Enhanced focus indicators for keyboard navigation -->
-    <style name="Widget.Myriad.Button.Accessible" parent="Widget.Material3.Button">
+    <style name="Widget.Myriad.Button.Accessible" parent="@android:style/Widget.Material.Button">
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:minWidth">48dp</item>
     </style>
     
-    <style name="Widget.Myriad.ImageButton.Accessible" parent="Widget.Material3.Button.Icon">
+    <style name="Widget.Myriad.ImageButton.Accessible" parent="@android:style/Widget.Material.ImageButton">
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:minHeight">48dp</item>
