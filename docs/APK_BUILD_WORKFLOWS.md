@@ -15,6 +15,13 @@ This document describes the comprehensive APK build workflows for **Project Myri
 
 ## 🔧 Available APK Build Workflows
 
+### 🔒 Security Features
+Both workflows implement **security best practices**:
+- **Pinned Actions**: All third-party actions pinned to specific commit SHAs to prevent supply chain attacks
+- **Minimal Permissions**: Each workflow only requests necessary permissions
+- **Secure Artifact Handling**: Safe artifact upload and retention policies
+- **Build Isolation**: Separate job environments for enhanced security
+
 ### 1. Build APK (`build-apk.yml`)
 **Comprehensive APK building workflow** for the completed application:
 

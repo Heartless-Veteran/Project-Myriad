@@ -68,7 +68,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v5.2.0
 
       - name: Determine build configuration
         id: determine-build
@@ -88,16 +88,16 @@ jobs:
           echo "key=${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle.properties') }}" >> $GITHUB_OUTPUT
 
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v4
+        uses: gradle/actions/wrapper-validation@06142dcc492156576dcf7d81030b9d6b24651c60 # v4.2.0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@18962e69652b8d23a3b63dade1f64e3b4b3cb7c8 # v4.2.0
 
       - name: Check compilation
         id: check-compilation
@@ -132,22 +132,22 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v5.2.0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@18962e69652b8d23a3b63dade1f64e3b4b3cb7c8 # v4.2.0
         with:
           gradle-home-cache-cleanup: true
           cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       - name: Cache Gradle dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4.1.2
         with:
           path: |
             ~/.gradle/caches
@@ -278,7 +278,7 @@ jobs:
 
       - name: Upload APK artifact
         if: steps.build-apk.outputs.apk-created == 'true' && github.event.inputs.upload_artifacts != 'false'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: ${{ matrix.artifact-name }}
           path: |
@@ -289,7 +289,7 @@ jobs:
 
       - name: Upload AAB artifact
         if: steps.build-aab.outputs.aab-created == 'true' && github.event.inputs.upload_artifacts != 'false'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: ${{ matrix.artifact-name }}-bundle
           path: |
@@ -300,7 +300,7 @@ jobs:
 
       - name: Upload build reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: build-reports-${{ matrix.build-type }}
           path: |
