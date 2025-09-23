@@ -98,7 +98,7 @@ echo -e "Total tests: $TOTAL_TESTS"
 echo -e "Passed: ${GREEN}$PASSED_TESTS${NC}"
 echo -e "Failed: ${RED}$((TOTAL_TESTS - PASSED_TESTS))${NC}"
 
-PASS_RATE=$((PASSED_TESTS * 100 / TOTAL_TESTS))
+PASS_RATE=$(( TOTAL_TESTS > 0 ? (PASSED_TESTS * 100) / TOTAL_TESTS : 0 ))
 echo -e "Success rate: ${GREEN}${PASS_RATE}%${NC}"
 
 echo ""
