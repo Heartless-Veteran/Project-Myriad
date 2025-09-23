@@ -189,6 +189,10 @@ dependencies {
 
     // Feature modules
     implementation(project(":feature:browser"))
+    implementation(project(":feature:vault"))
+    implementation(project(":feature:ai"))
+    implementation(project(":feature:reader"))
+    implementation(project(":feature:settings"))
 
     // Media3 ExoPlayer for video playback
     implementation(libs.media3.exoplayer)
