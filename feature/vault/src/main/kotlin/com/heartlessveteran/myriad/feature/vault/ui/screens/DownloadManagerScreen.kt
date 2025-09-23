@@ -129,7 +129,7 @@ fun DownloadManagerScreen(
                         )
                     }
                     Icon(
-                        Icons.Default.Download,
+                        Icons.Default.Add,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
@@ -168,7 +168,7 @@ fun DownloadManagerScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Icon(
-                        Icons.Default.Download,
+                        Icons.Default.Add,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -313,7 +313,7 @@ private fun DownloadItemCard(
                 
                 if (progress?.status != DownloadStatus.COMPLETED) {
                     IconButton(onClick = onCancel) {
-                        Icon(Icons.Default.Cancel, contentDescription = "Cancel")
+                        Icon(Icons.Default.Close, contentDescription = "Cancel")
                     }
                 }
             }

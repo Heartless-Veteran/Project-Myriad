@@ -170,7 +170,7 @@ fun AIProviderDemoScreen(
                             }
                         }
                     }
-                    is AIOperationState.Success<*> -> {
+                    is AIOperationState.Success -> {
                         LazyColumn {
                             when (val data = aiOperationState.data) {
                                 is List<*> -> {

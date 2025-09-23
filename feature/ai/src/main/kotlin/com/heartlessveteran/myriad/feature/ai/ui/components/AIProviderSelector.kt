@@ -1,12 +1,13 @@
 package com.heartlessveteran.myriad.feature.ai.ui.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +23,6 @@ import com.heartlessveteran.myriad.core.data.ai.OpenAIProvider
  * Composable component for selecting AI providers.
  * Follows Material Design 3 guidelines and project UI patterns.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AIProviderSelector(
     providers: List<AIProvider>,
@@ -32,24 +32,18 @@ fun AIProviderSelector(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier
-    ) {
-        TextField(
+    Box(modifier = modifier) {
+        OutlinedTextField(
             value = selectedProvider.name,
             onValueChange = {},
             readOnly = true,
             label = { Text("AI Provider") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier
-                .menuAnchor(type = MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
+                .clickable { expanded = true }
         )
         
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {

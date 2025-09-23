@@ -261,7 +261,7 @@ private fun MangaGrid(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Icon(
-                    Icons.Default.SearchOff,
+                    Icons.Default.Search,
                     contentDescription = null,
                     modifier = Modifier.size(64.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -312,7 +312,7 @@ private fun MangaGridItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            Icons.Default.Book,
+                            Icons.Default.Info,
                             contentDescription = null,
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -333,8 +333,8 @@ private fun MangaGridItem(
                         )
                     ) {
                         Icon(
-                            Icons.Default.Download,
-                            contentDescription = "Download",
+                            Icons.Default.Add,
+                            contentDescription = "Add to library",
                             modifier = Modifier.padding(4.dp),
                             tint = MaterialTheme.colorScheme.primary
                         )
