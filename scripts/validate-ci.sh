@@ -43,11 +43,11 @@ echo "3. Testing individual scripts..."
 # Test Node.js scripts
 if [ -f "scripts/validate-architecture.js" ]; then
     echo "   Testing architecture validation..."
-    node scripts/validate-architecture.js >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
+    if node scripts/validate-architecture.js >/dev/null 2>&1; then
         echo "   ✅ Architecture validation script works"
     else
         echo "   ⚠️  Architecture validation script has issues"
+        ALL_GOOD=false
     fi
 fi
 
