@@ -41,16 +41,24 @@ class UpdateReadingProgressUseCase(
             }
 
             // Update manga progress
-            val manga = mangaRepository.getMangaById(mangaId)
-            if (manga != null) {
-                val allChapters = mangaRepository.getChaptersForMangaList(mangaId)
-                val readChapters = allChapters.count { it.isRead }
-                
-                val updatedManga = manga.copy(
-                    readChapters = readChapters,
-                    lastReadDate = Date()
-                )
-                mangaRepository.updateManga(updatedManga)
+            when (val mangaResult = mangaRepository.getMangaById(mangaId)) {
+                is Result.Success -> {
+                    val manga = mangaResult.data
+                    val allChapters = mangaRepository.getChaptersForMangaList(mangaId)
+                    val readChapters = allChapters.count { it.isRead }
+                    
+                    val updatedManga = manga.copy(
+                        readChapters = readChapters,
+                        lastReadDate = Date()
+                    )
+                    mangaRepository.updateManga(updatedManga)
+                }
+                is Result.Error -> {
+                    // Log error but don't fail the operation
+                }
+                is Result.Loading -> {
+                    // Should not happen in this context but handle for completeness
+                }
             }
 
             Result.Success(Unit)
