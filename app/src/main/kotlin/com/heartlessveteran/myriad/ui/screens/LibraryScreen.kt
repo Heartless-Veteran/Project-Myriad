@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -245,6 +246,14 @@ private fun EmptyLibraryContent(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            
+            // Add demo reader access
+            Button(
+                onClick = { /* Navigate to Reader demo */ },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text("Demo Reader")
+            }
         }
     }
 }

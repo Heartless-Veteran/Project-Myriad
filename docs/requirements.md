@@ -341,7 +341,7 @@ Project Myriad implements three primary feature pillars as described in the [pro
 ## Related Documentation
 
 - [Development Guide](../DEVELOPMENT.md) - Setup and build instructions
-- [Architecture Implementation](../ARCHITECTURE_IMPLEMENTATION.md) - Technical architecture
+- [Architecture Overview](../ARCHITECTURE.md) - Technical architecture
 - [Contributing Guide](../CONTRIBUTING.md) - Development standards
 - [Security Policy](../SECURITY.md) - Security guidelines
 

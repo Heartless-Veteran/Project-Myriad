@@ -24,8 +24,7 @@ Start here if you're new to Project Myriad:
 For understanding the technical architecture:
 
 - **[ARCHITECTURE.md](../ARCHITECTURE.md)** - Complete architecture documentation (authoritative source)
-- **[ARCHITECTURE_IMPLEMENTATION.md](../ARCHITECTURE_IMPLEMENTATION.md)** - Implementation status and validation
-- **[ARCHITECTURE_STATUS.md](../ARCHITECTURE_STATUS.md)** - Current feature implementation status
+- **[ROADMAP.md](../ROADMAP.md)** - Current implementation status and development phases
 
 ### Requirements & Specifications
 For detailed technical requirements:
@@ -36,8 +35,7 @@ For detailed technical requirements:
 ### Development Resources
 For active development work:
 
-- **[DEVELOPMENT.md](../DEVELOPMENT.md)** - Build instructions, coding standards, testing guidelines
-- **[BUILD_WITHOUT_ANDROID_STUDIO.md](../BUILD_WITHOUT_ANDROID_STUDIO.md)** - Alternative build methods
+- **[DEVELOPMENT.md](../DEVELOPMENT.md)** - Build instructions, coding standards, testing guidelines (includes CLI build methods)
 - **[RELEASE_BUILD_GUIDE.md](../RELEASE_BUILD_GUIDE.md)** - Production release process
 - **[AUTOMATED_WORKFLOW.md](AUTOMATED_WORKFLOW.md)** - CI/CD and automation details
 
@@ -85,7 +83,7 @@ For project governance:
 → Check feature-specific docs in the [Feature Documentation](#feature-documentation) section
 
 **Build the project**
-→ See build instructions in **[DEVELOPMENT.md](../DEVELOPMENT.md)** or **[BUILD_WITHOUT_ANDROID_STUDIO.md](../BUILD_WITHOUT_ANDROID_STUDIO.md)**
+→ See comprehensive build instructions in **[DEVELOPMENT.md](../DEVELOPMENT.md)**
 
 **Report security issues**
 → Follow guidelines in **[SECURITY.md](../SECURITY.md)**
