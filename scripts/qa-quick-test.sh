@@ -89,7 +89,17 @@ echo "📊 Step 3: Project Structure Analysis"
 echo "-------------------------------------"
 
 print_status "Analyzing project metrics..."
-KOTLIN_FILES=$(find app/src/main/kotlin core feature -name "*.kt" 2>/dev/null | wc -l || echo "0")
+
+# Only include existing directories for Kotlin file count
+KOTLIN_DIRS=()
+[ -d app/src/main/kotlin ] && KOTLIN_DIRS+=("app/src/main/kotlin")
+[ -d core ] && KOTLIN_DIRS+=("core")
+[ -d feature ] && KOTLIN_DIRS+=("feature")
+if [ ${#KOTLIN_DIRS[@]} -gt 0 ]; then
+    KOTLIN_FILES=$(find "${KOTLIN_DIRS[@]}" -name "*.kt" 2>/dev/null | wc -l)
+else
+    KOTLIN_FILES=0
+fi
 RESOURCE_FILES=$(find app/src/main/res -name "*.xml" -o -name "*.png" -o -name "*.jpg" 2>/dev/null | wc -l || echo "0")
 
 print_status "Project metrics: ${KOTLIN_FILES} Kotlin files, ${RESOURCE_FILES} resource files"
