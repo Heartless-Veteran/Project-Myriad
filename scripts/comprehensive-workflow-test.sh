@@ -21,7 +21,7 @@ function test_step() {
     echo -n "Testing: $test_name... "
     TOTAL_TESTS=$((TOTAL_TESTS + 1))
     
-    if eval "$test_command" >/dev/null 2>&1; then
+    if bash -c "$test_command" >/dev/null 2>&1; then
         if [ "$should_pass" = "true" ]; then
             echo -e "${GREEN}✅ PASSED${NC}"
             PASSED_TESTS=$((PASSED_TESTS + 1))
