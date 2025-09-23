@@ -60,7 +60,7 @@ class DownloadManager(
             )
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                30000L, // 30 seconds minimum backoff
                 TimeUnit.MILLISECONDS
             )
             .build()

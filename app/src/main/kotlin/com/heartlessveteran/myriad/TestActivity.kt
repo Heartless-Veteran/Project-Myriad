@@ -36,8 +36,8 @@ class TestActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Get the DI container from the application
-        val app = application as MyriadApplication
-        val diContainer = app.diContainer
+        // val app = application as MyriadApplication
+        // val diContainer = app.diContainer
 
         setContent {
             MyriadTheme {
@@ -45,17 +45,18 @@ class TestActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    ProjectMyriadDemo(diContainer)
+                    ProjectMyriadDemo()
                 }
             }
         }
 
         // Initialize test data
         lifecycleScope.launch {
-            initializeTestData(diContainer)
+            // initializeTestData(diContainer)
         }
     }
 
+    /*
     private suspend fun initializeTestData(diContainer: DIContainer) {
         try {
             // Create a test manga
@@ -76,10 +77,11 @@ class TestActivity : ComponentActivity() {
             // Handle error
         }
     }
+    */
 }
 
 @Composable
-fun ProjectMyriadDemo(diContainer: DIContainer) {
+fun ProjectMyriadDemo() {
     Scaffold(
         topBar = {
             Surface(
@@ -141,6 +143,7 @@ fun ProjectMyriadDemo(diContainer: DIContainer) {
                 }
             }
 
+            /*
             // Anime Library Demo
             val animeLibraryViewModel =
                 remember {
@@ -151,6 +154,7 @@ fun ProjectMyriadDemo(diContainer: DIContainer) {
                         searchLibraryAnimeUseCase = diContainer.searchLibraryAnimeUseCase,
                     )
                 }
+            */
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -171,11 +175,13 @@ fun ProjectMyriadDemo(diContainer: DIContainer) {
                 }
             }
 
+            /*
             // Anime Library Screen
             AnimeLibraryScreen(
                 modifier = Modifier.weight(1f),
                 viewModel = animeLibraryViewModel,
             )
+            */
         }
     }
 }
