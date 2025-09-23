@@ -15,6 +15,10 @@ Project Myriad follows a structured approach to dependency management that prior
 
 ### Core Android Dependencies
 
+📖 **For complete technology stack overview, see [ARCHITECTURE.md - Technology Stack](../ARCHITECTURE.md#technology-stack)**
+
+This section provides specific dependency configuration and version management details:
+
 **Android Gradle Plugin:**
 ```kotlin
 // Top-level build.gradle.kts
@@ -601,10 +605,11 @@ echo "Validation complete!"
 
 ## Related Documentation
 
-- [Requirements Specification](requirements.md) - Technical requirements
-- [Automated Workflow](AUTOMATED_WORKFLOW.md) - CI/CD integration
-- [Development Guide](../DEVELOPMENT.md) - Setup instructions
-- [Security Policy](../SECURITY.md) - Security guidelines
+- **[Architecture Documentation](../ARCHITECTURE.md)** - Complete technology stack and architectural patterns
+- **[Requirements Specification](requirements.md)** - Technical requirements
+- **[Automated Workflow](AUTOMATED_WORKFLOW.md)** - CI/CD integration
+- **[Development Guide](../DEVELOPMENT.md)** - Setup instructions
+- **[Security Policy](../SECURITY.md)** - Security guidelines
 
 ---
 
