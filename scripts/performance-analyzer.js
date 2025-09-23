@@ -283,12 +283,16 @@ class PerformanceAnalyzer {
                 const content = fs.readFileSync(fullPath, 'utf8');
                 
                 // Check for potential memory leak patterns
-                if (content.includes('static') && content.includes('Context')) {
+                // Kotlin: Check for companion object or top-level Context references
+                if (
+                    (content.includes('companion object') && content.match(/companion object[^{]*\{[^}]*Context/)) ||
+                    content.match(/^(?:\s*)?(var|val)\s+\w+\s*:\s*Context/m)
+                ) {
                     this.recommendations.push({
                         type: 'WARNING',
                         category: 'Memory Optimization',
                         issue: `Potential Context leak in ${file.name}`,
-                        solution: 'Avoid static references to Context - use Application context'
+                        solution: 'Avoid storing Context in companion objects or top-level variables - use Application context or weak references'
                     });
                 }
                 
