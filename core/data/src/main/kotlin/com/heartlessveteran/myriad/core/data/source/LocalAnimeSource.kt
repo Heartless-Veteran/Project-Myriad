@@ -8,13 +8,16 @@ import com.heartlessveteran.myriad.core.domain.entities.AnimeSeason
 import com.heartlessveteran.myriad.core.domain.model.Result
 import java.io.File
 import java.util.Date
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Local anime source implementation for reading anime from local storage.
  * Handles .mp4, .mkv, and .avi files from local file system.
  * Supports both individual files and directory-based anime storage.
  */
-class LocalAnimeSource {
+@Singleton
+class LocalAnimeSource @Inject constructor() {
     
     // Sample local anime data for demonstration
     private val sampleAnime = listOf(

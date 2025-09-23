@@ -328,6 +328,7 @@ private fun PageContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReaderUIOverlay(
     uiState: MangaReaderUiState,

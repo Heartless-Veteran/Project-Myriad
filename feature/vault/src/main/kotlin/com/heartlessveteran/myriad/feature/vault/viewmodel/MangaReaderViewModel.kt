@@ -2,6 +2,8 @@ package com.heartlessveteran.myriad.feature.vault.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.heartlessveteran.myriad.core.domain.model.Result
+import com.heartlessveteran.myriad.core.domain.model.fold
 import com.heartlessveteran.myriad.feature.vault.domain.usecase.GetReadingProgressUseCase
 import com.heartlessveteran.myriad.feature.vault.domain.usecase.ReadingProgress
 import com.heartlessveteran.myriad.feature.vault.domain.usecase.UpdateReadingProgressUseCase
@@ -53,18 +55,22 @@ class MangaReaderViewModel(
      */
     private fun loadReadingProgress(chapterId: String) {
         viewModelScope.launch {
-            getProgressUseCase(chapterId).fold(
-                onSuccess = { progress ->
+            when (val result = getProgressUseCase(chapterId)) {
+                is Result.Success -> {
+                    val progress = result.data
                     _readingProgress.value = progress
                     _uiState.value = _uiState.value.copy(
                         currentPage = progress.currentPage
                     )
-                },
-                onError = { _, _ ->
+                }
+                is Result.Error -> {
                     // Progress not found, start from beginning
                     _readingProgress.value = null
                 }
-            )
+                is Result.Loading -> {
+                    // Handle loading state if needed
+                }
+            }
         }
     }
 
