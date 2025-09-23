@@ -2,7 +2,7 @@
     <!-- Phase 5: Accessibility themes for WCAG 2.1 AA compliance -->
     
     <!-- High contrast theme for accessibility -->
-    <style name="Theme.Myriad.HighContrast" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Myriad.HighContrast" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimary">@android:color/black</item>
         <item name="android:colorAccent">@android:color/white</item>
         <item name="android:colorBackground">@android:color/white</item>

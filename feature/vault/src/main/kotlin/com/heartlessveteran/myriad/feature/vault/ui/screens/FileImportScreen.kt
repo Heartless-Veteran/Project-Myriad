@@ -112,7 +112,8 @@ fun FileImportScreen(
             }
 
             // Import status and progress
-            when (importState) {
+            val currentState = importState
+            when (currentState) {
                 is ImportState.Idle -> {
                     Text(
                         text = "Tap the + button to select manga files for import",
@@ -129,15 +130,15 @@ fun FileImportScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
-                                text = "Processing ${importState.currentFile}",
+                                text = "Processing ${currentState.currentFile}",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             LinearProgressIndicator(
-                                progress = importState.progress,
+                                progress = { currentState.progress },
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Text(
-                                text = "${(importState.progress * 100).toInt()}% complete",
+                                text = "${(currentState.progress * 100).toInt()}% complete",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -161,7 +162,7 @@ fun FileImportScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "${importState.importedCount} manga files imported successfully",
+                                text = "${currentState.importedCount} manga files imported successfully",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -185,7 +186,7 @@ fun FileImportScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = importState.message,
+                                text = currentState.message,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
@@ -195,7 +196,7 @@ fun FileImportScreen(
             }
 
             // Recent imports list (if any)
-            if (importState is ImportState.Success && importState.importedFiles.isNotEmpty()) {
+            if (currentState is ImportState.Success && currentState.importedFiles.isNotEmpty()) {
                 Text(
                     text = "Recently Imported",
                     style = MaterialTheme.typography.titleMedium,
@@ -205,7 +206,7 @@ fun FileImportScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(importState.importedFiles) { fileName ->
+                    items(currentState.importedFiles) { fileName ->
                         Card(
                             modifier = Modifier.fillMaxWidth()
                         ) {

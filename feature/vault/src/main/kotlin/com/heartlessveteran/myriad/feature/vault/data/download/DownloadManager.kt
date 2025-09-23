@@ -23,6 +23,10 @@ class DownloadManager(
     private val _activeDownloads = MutableStateFlow<Map<String, DownloadProgress>>(emptyMap())
     val activeDownloads: StateFlow<Map<String, DownloadProgress>> = _activeDownloads.asStateFlow()
 
+    companion object {
+        private const val MIN_BACKOFF_MILLIS = 10000L // 10 seconds
+    }
+
     /**
      * Add a download to the queue
      */
