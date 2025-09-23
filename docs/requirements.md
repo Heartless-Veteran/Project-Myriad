@@ -34,6 +34,10 @@ This document outlines the detailed technical requirements and constraints for P
 
 ## Technology Stack Requirements
 
+📖 **For technology stack overview, see [ARCHITECTURE.md - Technology Stack](../ARCHITECTURE.md#technology-stack)**
+
+This section provides detailed version requirements and technical constraints for each technology component:
+
 ### Core Technologies
 
 **Programming Language:**
@@ -75,7 +79,13 @@ This document outlines the detailed technical requirements and constraints for P
 
 ## Functional Requirements
 
-### Core Features
+### Core Features Overview
+
+Project Myriad implements three primary feature pillars as described in the [project README](../README.md#-features). This section provides detailed technical specifications for each:
+
+📖 **For feature overviews and user-facing descriptions, see [README.md - Features](../README.md#-features)**
+
+### Technical Feature Specifications
 
 **The Vault - Local Media Management:**
 - **Supported Formats**:

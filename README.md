@@ -48,37 +48,14 @@
 
 ## 🛠️ Technology Stack
 
-<table>
-<tr>
-<td valign="top" width="33%">
+Project Myriad is built with modern Android technologies:
 
-### **Core**
-- **Kotlin 2.2.20** - Modern, expressive language
-- **Android SDK 36** - Latest Android capabilities
-- **Material 3** - Cutting-edge design system
-- **Jetpack Compose** - Declarative UI toolkit
+- **Kotlin 2.2.20** - Primary development language
+- **Jetpack Compose** - Declarative UI with Material 3 design
+- **Clean Architecture** - Domain/Data/Presentation layer separation
+- **Room Database** - Local persistence for offline-first functionality
 
-</td>
-<td valign="top" width="33%">
-
-### **Architecture**
-- **Clean Architecture** - Separation of concerns
-- **MVVM Pattern** - Reactive UI architecture  
-- **Hilt** - Dependency injection
-- **Room** - Local database persistence
-
-</td>
-<td valign="top" width="33%">
-
-### **Networking**
-- **Retrofit** - Type-safe HTTP client
-- **OkHttp** - Efficient network operations
-- **Kotlinx Serialization** - JSON parsing
-- **Coroutines** - Asynchronous programming
-
-</td>
-</tr>
-</table>
+📖 **[Complete Technology Stack Details](ARCHITECTURE.md#technology-stack)**
 
 ---
 
@@ -92,7 +69,7 @@
 
 ## 🏗️ Architecture
 
-Project Myriad follows **Clean Architecture** principles with MVVM pattern, built using:
+Project Myriad follows **Clean Architecture** principles with MVVM pattern for maintainable, testable code:
 
 - **Presentation Layer**: Jetpack Compose + ViewModels + Type-safe Navigation
 - **Domain Layer**: Use Cases + Repository Interfaces + Domain Models  
@@ -100,7 +77,7 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern, buil
 
 **Key Principles**: Single Source of Truth, Unidirectional Data Flow, Separation of Concerns
 
-📖 **[Detailed Architecture Documentation](DEVELOPMENT.md#architecture-details)**
+📖 **[Complete Architecture Documentation](ARCHITECTURE.md)**
 
 ---
 
@@ -226,6 +203,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### Additional Resources
 
+- 📖 **[Documentation Index](docs/INDEX.md)** - Complete documentation navigation guide
 - 📖 **[Development Guide](DEVELOPMENT.md)** - Detailed development setup
 - 🔍 **[Code Analysis](CODE_ANALYSIS.md)** - Current implementation status  
 - 📋 **[Feature Requests](https://github.com/Heartless-Veteran/Project-Myriad/issues/new?template=feature_request.md)** - Suggest new features
