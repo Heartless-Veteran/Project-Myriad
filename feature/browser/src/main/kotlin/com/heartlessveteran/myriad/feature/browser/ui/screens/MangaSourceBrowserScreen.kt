@@ -334,7 +334,7 @@ private fun MangaGridItem(
                     ) {
                         Icon(
                             Icons.Default.Add,
-                            contentDescription = "Download",
+                            contentDescription = "Add to library",
                             modifier = Modifier.padding(4.dp),
                             tint = MaterialTheme.colorScheme.primary
                         )
