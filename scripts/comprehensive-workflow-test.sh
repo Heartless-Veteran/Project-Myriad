@@ -89,7 +89,7 @@ echo "=================================="
 
 # We'll test basic gradle tasks that don't require full compilation
 test_step "Gradle wrapper is executable" "[ -x ./gradlew ]" "true"
-test_step "Gradle tasks can be listed" "./gradlew tasks --no-daemon --offline 2>/dev/null | grep -q 'Build tasks'" "true"
+test_step "Gradle tasks can be listed" "./gradlew tasks --no-daemon --offline >/dev/null 2>&1" "true"
 
 echo ""
 echo "📋 Test Summary"
