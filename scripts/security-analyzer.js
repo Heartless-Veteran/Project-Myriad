@@ -270,7 +270,7 @@ class SecurityAnalyzer {
                         solution: 'Remove password from console output'
                     },
                     {
-                        pattern: /val\s+\w*(?:[Pp]assword)\s*=\s*"[^"]+"/,
+                        pattern: /(?:val|var)\s+\w*[Pp]assword\s*=\s*"[^"]+"/,
                         type: 'HIGH',
                         issue: 'Hardcoded password in source code',
                         solution: 'Move password to secure storage or configuration'
