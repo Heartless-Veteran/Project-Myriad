@@ -4,7 +4,13 @@ This document describes the automated workflow system for Project Myriad that en
 
 ## Overview
 
-Project Myriad uses a comprehensive automated workflow system that runs on every push, pull request, and on a daily schedule to maintain high code quality and up-to-date documentation.
+Project Myriad uses a **streamlined automated workflow system** that runs on every push, pull request, and on a daily schedule to maintain high code quality and up-to-date documentation. 
+
+**Key improvements in the consolidated workflow:**
+- ✅ **Eliminated redundancy** - Single CI workflow instead of 3 overlapping workflows
+- ✅ **Faster execution** - Optimized job dependencies and parallel execution
+- ✅ **Consistent environment** - Unified JDK and Gradle setup across all checks
+- ✅ **Clear separation** - CI, Security, and Release workflows have distinct purposes
 
 ## Workflow Components
 
@@ -29,59 +35,50 @@ Project Myriad uses a comprehensive automated workflow system that runs on every
 - **README Statistics** - Project metrics and badges
 - **Architecture Validation** - Structural consistency checks
 
-### 🚀 CI/CD Pipeline
+### 🚀 Consolidated CI Pipeline
 
-**Build and Test:**
-- Gradle builds with dependency caching
-- Unit test execution with coverage reporting
-- Android instrumentation tests (when devices available)
-- Release APK generation for tagged versions
+**Single CI Workflow (`ci.yml`):**
+- **Build & Quality Job** - Unified build, test, and quality checks
+- **Documentation Job** - Automated documentation generation (conditional)
+- **Release Job** - Release APK generation (main branch only)
+
+**Optimizations:**
+- Shared Gradle caching and setup
+- Parallel-safe quality checks with `--continue` flag
+- Conditional job execution based on event type
+- Comprehensive artifact collection
 
 ## Workflow Files
 
-### `.github/workflows/automated-documentation-quality.yml`
-Main workflow for code quality and documentation:
+### `.github/workflows/ci.yml`
+**Main CI workflow** - Consolidated build, test, and quality checks:
 
 ```yaml
 # Runs on: push, PR, daily schedule
-# Tasks:
-# - Code formatting (ktlint)
-# - Static analysis (Detekt)
-# - Test coverage (JaCoCo)
-# - Documentation generation (Dokka)
-```
-
-### `.github/workflows/ci-cd.yml`
-Continuous integration and deployment:
-
-```yaml
-# Runs on: push, PR, releases
-# Tasks:
-# - Multi-platform builds
-# - Test execution
-# - Release artifact generation
-```
-
-### `.github/workflows/code-quality.yml`
-Focused code quality checks:
-
-```yaml
-# Runs on: push, PR
-# Tasks:
-# - Linting and formatting
-# - Security scans
-# - Dependency vulnerability checks
+# Jobs:
+# - build-and-quality: Build APK, ktlint, detekt, Android lint, unit tests, test coverage reporting
+# - documentation: Dokka generation, architecture validation, README stats, Node.js validation scripts
+# - release: Release APK generation (main branch only)
 ```
 
 ### `.github/workflows/security.yml`
-Security and vulnerability scanning:
+**Security scanning** - Dedicated security and vulnerability analysis:
 
 ```yaml
-# Runs on: schedule, security events
-# Tasks:
-# - CodeQL analysis
-# - Dependency scanning
-# - Secret detection
+# Runs on: push, PR, weekly schedule
+# Jobs:
+# - codeql: CodeQL static analysis
+# - dependency-check: OWASP dependency vulnerability scanning
+# - secret-scan: TruffleHog secret detection
+```
+
+### `.github/workflows/release.yml`
+**Release management** - Automated release creation and publishing:
+
+```yaml
+# Runs on: version tags, manual dispatch
+# Jobs:
+# - release: Version extraction, APK signing, GitHub release creation
 ```
 
 ## Local Development Integration
