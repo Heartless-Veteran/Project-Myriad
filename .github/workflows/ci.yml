@@ -139,7 +139,13 @@ jobs:
       run: node scripts/validate-architecture.js
 
     - name: Update README statistics
-      run: node scripts/update-readme-stats.js || true
+      run: |
+        if [ -f scripts/update-readme-stats.js ]; then
+          node scripts/update-readme-stats.js
+        else
+          echo "scripts/update-readme-stats.js not found, skipping."
+        fi
+      continue-on-error: true
 
     - name: Upload documentation
       uses: actions/upload-artifact@v4
