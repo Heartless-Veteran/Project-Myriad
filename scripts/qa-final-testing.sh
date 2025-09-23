@@ -127,7 +127,16 @@ fi
 
 # Check project structure for performance indicators
 print_status "Analyzing project structure for performance..."
-KOTLIN_FILES=$(find app/src/main/kotlin core feature -name "*.kt" 2>/dev/null | wc -l || echo "0")
+# Only include existing directories in the find command to avoid errors with set -e
+KOTLIN_DIRS=()
+for dir in app/src/main/kotlin core feature; do
+    [ -d "$dir" ] && KOTLIN_DIRS+=("$dir")
+done
+if [ ${#KOTLIN_DIRS[@]} -gt 0 ]; then
+    KOTLIN_FILES=$(find "${KOTLIN_DIRS[@]}" -name "*.kt" 2>/dev/null | wc -l)
+else
+    KOTLIN_FILES=0
+fi
 RESOURCE_FILES=$(find app/src/main/res -name "*.xml" -o -name "*.png" -o -name "*.jpg" 2>/dev/null | wc -l || echo "0")
 
 print_status "Project metrics: ${KOTLIN_FILES} Kotlin files, ${RESOURCE_FILES} resource files"
