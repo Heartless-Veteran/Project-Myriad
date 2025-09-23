@@ -27,7 +27,13 @@ class SecurityAnalyzer {
         console.log('3. Checking permissions and configurations...');
         this.checkPermissions();
         
-        console.log('4. Validating GitHub configuration...');
+        console.log('4. Validating source code security...');
+        this.checkSourceCodeSecurity();
+        
+        console.log('5. Checking ProGuard/R8 configuration...');
+        this.checkObfuscationConfig();
+        
+        console.log('6. Validating GitHub configuration...');
         this.validateGitHubSecurity();
         
         this.generateReport();
@@ -147,8 +153,32 @@ class SecurityAnalyzer {
                 }
             });
 
+            // Check for security best practices
+            if (content.includes('android:allowBackup="false"')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'App Security',
+                    issue: 'Backup disabled for security',
+                    solution: 'Good practice: android:allowBackup="false" prevents data extraction'
+                });
+            } else if (content.includes('android:allowBackup="true"')) {
+                this.issues.push({
+                    type: 'MEDIUM',
+                    category: 'App Security',
+                    issue: 'App backup is enabled',
+                    solution: 'Consider setting android:allowBackup="false" to prevent data extraction'
+                });
+            }
+
             // Check for network security config
-            if (!content.includes('networkSecurityConfig')) {
+            if (content.includes('networkSecurityConfig')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Network Security',
+                    issue: 'Network security config configured',
+                    solution: 'Good practice: Network security configuration helps enforce HTTPS'
+                });
+            } else {
                 this.recommendations.push({
                     type: 'INFO',
                     category: 'Network Security',
@@ -156,9 +186,212 @@ class SecurityAnalyzer {
                     solution: 'Consider adding network security configuration for HTTPS enforcement'
                 });
             }
+
+            // Check for cleartext traffic
+            if (content.includes('android:usesCleartextTraffic="false"')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Network Security',
+                    issue: 'Cleartext traffic disabled',
+                    solution: 'Good practice: usesCleartextTraffic="false" enforces encrypted connections'
+                });
+            } else if (content.includes('android:usesCleartextTraffic="true"')) {
+                this.issues.push({
+                    type: 'MEDIUM',
+                    category: 'Network Security',
+                    issue: 'Cleartext traffic is allowed',
+                    solution: 'Consider setting android:usesCleartextTraffic="false" for better security'
+                });
+            }
+
+            // Check for exported activities without proper protection
+            const exportedActivities = content.match(/<activity[^>]*android:exported="true"[^>]*>/g);
+            if (exportedActivities) {
+                exportedActivities.forEach(() => {
+                    this.recommendations.push({
+                        type: 'INFO',
+                        category: 'Component Security',
+                        issue: 'Exported activity found',
+                        solution: 'Ensure exported activities have proper intent filters and security checks'
+                    });
+                });
+            }
+
+            // Check for debuggable flag in manifest (shouldn't be there for release)
+            if (content.includes('android:debuggable="true"')) {
+                this.issues.push({
+                    type: 'HIGH',
+                    category: 'App Security',
+                    issue: 'Debuggable flag set in manifest',
+                    solution: 'Remove android:debuggable="true" for production releases'
+                });
+            }
         }
 
         console.log('   ✅ Permissions checked');
+    }
+
+    checkSourceCodeSecurity() {
+        const kotlinSourceDirs = ['app/src/main/kotlin', 'core', 'feature'];
+        let totalFilesScanned = 0;
+        
+        kotlinSourceDirs.forEach(dir => {
+            if (fs.existsSync(dir)) {
+                this.scanDirectoryForSecurityIssues(dir);
+            }
+        });
+        
+        console.log('   ✅ Source code security checked');
+    }
+
+    scanDirectoryForSecurityIssues(directory) {
+        // Validate directory path to prevent path traversal
+        if (!directory.match(/^[a-zA-Z0-9_\-\/]+$/)) {
+            console.warn(`Skipping invalid directory path: ${directory}`);
+            return;
+        }
+        
+        const files = fs.readdirSync(directory, { withFileTypes: true });
+        
+        files.forEach(file => {
+            // Validate file name to prevent path traversal
+            if (file.name.includes('..') || file.name.includes('/') || file.name.includes('\\')) {
+                console.warn(`Skipping potentially dangerous file: ${file.name}`);
+                return;
+            }
+            
+            const fullPath = path.join(directory, file.name);
+            
+            if (file.isDirectory()) {
+                this.scanDirectoryForSecurityIssues(fullPath);
+            } else if (file.name.endsWith('.kt') || file.name.endsWith('.java')) {
+                try {
+                    const content = fs.readFileSync(fullPath, 'utf8');
+                
+                // Check for potential security issues in code
+                const securityPatterns = [
+                    {
+                        pattern: /Log\.[div]\s*\([^)]*password[^)]*\)/i,
+                        type: 'HIGH',
+                        issue: 'Password logging detected',
+                        solution: 'Remove password logging or use proper redaction'
+                    },
+                    {
+                        pattern: /System\.out\.print[ln]*\s*\([^)]*password[^)]*\)/i,
+                        type: 'MEDIUM',
+                        issue: 'Password in console output',
+                        solution: 'Remove password from console output'
+                    },
+                    {
+                        pattern: /(?:val|var)\s+\w*[Pp]assword\s*=\s*"[^"]+"/,
+                        type: 'HIGH',
+                        issue: 'Hardcoded password in source code',
+                        solution: 'Move password to secure storage or configuration'
+                    },
+                    {
+                        pattern: /(?:(?:const\s+)?val|var)\s+\w*[Aa][Pp][Ii][_]?[Kk][Ee][Yy]\s*=\s*"[^"]+"/,
+                        type: 'CRITICAL',
+                        issue: 'Hardcoded API key in source code',
+                        solution: 'Move API key to BuildConfig or secure storage'
+                    },
+                    {
+                        pattern: /\.setHostnameVerifier\s*\{\s*_,\s*_\s*->\s*true\s*\}/,
+                        type: 'CRITICAL',
+                        issue: 'Disabled hostname verification',
+                        solution: 'Use proper certificate validation'
+                    },
+                    {
+                        pattern: /TrustManager.*checkServerTrusted\s*\([^)]*\)\s*\{\s*\}/,
+                        type: 'CRITICAL',
+                        issue: 'Custom TrustManager that accepts all certificates',
+                        solution: 'Implement proper certificate validation'
+                    }
+                ];
+                
+                securityPatterns.forEach(({ pattern, type, issue, solution }) => {
+                    if (pattern.test(content)) {
+                        this.issues.push({
+                            type,
+                            category: 'Source Code Security',
+                            issue: `${issue} in ${file.name}`,
+                            solution
+                        });
+                    }
+                });
+                } catch (error) {
+                    console.warn(`Could not analyze file ${fullPath}: ${error.message}`);
+                }
+            }
+        });
+    }
+
+    checkObfuscationConfig() {
+        const proguardRules = 'app/proguard-rules.pro';
+        const buildGradle = 'app/build.gradle.kts';
+        
+        if (fs.existsSync(buildGradle)) {
+            const content = fs.readFileSync(buildGradle, 'utf8');
+            
+            // Check if obfuscation is enabled for release
+            if (content.includes('isMinifyEnabled = true')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Code obfuscation enabled',
+                    solution: 'Good practice: minifyEnabled protects against reverse engineering'
+                });
+            } else {
+                this.issues.push({
+                    type: 'MEDIUM',
+                    category: 'Code Protection',
+                    issue: 'Code obfuscation not enabled',
+                    solution: 'Enable isMinifyEnabled = true for release builds'
+                });
+            }
+            
+            // Check if resource shrinking is enabled
+            if (content.includes('isShrinkResources = true')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Resource shrinking enabled',
+                    solution: 'Good practice: shrinkResources reduces APK size and attack surface'
+                });
+            }
+        }
+        
+        if (fs.existsSync(proguardRules)) {
+            const content = fs.readFileSync(proguardRules, 'utf8');
+            
+            // Check for overly permissive rules
+            if (content.includes('-dontwarn **') || content.includes('-ignorewarnings')) {
+                this.issues.push({
+                    type: 'MEDIUM',
+                    category: 'Code Protection',
+                    issue: 'Overly permissive ProGuard rules',
+                    solution: 'Review and tighten ProGuard rules to avoid hiding important warnings'
+                });
+            }
+            
+            // Check for keep rules that might expose sensitive code
+            if (content.includes('-keep class * { *; }')) {
+                this.issues.push({
+                    type: 'HIGH',
+                    category: 'Code Protection',
+                    issue: 'Overly broad keep rules in ProGuard',
+                    solution: 'Use specific keep rules instead of keeping all classes'
+                });
+            }
+        } else {
+            this.recommendations.push({
+                type: 'INFO',
+                category: 'Code Protection',
+                issue: 'No custom ProGuard rules file',
+                solution: 'Consider adding proguard-rules.pro for custom obfuscation rules'
+            });
+        }
+        
+        console.log('   ✅ Obfuscation configuration checked');
     }
 
     validateGitHubSecurity() {
