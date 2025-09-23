@@ -276,7 +276,7 @@ class SecurityAnalyzer {
                         solution: 'Move password to secure storage or configuration'
                     },
                     {
-                        pattern: /const\s+val\s+\w*[Aa][Pp][Ii][_]?[Kk][Ee][Yy]\s*=\s*"[^"]+"/,
+                        pattern: /(?:(?:const\s+)?val|var)\s+\w*[Aa][Pp][Ii][_]?[Kk][Ee][Yy]\s*=\s*"[^"]+"/,
                         type: 'CRITICAL',
                         issue: 'Hardcoded API key in source code',
                         solution: 'Move API key to BuildConfig or secure storage'
