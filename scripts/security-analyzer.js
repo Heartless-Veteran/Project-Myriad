@@ -245,15 +245,28 @@ class SecurityAnalyzer {
     }
 
     scanDirectoryForSecurityIssues(directory) {
+        // Validate directory path to prevent path traversal
+        if (!directory.match(/^[a-zA-Z0-9_\-\/]+$/)) {
+            console.warn(`Skipping invalid directory path: ${directory}`);
+            return;
+        }
+        
         const files = fs.readdirSync(directory, { withFileTypes: true });
         
         files.forEach(file => {
+            // Validate file name to prevent path traversal
+            if (file.name.includes('..') || file.name.includes('/') || file.name.includes('\\')) {
+                console.warn(`Skipping potentially dangerous file: ${file.name}`);
+                return;
+            }
+            
             const fullPath = path.join(directory, file.name);
             
             if (file.isDirectory()) {
                 this.scanDirectoryForSecurityIssues(fullPath);
             } else if (file.name.endsWith('.kt') || file.name.endsWith('.java')) {
-                const content = fs.readFileSync(fullPath, 'utf8');
+                try {
+                    const content = fs.readFileSync(fullPath, 'utf8');
                 
                 // Check for potential security issues in code
                 const securityPatterns = [
@@ -305,6 +318,9 @@ class SecurityAnalyzer {
                         });
                     }
                 });
+                } catch (error) {
+                    console.warn(`Could not analyze file ${fullPath}: ${error.message}`);
+                }
             }
         });
     }

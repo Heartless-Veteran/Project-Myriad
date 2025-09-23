@@ -218,21 +218,37 @@ class PerformanceAnalyzer {
 
         let largeResourceCount = 0;
         resourceDirs.forEach(dir => {
+            // Validate directory path to prevent path traversal
+            if (!dir.match(/^[a-zA-Z0-9_\-\/]+$/)) {
+                console.warn(`Skipping invalid directory path: ${dir}`);
+                return;
+            }
+            
             if (fs.existsSync(dir)) {
                 const files = fs.readdirSync(dir);
                 files.forEach(file => {
-                    const filePath = path.join(dir, file);
-                    const stats = fs.statSync(filePath);
-                    const sizeInMB = stats.size / (1024 * 1024);
+                    // Validate file name to prevent path traversal
+                    if (file.includes('..') || file.includes('/') || file.includes('\\')) {
+                        console.warn(`Skipping potentially dangerous file: ${file}`);
+                        return;
+                    }
                     
-                    if (sizeInMB > 1) { // Files larger than 1MB
-                        largeResourceCount++;
-                        this.recommendations.push({
-                            type: 'WARNING',
-                            category: 'Memory Optimization',
-                            issue: `Large resource file: ${file} (${sizeInMB.toFixed(2)}MB)`,
-                            solution: 'Consider compressing or using vector drawables'
-                        });
+                    const filePath = path.join(dir, file);
+                    try {
+                        const stats = fs.statSync(filePath);
+                        const sizeInMB = stats.size / (1024 * 1024);
+                        
+                        if (sizeInMB > 1) { // Files larger than 1MB
+                            largeResourceCount++;
+                            this.recommendations.push({
+                                type: 'WARNING',
+                                category: 'Memory Optimization',
+                                issue: `Large resource file: ${file} (${sizeInMB.toFixed(2)}MB)`,
+                                solution: 'Consider compressing or using vector drawables'
+                            });
+                        }
+                    } catch (error) {
+                        console.warn(`Could not analyze file ${filePath}: ${error.message}`);
                     }
                 });
             }
@@ -271,16 +287,29 @@ class PerformanceAnalyzer {
     }
 
     checkForMemoryLeakPatterns(directory) {
+        // Validate directory path to prevent path traversal
+        if (!directory.match(/^[a-zA-Z0-9_\-\/]+$/)) {
+            console.warn(`Skipping invalid directory path: ${directory}`);
+            return;
+        }
+        
         if (!fs.existsSync(directory)) return;
         
         const files = fs.readdirSync(directory, { withFileTypes: true });
         files.forEach(file => {
+            // Validate file name to prevent path traversal
+            if (file.name.includes('..') || file.name.includes('/') || file.name.includes('\\')) {
+                console.warn(`Skipping potentially dangerous file: ${file.name}`);
+                return;
+            }
+            
             const fullPath = path.join(directory, file.name);
             
             if (file.isDirectory()) {
                 this.checkForMemoryLeakPatterns(fullPath);
             } else if (file.name.endsWith('.kt')) {
-                const content = fs.readFileSync(fullPath, 'utf8');
+                try {
+                    const content = fs.readFileSync(fullPath, 'utf8');
                 
                 // Check for potential memory leak patterns
                 // Kotlin: Check for companion object or top-level Context references
@@ -312,6 +341,9 @@ class PerformanceAnalyzer {
                         issue: `Manual collection clearing in ${file.name}`,
                         solution: 'Good practice: Properly clearing collections helps prevent memory leaks'
                     });
+                }
+                } catch (error) {
+                    console.warn(`Could not analyze file ${fullPath}: ${error.message}`);
                 }
             }
         });

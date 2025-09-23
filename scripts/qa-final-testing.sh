@@ -115,7 +115,7 @@ else
     print_warning "Release build failed - this may be due to configuration issues"
     print_status "Checking if debug build works instead..."
     if ./gradlew assembleDebug --no-daemon --quiet 2>/dev/null; then
-        APK_SIZE=$(stat -c%s "app/build/outputs/apk/debug/app-debug.apk" 2>/dev/null || echo "0")
+        APK_SIZE=$(wc -c < "app/build/outputs/apk/debug/app-debug.apk" 2>/dev/null || echo "0")
         APK_SIZE_MB=$((APK_SIZE / 1024 / 1024))
         if [ $APK_SIZE_MB -gt 0 ]; then
             print_status "Debug APK size: ${APK_SIZE_MB}MB (release will be smaller with minification)"
