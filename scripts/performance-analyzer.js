@@ -35,6 +35,12 @@ class PerformanceAnalyzer {
         console.log('4. Checking dependency configuration...');
         this.analyzeDependencies();
         
+        console.log('5. Analyzing memory and resource usage...');
+        this.analyzeMemoryUsage();
+        
+        console.log('6. Checking build performance optimizations...');
+        this.analyzeBuildPerformance();
+        
         this.generateReport();
     }
 
@@ -199,6 +205,204 @@ class PerformanceAnalyzer {
         }
 
         console.log('   ✅ Dependencies analyzed');
+    }
+
+    analyzeMemoryUsage() {
+        // Analyze resource files for potential memory issues
+        const resourceDirs = [
+            'app/src/main/res/drawable',
+            'app/src/main/res/drawable-xxhdpi',
+            'app/src/main/res/drawable-xxxhdpi',
+            'app/src/main/res/raw'
+        ];
+
+        let largeResourceCount = 0;
+        resourceDirs.forEach(dir => {
+            if (fs.existsSync(dir)) {
+                const files = fs.readdirSync(dir);
+                files.forEach(file => {
+                    const filePath = path.join(dir, file);
+                    const stats = fs.statSync(filePath);
+                    const sizeInMB = stats.size / (1024 * 1024);
+                    
+                    if (sizeInMB > 1) { // Files larger than 1MB
+                        largeResourceCount++;
+                        this.recommendations.push({
+                            type: 'WARNING',
+                            category: 'Memory Optimization',
+                            issue: `Large resource file: ${file} (${sizeInMB.toFixed(2)}MB)`,
+                            solution: 'Consider compressing or using vector drawables'
+                        });
+                    }
+                });
+            }
+        });
+
+        // Check for vector drawable usage
+        const drawableDir = 'app/src/main/res/drawable';
+        if (fs.existsSync(drawableDir)) {
+            const files = fs.readdirSync(drawableDir);
+            const vectorFiles = files.filter(f => f.endsWith('.xml'));
+            const bitmapFiles = files.filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'));
+            
+            if (vectorFiles.length > bitmapFiles.length) {
+                this.recommendations.push({
+                    type: 'SUCCESS',
+                    category: 'Memory Optimization',
+                    issue: 'Good use of vector drawables',
+                    solution: 'Continue using vector drawables for scalable graphics'
+                });
+            } else if (bitmapFiles.length > 10) {
+                this.recommendations.push({
+                    type: 'INFO',
+                    category: 'Memory Optimization',
+                    issue: `${bitmapFiles.length} bitmap files found`,
+                    solution: 'Consider converting suitable bitmaps to vector drawables'
+                });
+            }
+        }
+
+        // Check Kotlin source files for potential memory leaks
+        this.checkForMemoryLeakPatterns('app/src/main/kotlin');
+        if (fs.existsSync('core')) this.checkForMemoryLeakPatterns('core');
+        if (fs.existsSync('feature')) this.checkForMemoryLeakPatterns('feature');
+
+        console.log('   ✅ Memory usage analyzed');
+    }
+
+    checkForMemoryLeakPatterns(directory) {
+        if (!fs.existsSync(directory)) return;
+        
+        const files = fs.readdirSync(directory, { withFileTypes: true });
+        files.forEach(file => {
+            const fullPath = path.join(directory, file.name);
+            
+            if (file.isDirectory()) {
+                this.checkForMemoryLeakPatterns(fullPath);
+            } else if (file.name.endsWith('.kt')) {
+                const content = fs.readFileSync(fullPath, 'utf8');
+                
+                // Check for potential memory leak patterns
+                if (content.includes('static') && content.includes('Context')) {
+                    this.recommendations.push({
+                        type: 'WARNING',
+                        category: 'Memory Optimization',
+                        issue: `Potential Context leak in ${file.name}`,
+                        solution: 'Avoid static references to Context - use Application context'
+                    });
+                }
+                
+                if (content.includes('Handler(') && !content.includes('WeakReference')) {
+                    this.recommendations.push({
+                        type: 'INFO',
+                        category: 'Memory Optimization',
+                        issue: `Handler usage in ${file.name}`,
+                        solution: 'Consider using WeakReference or lifecycle-aware components'
+                    });
+                }
+                
+                if (content.includes('ArrayList') && content.includes('clear()')) {
+                    this.recommendations.push({
+                        type: 'INFO',
+                        category: 'Memory Optimization',
+                        issue: `Manual collection clearing in ${file.name}`,
+                        solution: 'Good practice: Properly clearing collections helps prevent memory leaks'
+                    });
+                }
+            }
+        });
+    }
+
+    analyzeBuildPerformance() {
+        const gradleProps = 'gradle.properties';
+        if (fs.existsSync(gradleProps)) {
+            const content = fs.readFileSync(gradleProps, 'utf8');
+            
+            // Check for build performance optimizations
+            const performanceChecks = [
+                {
+                    setting: 'org.gradle.parallel=true',
+                    present: content.includes('org.gradle.parallel=true'),
+                    category: 'Build Performance',
+                    issue: 'Parallel builds enabled',
+                    solution: 'Parallel execution improves build times on multi-core systems'
+                },
+                {
+                    setting: 'org.gradle.caching=true',
+                    present: content.includes('org.gradle.caching=true'),
+                    category: 'Build Performance',
+                    issue: 'Build caching enabled',
+                    solution: 'Build cache reuses outputs from previous builds'
+                },
+                {
+                    setting: 'org.gradle.configuration-cache=true',
+                    present: content.includes('org.gradle.configuration-cache=true'),
+                    category: 'Build Performance',
+                    issue: 'Configuration cache enabled',
+                    solution: 'Configuration cache speeds up subsequent builds'
+                },
+                {
+                    setting: 'kotlin.incremental=true',
+                    present: content.includes('kotlin.incremental=true'),
+                    category: 'Build Performance',
+                    issue: 'Kotlin incremental compilation enabled',
+                    solution: 'Incremental compilation speeds up Kotlin builds'
+                }
+            ];
+
+            performanceChecks.forEach(check => {
+                if (check.present) {
+                    this.recommendations.push({
+                        type: 'SUCCESS',
+                        category: check.category,
+                        issue: check.issue,
+                        solution: check.solution
+                    });
+                } else {
+                    this.recommendations.push({
+                        type: 'WARNING',
+                        category: check.category,
+                        issue: `Missing: ${check.setting}`,
+                        solution: `Add "${check.setting}" to gradle.properties`
+                    });
+                }
+            });
+        }
+
+        // Check for APK size optimizations in build.gradle
+        const buildFile = 'app/build.gradle.kts';
+        if (fs.existsSync(buildFile)) {
+            const content = fs.readFileSync(buildFile, 'utf8');
+            
+            if (content.includes('splits {')) {
+                this.recommendations.push({
+                    type: 'SUCCESS',
+                    category: 'APK Optimization',
+                    issue: 'APK splits configured',
+                    solution: 'APK splits reduce download size for users'
+                });
+            }
+            
+            if (content.includes('bundle {')) {
+                this.recommendations.push({
+                    type: 'SUCCESS',
+                    category: 'APK Optimization',
+                    issue: 'Android App Bundle configuration found',
+                    solution: 'AAB enables dynamic delivery and reduces app size'
+                });
+            }
+            
+            if (content.includes('isShrinkResources = true')) {
+                this.recommendations.push({
+                    type: 'SUCCESS',
+                    category: 'APK Optimization',
+                    issue: 'Resource shrinking enabled',
+                    solution: 'Resource shrinking removes unused resources from APK'
+                });
+            }
+        }
+
+        console.log('   ✅ Build performance analyzed');
     }
 
     generateReport() {
