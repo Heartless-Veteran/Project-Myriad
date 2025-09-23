@@ -19,7 +19,7 @@ This document provides essential information for developers working on Project M
 
 ### Running the Application
 
-**📋 Complete Guide**: For detailed instructions on building APKs without Android Studio, see [`BUILD_WITHOUT_ANDROID_STUDIO.md`](BUILD_WITHOUT_ANDROID_STUDIO.md).
+**📋 Complete Guide**: For detailed command-line build instructions, see the "Command-Line Build Methods" section below.
 
 #### Debug Build
 
@@ -178,6 +178,55 @@ app/src/main/kotlin/com/heartlessveteran/myriad/
 - Use LazyColumn/LazyRow for long lists
 - Implement proper image caching with Coil
 - Profile UI rendering performance
+
+## Command-Line Build Methods
+
+For developers preferring command-line tools or CI/CD environments:
+
+### Prerequisites
+- **JDK 11+** (Java Development Kit)
+- **Android SDK** with API levels 24-36  
+- **Environment variables**: `ANDROID_HOME` or `ANDROID_SDK_ROOT` set to your Android SDK path
+
+### Build Commands
+
+```bash
+# Build debug APK (most common)
+./gradlew assembleDebug
+
+# Build release APK (requires signing configuration)
+./gradlew assembleRelease
+
+# Install debug APK on connected device
+./gradlew installDebug
+
+# Clean and rebuild
+./gradlew clean build
+
+# Run all tests
+./gradlew test
+
+# Generate test coverage report
+./gradlew jacocoTestReport
+```
+
+**Output locations**:
+- Debug APK: `app/build/outputs/apk/debug/app-debug.apk`
+- Release APK: `app/build/outputs/apk/release/app-release.apk`
+
+### Environment Verification
+
+```bash
+# Check Android SDK
+echo $ANDROID_HOME
+adb version
+
+# Check Java version
+java -version
+
+# Verify Gradle
+./gradlew --version
+```
 
 ## Testing Guidelines
 

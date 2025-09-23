@@ -168,9 +168,9 @@ The plugin system implements robust error handling:
 
 ## Implementation Status
 
-For detailed feature implementation status and current development progress, see [ARCHITECTURE_STATUS.md](ARCHITECTURE_STATUS.md).
+For detailed feature implementation status and current development progress, see [ROADMAP.md](ROADMAP.md).
 
-For implementation-specific details and validation, see [ARCHITECTURE_IMPLEMENTATION.md](ARCHITECTURE_IMPLEMENTATION.md).
+For implementation-specific details and validation, see the implementation sections in this document.
 
 ## Related Documentation
 
