@@ -6,13 +6,13 @@
     <application
         android:name=".MyriadApplication"
         android:allowBackup="false"
-        android:label="Myriad Release Test"
+        android:label="Project Myriad"
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false">
         
         <activity
-            android:name=".TestActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
