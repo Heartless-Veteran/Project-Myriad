@@ -6,7 +6,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,12 +15,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+// import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.heartlessveteran.myriad.core.domain.entities.*
 import com.heartlessveteran.myriad.ui.viewmodel.ReaderSettingsEvent
 import com.heartlessveteran.myriad.ui.viewmodel.ReaderSettingsUiEvent
-import com.heartlessveteran.myriad.ui.viewmodel.ReaderSettingsViewModel
+import com.heartlessveteran.myriad.ui.viewmodel.TempReaderSettingsViewModel
 
 /**
  * Reader Settings Screen following Material 3 design guidelines.
@@ -31,7 +31,7 @@ import com.heartlessveteran.myriad.ui.viewmodel.ReaderSettingsViewModel
 @Composable
 fun ReaderSettingsScreen(
     onNavigateBack: () -> Unit = {},
-    viewModel: ReaderSettingsViewModel = hiltViewModel()
+    viewModel: TempReaderSettingsViewModel = TempReaderSettingsViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -76,7 +76,7 @@ fun ReaderSettingsScreen(
                         onClick = { viewModel.onEvent(ReaderSettingsEvent.ResetToDefaults) }
                     ) {
                         Icon(
-                            imageVector = Icons.Default.SettingsBackupRestore,
+                            imageVector = Icons.Default.Settings,
                             contentDescription = "Reset to defaults"
                         )
                     }

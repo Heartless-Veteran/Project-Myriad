@@ -67,7 +67,7 @@ fun IntegratedDownloadManagerScreen(
                 },
                 actions = {
                     IconButton(onClick = { /* Pause all */ }) {
-                        Icon(Icons.Default.Stop, "Pause All")
+                        Icon(Icons.Default.PlayArrow, "Stop All")
                     }
                     IconButton(onClick = { /* Settings */ }) {
                         Icon(Icons.Default.Settings, "Settings")
@@ -134,10 +134,10 @@ private fun DownloadStatsCard() {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            StatItem("Active", "2", Icons.Default.FileDownload)
+            StatItem("Active", "2", Icons.Default.CheckCircle)
             StatItem("Queued", "5", Icons.Default.List)
-            StatItem("Speed", "2.1 MB/s", Icons.Default.Speed)
-            StatItem("Storage", "4.2 GB", Icons.Default.Folder)
+            StatItem("Speed", "2.1 MB/s", Icons.Default.Star)
+            StatItem("Storage", "4.2 GB", Icons.Default.Info)
         }
     }
 }
@@ -195,7 +195,7 @@ private fun ActiveDownloadsTab(downloads: List<DownloadItem>) {
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.FileDownload,
+                            imageVector = Icons.Default.CheckCircle,
                             contentDescription = null,
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -356,7 +356,7 @@ private fun DownloadItemCard(
                     when (download.status) {
                         DownloadStatus.DOWNLOADING -> {
                             IconButton(onClick = onPause) {
-                                Icon(Icons.Default.Pause, "Pause")
+                                Icon(Icons.Default.PlayArrow, "Pause")
                             }
                         }
                         DownloadStatus.PAUSED -> {
@@ -367,7 +367,7 @@ private fun DownloadItemCard(
                         else -> {}
                     }
                     IconButton(onClick = onCancel) {
-                        Icon(Icons.Default.Cancel, "Cancel")
+                        Icon(Icons.Default.Clear, "Cancel")
                     }
                 }
             }
@@ -423,7 +423,7 @@ private fun CompletedDownloadCard(download: DownloadItem) {
             
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 IconButton(onClick = { /* Open */ }) {
-                    Icon(Icons.Default.OpenInNew, "Open")
+                    Icon(Icons.Default.Edit, "Open")
                 }
                 IconButton(onClick = { /* Delete */ }) {
                     Icon(Icons.Default.Delete, "Delete")

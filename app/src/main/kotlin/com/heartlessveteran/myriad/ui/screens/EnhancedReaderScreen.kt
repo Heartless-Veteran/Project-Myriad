@@ -80,7 +80,7 @@ fun EnhancedReaderScreen(
                         }
                         IconButton(onClick = { isFullscreen = true }) {
                             Icon(
-                                imageVector = Icons.Default.Fullscreen,
+                                imageVector = Icons.Default.Info,
                                 contentDescription = "Fullscreen"
                             )
                         }
@@ -283,7 +283,7 @@ private fun ReaderSettings(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(Icons.Default.BrightnessHigh, "Brightness")
+                    Icon(Icons.Default.Star, "Brightness")
                     Slider(
                         value = brightness,
                         onValueChange = onBrightnessChange,
