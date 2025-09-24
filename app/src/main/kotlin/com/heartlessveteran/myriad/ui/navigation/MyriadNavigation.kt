@@ -5,7 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -19,7 +19,8 @@ import com.heartlessveteran.myriad.ui.screens.LibraryScreen
 import com.heartlessveteran.myriad.feature.vault.ui.screens.VaultDashboardScreen
 import com.heartlessveteran.myriad.feature.browser.ui.screens.GlobalSearchScreen
 import com.heartlessveteran.myriad.ui.screens.EnhancedAIScreen
-import com.heartlessveteran.myriad.ui.viewmodel.SimpleGlobalSearchViewModel
+import com.heartlessveteran.myriad.ui.viewmodel.MockSearchManager
+import com.heartlessveteran.myriad.feature.browser.viewmodel.GlobalSearchViewModel
 
 /**
  * Main navigation component for Project Myriad - All Phases Implementation
@@ -50,7 +51,7 @@ fun MyriadNavigation() {
                     onClick = { selectedTab = 0 }
                 )
                 NavigationBarItem(
-                    icon = { Icon(Icons.Default.Folder, contentDescription = "Vault") },
+                    icon = { Icon(Icons.Default.Build, contentDescription = "Vault") },
                     label = { Text("Vault") },
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 }
@@ -84,7 +85,7 @@ fun MyriadNavigation() {
                 modifier = Modifier.padding(paddingValues)
             )
             2 -> GlobalSearchScreen(
-                viewModel = SimpleGlobalSearchViewModel(),
+                viewModel = GlobalSearchViewModel(MockSearchManager()),
                 onMangaClick = { },
                 onNavigateToPlugins = { },
                 modifier = Modifier.padding(paddingValues)

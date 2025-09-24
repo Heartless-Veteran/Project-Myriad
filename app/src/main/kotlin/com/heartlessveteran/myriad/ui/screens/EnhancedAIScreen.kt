@@ -93,7 +93,7 @@ private fun OCRTranslationTab() {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Translate,
+                            imageVector = Icons.Default.Check,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -157,7 +157,7 @@ private fun OCRTranslationTab() {
                     onClick = { /* Start OCR */ },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(Icons.Default.CameraAlt, null)
+                    Icon(Icons.Default.Add, null)
                     Spacer(Modifier.width(8.dp))
                     Text("Scan Page")
                 }
@@ -192,7 +192,7 @@ private fun ContentAnalysisTab() {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.BarChart,
+                            imageVector = Icons.Default.Info,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -261,7 +261,7 @@ private fun StyleMatchingTab() {
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ColorLens,
+                            imageVector = Icons.Default.Star,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
