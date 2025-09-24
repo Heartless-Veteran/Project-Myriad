@@ -33,10 +33,14 @@ header_pages:
   - DEVELOPMENT.md
   - CONTRIBUTING.md
 
+# Include specific files from .github
+include:
+  - .github/copilot-instructions.md
+
 # Exclude from processing
 exclude:
   - .git
-  - .github
+  - .github/workflows
   - gradle
   - gradlew
   - gradlew.bat
