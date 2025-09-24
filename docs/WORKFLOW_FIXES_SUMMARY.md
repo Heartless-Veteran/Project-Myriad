@@ -13,12 +13,12 @@
 **Problems**: 
 - Missing document start markers (`---`)
 - Incorrect indentation causing syntax errors
-- Invalid GitHub Actions function `${{ exists() }}`
+- Invalid GitHub Actions function `{% raw %}${{ exists() }}{% endraw %}`
 
 **Solutions**:
 - Added proper YAML document headers
 - Fixed indentation throughout all workflow files
-- Replaced `${{ exists() }}` with proper shell file existence checks
+- Replaced `{% raw %}${{ exists() }}{% endraw %}` with proper shell file existence checks
 
 ### 3. Workflow Reliability Issues ✅ **FIXED**
 **Problems**:
