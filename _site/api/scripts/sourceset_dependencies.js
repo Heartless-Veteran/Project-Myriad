@@ -1,1 +1,0 @@
-{"@class":"org.jetbrains.dokka.base.templating.AddToSourcesetDependencies","moduleName":"app","content":{":app/debug":[],":app/main":[],":app/release":[],":app/staging":[]}}
