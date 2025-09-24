@@ -44,13 +44,31 @@ class SecurityAnalyzer {
             'local.properties',
             'keystore.jks',
             'keystore.p12',
+            'keystore.properties',
+            'signing.properties',
             'google-services.json',
             'firebase-config.json',
             '.env',
-            'secrets.txt'
+            'secrets.txt',
+            'api-keys.txt',
+            '*.jks',
+            '*.keystore',
+            '*.p12',
+            '*.pfx'
         ];
 
-        sensitiveFiles.forEach(file => {
+        // Check for actual files
+        const actualSensitiveFiles = [
+            'local.properties',
+            'keystore.properties',
+            'google-services.json',
+            'firebase-config.json',
+            '.env',
+            'secrets.txt',
+            'api-keys.txt'
+        ];
+
+        actualSensitiveFiles.forEach(file => {
             if (fs.existsSync(file)) {
                 // Check if it's properly gitignored
                 const gitignore = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
@@ -65,6 +83,21 @@ class SecurityAnalyzer {
             }
         });
 
+        // Check for keystore files that should never be committed
+        const keystorePatterns = ['*.jks', '*.keystore', '*.p12', '*.pfx'];
+        const gitignore = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
+        
+        keystorePatterns.forEach(pattern => {
+            if (!gitignore.includes(pattern)) {
+                this.issues.push({
+                    type: 'HIGH',
+                    category: 'File Security',
+                    issue: `Keystore pattern ${pattern} not excluded in .gitignore`,
+                    solution: `Add "${pattern}" to .gitignore to prevent keystore files from being committed`
+                });
+            }
+        });
+
         // Check for example files
         if (fs.existsSync('local.properties.example')) {
             this.recommendations.push({
@@ -72,6 +105,23 @@ class SecurityAnalyzer {
                 category: 'File Security',
                 issue: 'Example configuration file exists',
                 solution: 'Good practice: local.properties.example provides template'
+            });
+        }
+
+        // Check for keystore example file
+        if (fs.existsSync('app/keystore.properties.example')) {
+            this.recommendations.push({
+                type: 'GOOD',
+                category: 'File Security',
+                issue: 'Keystore example configuration exists',
+                solution: 'Good practice: keystore.properties.example provides secure template'
+            });
+        } else {
+            this.issues.push({
+                type: 'MEDIUM',
+                category: 'File Security',
+                issue: 'Missing keystore configuration example',
+                solution: 'Create app/keystore.properties.example to guide developers'
             });
         }
 
@@ -358,6 +408,33 @@ class SecurityAnalyzer {
                     solution: 'Good practice: shrinkResources reduces APK size and attack surface'
                 });
             }
+
+            // Check for proper keystore configuration
+            if (content.includes('keystore.properties')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Secure keystore configuration',
+                    solution: 'Good practice: Using keystore.properties instead of hardcoded values'
+                });
+            } else if (content.includes('MYRIAD_RELEASE_STORE_PASSWORD')) {
+                this.issues.push({
+                    type: 'MEDIUM',
+                    category: 'Code Protection',
+                    issue: 'Legacy keystore configuration',
+                    solution: 'Consider migrating to keystore.properties for better security'
+                });
+            }
+
+            // Check for debug flag override
+            if (content.includes('android:debuggable="false"') || content.includes('tools:replace="android:debuggable"')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Debug protection configured',
+                    solution: 'Good practice: Preventing debugging in release builds'
+                });
+            }
         }
         
         if (fs.existsSync(proguardRules)) {
@@ -380,6 +457,26 @@ class SecurityAnalyzer {
                     category: 'Code Protection',
                     issue: 'Overly broad keep rules in ProGuard',
                     solution: 'Use specific keep rules instead of keeping all classes'
+                });
+            }
+
+            // Check for advanced security features
+            if (content.includes('-adaptclassstrings') && content.includes('-adaptresourcefilenames')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Advanced obfuscation features enabled',
+                    solution: 'Good practice: String and resource obfuscation provides extra protection'
+                });
+            }
+
+            // Check for optimization passes
+            if (content.includes('-optimizationpasses')) {
+                this.recommendations.push({
+                    type: 'GOOD',
+                    category: 'Code Protection',
+                    issue: 'Code optimization configured',
+                    solution: 'Good practice: Multiple optimization passes improve security'
                 });
             }
         } else {

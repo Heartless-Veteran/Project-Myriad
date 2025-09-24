@@ -38,6 +38,20 @@ junit.xml
 .env.*
 !.env.example
 
+# Security - Keystore files (CRITICAL: Never commit these)
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+signing.properties
+
+# Security - API keys and secrets
+google-services.json
+firebase-config.json
+secrets.txt
+api-keys.txt
+
 # Logs
 logs/
 *.log

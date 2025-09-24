@@ -4,8 +4,14 @@
     Enforces HTTPS connections and implements certificate pinning for enhanced security
 -->
 <network-security-config>
+    <!-- Domain-specific configuration with certificate pinning -->
     <domain-config cleartextTrafficPermitted="false">
-        <!-- Future API endpoints can be configured here -->
+        <domain includeSubdomains="false">api.example.com</domain>
+        <!-- Certificate pinning for API endpoints (update with actual certificates) -->
+        <pin-set expiration="2025-12-31">
+            <!-- Add actual certificate pins when API endpoints are defined -->
+            <!-- Example: <pin digest="SHA256">7HIpactkIAq2Y49orFOOQKurWxmmSFZhBCoQYcRhJ3Y=</pin> -->
+        </pin-set>
     </domain-config>
 
     <!-- Debug configuration (only for debug builds) -->

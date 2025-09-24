@@ -54,22 +54,34 @@ android {
         )
     }
 
-    // Load signing properties from local.properties
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localProperties.load(localPropertiesFile.inputStream())
+    // Load signing properties from keystore.properties (secure approach)
+    val keystoreProperties = Properties()
+    val keystorePropertiesFile = file("keystore.properties")
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
     }
+
+    // Fallback to environment variables for CI/CD
+    val storeFile = keystoreProperties.getProperty("storeFile") 
+        ?: System.getenv("KEYSTORE_FILE") 
+        ?: "myriad-release-key.jks"
+    val storePassword = keystoreProperties.getProperty("storePassword") 
+        ?: System.getenv("KEYSTORE_PASSWORD")
+    val keyAlias = keystoreProperties.getProperty("keyAlias") 
+        ?: System.getenv("KEY_ALIAS") 
+        ?: "myriad-key-alias"
+    val keyPassword = keystoreProperties.getProperty("keyPassword") 
+        ?: System.getenv("KEY_PASSWORD")
 
     // Signing configurations
     signingConfigs {
         create("release") {
-            val keystoreFile = file("myriad-release-key.jks")
-            if (keystoreFile.exists()) {
-                storeFile = keystoreFile
-                storePassword = localProperties.getProperty("MYRIAD_RELEASE_STORE_PASSWORD")
-                keyAlias = "myriad-key-alias"
-                keyPassword = localProperties.getProperty("MYRIAD_RELEASE_KEY_PASSWORD")
+            val keystoreFile = file(storeFile)
+            if (keystoreFile.exists() && storePassword != null && keyPassword != null) {
+                this.storeFile = keystoreFile
+                this.storePassword = storePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
             }
         }
     }

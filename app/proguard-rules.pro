@@ -86,10 +86,20 @@
 -mergeinterfacesaggressively
 -overloadaggressively
 
-# Security: Remove debug information
+# Security: Advanced obfuscation
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!code/allocation/variable
+-optimizationpasses 5
+
+# Security: Remove debug information and stack traces in release
 -printmapping mapping.txt
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
+
+# Security: Anti-reflection protection
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
+-keepclassmembers class * {
+    @java.lang.Deprecated <methods>;
+}
 
 # Security: Hide internal implementation details
 -keep class com.heartlessveteran.myriad.** {
@@ -100,8 +110,10 @@
 -dontwarn java.lang.instrument.ClassFileTransformer
 -dontwarn sun.misc.SignalHandler
 
-# Security: Protect against reflection attacks
--keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
+# Security: String encryption (advanced)
+-adaptclassstrings
+-adaptresourcefilenames
+-adaptresourcefilecontents
 
 # Security: Anti-debugging measures
 -assumenosideeffects class android.util.Log {
