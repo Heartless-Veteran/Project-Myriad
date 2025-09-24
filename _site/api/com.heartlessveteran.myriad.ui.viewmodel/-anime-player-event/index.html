@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>AnimePlayerEvent</title>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}-->    <link href="###images/logo-icon.svg" rel="icon" type="image/svg">
+<!--[-]cmd-->    <!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}--><script>var pathToRoot = "###";</script><!--[-]cmd-->
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}--><script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="###scripts/sourceset_dependencies.js" async="async"></script>
+<link href="###styles/style.css" rel="Stylesheet">
+<link href="###styles/main.css" rel="Stylesheet">
+<link href="###styles/prism.css" rel="Stylesheet">
+<link href="###styles/logo-styles.css" rel="Stylesheet">
+<link href="###styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="###ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="###scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="###scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="###scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="###scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="###scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="###ui-kit/ui-kit.min.js" defer="defer"></script>
+<script type="text/javascript" src="###scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<!--[-]cmd--></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}-->            <a class="library-name--link" href="###index.html">
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.ProjectNameSubstitutionCommand","pattern":"###","default":"app"}-->                    ###
+<!--[-]cmd-->            </a>
+<!--[-]cmd-->        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.heartlessveteran.myriad.ui.viewmodel/-anime-player-event/index.html&quot;}"></dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active=""
+                        data-filter=":app/staging">androidJvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":app/staging"
+                                       data-filter=":app/staging"/>
+                                <span class="checkbox--icon"></span>
+                                androidJvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                        data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.ProjectNameSubstitutionCommand","pattern":"###","default":"app"}-->                                    ###
+<!--[-]cmd-->                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="app::com.heartlessveteran.myriad.ui.viewmodel/AnimePlayerEvent///PointingToDeclaration//934993038">
+  <div class="breadcrumbs"><a href="../../index.html">app</a><span class="delimiter">/</span><a href="../index.html">com.heartlessveteran.myriad.ui.viewmodel</a><span class="delimiter">/</span><span class="current">AnimePlayerEvent</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Anime</span><wbr></wbr><span>Player</span><wbr></wbr><span><span>Event</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">AnimePlayerEvent</a></div><p class="paragraph">Events that can be sent from the UI</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-load-episode/index.html">LoadEpisode</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-progress/index.html">UpdateProgress</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-mark-episode-watched/index.html">MarkEpisodeWatched</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-play-pause/index.html">PlayPause</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-next-episode/index.html">NextEpisode</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-previous-episode/index.html">PreviousEpisode</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-seek-to/index.html">SeekTo</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-toggle-fullscreen/index.html">ToggleFullscreen</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-change-playback-speed/index.html">ChangePlaybackSpeed</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-select-audio-track/index.html">SelectAudioTrack</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-select-subtitle-track/index.html">SelectSubtitleTrack</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-select-video-quality/index.html">SelectVideoQuality</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-seek-to-chapter/index.html">SeekToChapter</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-skip-intro/index.html">SkipIntro</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-skip-outro/index.html">SkipOutro</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-adjust-volume/index.html">AdjustVolume</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-adjust-brightness/index.html">AdjustBrightness</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-update-subtitle-style/index.html">UpdateSubtitleStyle</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-toggle-player-controls/index.html">TogglePlayerControls</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-detect-frame-rate/index.html">DetectFrameRate</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-load-chapters/index.html">LoadChapters</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1099975578%2FClasslikes%2F934993038" anchor-label="AdjustBrightness" id="-1099975578%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-adjust-brightness/index.html"><span>Adjust</span><wbr></wbr><span><span>Brightness</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1099975578%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-adjust-brightness/index.html">AdjustBrightness</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>brightness<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="411115709%2FClasslikes%2F934993038" anchor-label="AdjustVolume" id="411115709%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-adjust-volume/index.html"><span>Adjust</span><wbr></wbr><span><span>Volume</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="411115709%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-adjust-volume/index.html">AdjustVolume</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>volume<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="64856320%2FClasslikes%2F934993038" anchor-label="ChangePlaybackSpeed" id="64856320%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-change-playback-speed/index.html"><span>Change</span><wbr></wbr><span>Playback</span><wbr></wbr><span><span>Speed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="64856320%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-change-playback-speed/index.html">ChangePlaybackSpeed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>speed<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="928442066%2FClasslikes%2F934993038" anchor-label="DetectFrameRate" id="928442066%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-detect-frame-rate/index.html"><span>Detect</span><wbr></wbr><span>Frame</span><wbr></wbr><span><span>Rate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="928442066%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-detect-frame-rate/index.html">DetectFrameRate</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1533971238%2FClasslikes%2F934993038" anchor-label="LoadChapters" id="-1533971238%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-load-chapters/index.html"><span>Load</span><wbr></wbr><span><span>Chapters</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1533971238%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-load-chapters/index.html">LoadChapters</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>episodeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1814428409%2FClasslikes%2F934993038" anchor-label="LoadEpisode" id="-1814428409%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-load-episode/index.html"><span>Load</span><wbr></wbr><span><span>Episode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1814428409%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-load-episode/index.html">LoadEpisode</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>animeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>episodeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1435184390%2FClasslikes%2F934993038" anchor-label="MarkEpisodeWatched" id="1435184390%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mark-episode-watched/index.html"><span>Mark</span><wbr></wbr><span>Episode</span><wbr></wbr><span><span>Watched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1435184390%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-mark-episode-watched/index.html">MarkEpisodeWatched</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>episodeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-751347948%2FClasslikes%2F934993038" anchor-label="NextEpisode" id="-751347948%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-next-episode/index.html"><span>Next</span><wbr></wbr><span><span>Episode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-751347948%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-next-episode/index.html">NextEpisode</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-903565446%2FClasslikes%2F934993038" anchor-label="PlayPause" id="-903565446%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-play-pause/index.html"><span>Play</span><wbr></wbr><span><span>Pause</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-903565446%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-play-pause/index.html">PlayPause</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-808138344%2FClasslikes%2F934993038" anchor-label="PreviousEpisode" id="-808138344%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-previous-episode/index.html"><span>Previous</span><wbr></wbr><span><span>Episode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-808138344%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-previous-episode/index.html">PreviousEpisode</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1832154163%2FClasslikes%2F934993038" anchor-label="SeekTo" id="1832154163%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-seek-to/index.html"><span>Seek</span><wbr></wbr><span><span>To</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1832154163%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-seek-to/index.html">SeekTo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-932062622%2FClasslikes%2F934993038" anchor-label="SeekToChapter" id="-932062622%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-seek-to-chapter/index.html"><span>Seek</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Chapter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-932062622%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-seek-to-chapter/index.html">SeekToChapter</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>chapter<span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.entities&quot;,&quot;classNames&quot;:&quot;Chapter&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">Chapter</dokka-template-command></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-507261547%2FClasslikes%2F934993038" anchor-label="SelectAudioTrack" id="-507261547%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-select-audio-track/index.html"><span>Select</span><wbr></wbr><span>Audio</span><wbr></wbr><span><span>Track</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-507261547%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-select-audio-track/index.html">SelectAudioTrack</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>trackId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="226918917%2FClasslikes%2F934993038" anchor-label="SelectSubtitleTrack" id="226918917%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-select-subtitle-track/index.html"><span>Select</span><wbr></wbr><span>Subtitle</span><wbr></wbr><span><span>Track</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="226918917%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-select-subtitle-track/index.html">SelectSubtitleTrack</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>trackId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>enabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1755538106%2FClasslikes%2F934993038" anchor-label="SelectVideoQuality" id="-1755538106%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-select-video-quality/index.html"><span>Select</span><wbr></wbr><span>Video</span><wbr></wbr><span><span>Quality</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1755538106%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-select-video-quality/index.html">SelectVideoQuality</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>quality<span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.entities&quot;,&quot;classNames&quot;:&quot;VideoQuality&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">VideoQuality</dokka-template-command></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2052045617%2FClasslikes%2F934993038" anchor-label="SkipIntro" id="-2052045617%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-skip-intro/index.html"><span>Skip</span><wbr></wbr><span><span>Intro</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2052045617%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-skip-intro/index.html">SkipIntro</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1427404272%2FClasslikes%2F934993038" anchor-label="SkipOutro" id="-1427404272%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-skip-outro/index.html"><span>Skip</span><wbr></wbr><span><span>Outro</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1427404272%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-skip-outro/index.html">SkipOutro</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1356878249%2FClasslikes%2F934993038" anchor-label="ToggleFullscreen" id="-1356878249%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-toggle-fullscreen/index.html"><span>Toggle</span><wbr></wbr><span><span>Fullscreen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1356878249%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-toggle-fullscreen/index.html">ToggleFullscreen</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="595230811%2FClasslikes%2F934993038" anchor-label="TogglePlayerControls" id="595230811%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-toggle-player-controls/index.html"><span>Toggle</span><wbr></wbr><span>Player</span><wbr></wbr><span><span>Controls</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="595230811%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">object </span><a href="-toggle-player-controls/index.html">TogglePlayerControls</a> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1771184752%2FClasslikes%2F934993038" anchor-label="UpdateProgress" id="-1771184752%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-update-progress/index.html"><span>Update</span><wbr></wbr><span><span>Progress</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1771184752%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-update-progress/index.html">UpdateProgress</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>episodeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>position<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-541018516%2FClasslikes%2F934993038" anchor-label="UpdateSubtitleStyle" id="-541018516%2FClasslikes%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-update-subtitle-style/index.html"><span>Update</span><wbr></wbr><span>Subtitle</span><wbr></wbr><span><span>Style</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-541018516%2FClasslikes%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-update-subtitle-style/index.html">UpdateSubtitleStyle</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>settings<span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.entities&quot;,&quot;classNames&quot;:&quot;VideoPlaybackSettings&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">VideoPlaybackSettings</dokka-template-command></span></span><span class="token punctuation">)</span> : <a href="index.html">AnimePlayerEvent</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

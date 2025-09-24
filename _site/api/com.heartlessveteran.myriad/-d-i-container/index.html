@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DIContainer</title>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}-->    <link href="###images/logo-icon.svg" rel="icon" type="image/svg">
+<!--[-]cmd-->    <!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}--><script>var pathToRoot = "###";</script><!--[-]cmd-->
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}--><script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="###scripts/sourceset_dependencies.js" async="async"></script>
+<link href="###styles/style.css" rel="Stylesheet">
+<link href="###styles/main.css" rel="Stylesheet">
+<link href="###styles/prism.css" rel="Stylesheet">
+<link href="###styles/logo-styles.css" rel="Stylesheet">
+<link href="###styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="###ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="###scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="###scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="###scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="###scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="###scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="###ui-kit/ui-kit.min.js" defer="defer"></script>
+<script type="text/javascript" src="###scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<!--[-]cmd--></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.PathToRootSubstitutionCommand","pattern":"###","default":"../../"}-->            <a class="library-name--link" href="###index.html">
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.ProjectNameSubstitutionCommand","pattern":"###","default":"app"}-->                    ###
+<!--[-]cmd-->            </a>
+<!--[-]cmd-->        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;com.heartlessveteran.myriad/-d-i-container/index.html&quot;}"></dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active=""
+                        data-filter=":app/staging">androidJvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":app/staging"
+                                       data-filter=":app/staging"/>
+                                <span class="checkbox--icon"></span>
+                                androidJvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                        data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+<!--[+]cmd:{"@class":"org.jetbrains.dokka.base.templating.ProjectNameSubstitutionCommand","pattern":"###","default":"app"}-->                                    ###
+<!--[-]cmd-->                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="app::com.heartlessveteran.myriad/DIContainer///PointingToDeclaration//934993038">
+  <div class="breadcrumbs"><a href="../../index.html">app</a><span class="delimiter">/</span><a href="../index.html">com.heartlessveteran.myriad</a><span class="delimiter">/</span><span class="current">DIContainer</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>DIContainer</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">DIContainer</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Manual dependency injection container. Temporary solution while KSP/Hilt compatibility issues are resolved. Follows the same architectural patterns as Hilt would provide.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="276515787%2FConstructors%2F934993038" anchor-label="DIContainer" id="276515787%2FConstructors%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-container.html"><span><span>DIContainer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="276515787%2FConstructors%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="882661560%2FProperties%2F934993038" anchor-label="addAnimeToLibraryUseCase" id="882661560%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-anime-to-library-use-case.html"><span>add</span><wbr></wbr><span>Anime</span><wbr></wbr><span>To</span><wbr></wbr><span>Library</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="882661560%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="add-anime-to-library-use-case.html">addAnimeToLibraryUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;AddAnimeToLibraryUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">AddAnimeToLibraryUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1569570168%2FProperties%2F934993038" anchor-label="addMangaToLibraryUseCase" id="1569570168%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-manga-to-library-use-case.html"><span>add</span><wbr></wbr><span>Manga</span><wbr></wbr><span>To</span><wbr></wbr><span>Library</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1569570168%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="add-manga-to-library-use-case.html">addMangaToLibraryUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;AddMangaToLibraryUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">AddMangaToLibraryUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1237165644%2FProperties%2F934993038" anchor-label="aiProviderRegistry" id="1237165644%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ai-provider-registry.html"><span>ai</span><wbr></wbr><span>Provider</span><wbr></wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1237165644%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="ai-provider-registry.html">aiProviderRegistry</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.data.ai&quot;,&quot;classNames&quot;:&quot;AIProviderRegistry&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">AIProviderRegistry</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1317191002%2FProperties%2F934993038" anchor-label="animeRepository" id="1317191002%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="anime-repository.html"><span>anime</span><wbr></wbr><span><span>Repository</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1317191002%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="anime-repository.html">animeRepository</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.repository&quot;,&quot;classNames&quot;:&quot;AnimeRepository&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">AnimeRepository</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1889732892%2FProperties%2F934993038" anchor-label="geminiProvider" id="1889732892%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="gemini-provider.html"><span>gemini</span><wbr></wbr><span><span>Provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1889732892%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="gemini-provider.html">geminiProvider</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.data.ai&quot;,&quot;classNames&quot;:&quot;GeminiProvider&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GeminiProvider</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="574872815%2FProperties%2F934993038" anchor-label="getAnimeDetailsUseCase" id="574872815%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-anime-details-use-case.html"><span>get</span><wbr></wbr><span>Anime</span><wbr></wbr><span>Details</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="574872815%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-anime-details-use-case.html">getAnimeDetailsUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetAnimeDetailsUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetAnimeDetailsUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="599495895%2FProperties%2F934993038" anchor-label="getAnimeEpisodesUseCase" id="599495895%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-anime-episodes-use-case.html"><span>get</span><wbr></wbr><span>Anime</span><wbr></wbr><span>Episodes</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="599495895%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-anime-episodes-use-case.html">getAnimeEpisodesUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetAnimeEpisodesUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetAnimeEpisodesUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1798587704%2FProperties%2F934993038" anchor-label="getChapterPagesUseCase" id="1798587704%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-chapter-pages-use-case.html"><span>get</span><wbr></wbr><span>Chapter</span><wbr></wbr><span>Pages</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1798587704%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-chapter-pages-use-case.html">getChapterPagesUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetChapterPagesUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetChapterPagesUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1204075066%2FProperties%2F934993038" anchor-label="getLibraryAnimeUseCase" id="1204075066%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-library-anime-use-case.html"><span>get</span><wbr></wbr><span>Library</span><wbr></wbr><span>Anime</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1204075066%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-library-anime-use-case.html">getLibraryAnimeUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetLibraryAnimeUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetLibraryAnimeUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-393544326%2FProperties%2F934993038" anchor-label="getLibraryMangaUseCase" id="-393544326%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-library-manga-use-case.html"><span>get</span><wbr></wbr><span>Library</span><wbr></wbr><span>Manga</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-393544326%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-library-manga-use-case.html">getLibraryMangaUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetLibraryMangaUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetLibraryMangaUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="499610031%2FProperties%2F934993038" anchor-label="getMangaDetailsUseCase" id="499610031%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-manga-details-use-case.html"><span>get</span><wbr></wbr><span>Manga</span><wbr></wbr><span>Details</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="499610031%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-manga-details-use-case.html">getMangaDetailsUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetMangaDetailsUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetMangaDetailsUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1069611802%2FProperties%2F934993038" anchor-label="getNextUnwatchedEpisodeUseCase" id="1069611802%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-next-unwatched-episode-use-case.html"><span>get</span><wbr></wbr><span>Next</span><wbr></wbr><span>Unwatched</span><wbr></wbr><span>Episode</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1069611802%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="get-next-unwatched-episode-use-case.html">getNextUnwatchedEpisodeUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;GetNextUnwatchedEpisodeUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GetNextUnwatchedEpisodeUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1675867071%2FProperties%2F934993038" anchor-label="globalSearchViewModel" id="1675867071%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="global-search-view-model.html"><span>global</span><wbr></wbr><span>Search</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Model</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1675867071%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="global-search-view-model.html">globalSearchViewModel</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.feature.browser.viewmodel&quot;,&quot;classNames&quot;:&quot;GlobalSearchViewModel&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">GlobalSearchViewModel</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-829509094%2FProperties%2F934993038" anchor-label="mangaRepository" id="-829509094%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="manga-repository.html"><span>manga</span><wbr></wbr><span><span>Repository</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-829509094%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="manga-repository.html">mangaRepository</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.repository&quot;,&quot;classNames&quot;:&quot;MangaRepository&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">MangaRepository</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-685587713%2FProperties%2F934993038" anchor-label="openAIProvider" id="-685587713%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="open-a-i-provider.html"><span>open</span><wbr></wbr><span><span>AIProvider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-685587713%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="open-a-i-provider.html">openAIProvider</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.data.ai&quot;,&quot;classNames&quot;:&quot;OpenAIProvider&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">OpenAIProvider</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="974840874%2FProperties%2F934993038" anchor-label="pluginManagementViewModel" id="974840874%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plugin-management-view-model.html"><span>plugin</span><wbr></wbr><span>Management</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Model</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="974840874%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="plugin-management-view-model.html">pluginManagementViewModel</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.feature.browser.viewmodel&quot;,&quot;classNames&quot;:&quot;PluginManagementViewModel&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">PluginManagementViewModel</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="79590782%2FProperties%2F934993038" anchor-label="pluginManager" id="79590782%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plugin-manager.html"><span>plugin</span><wbr></wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="79590782%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="plugin-manager.html">pluginManager</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.manager&quot;,&quot;classNames&quot;:&quot;PluginManager&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">PluginManager</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-230129627%2FProperties%2F934993038" anchor-label="pluginRepository" id="-230129627%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="plugin-repository.html"><span>plugin</span><wbr></wbr><span><span>Repository</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-230129627%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="plugin-repository.html">pluginRepository</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.repository&quot;,&quot;classNames&quot;:&quot;PluginRepository&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">PluginRepository</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2077449634%2FProperties%2F934993038" anchor-label="searchLibraryAnimeUseCase" id="2077449634%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="search-library-anime-use-case.html"><span>search</span><wbr></wbr><span>Library</span><wbr></wbr><span>Anime</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2077449634%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="search-library-anime-use-case.html">searchLibraryAnimeUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;SearchLibraryAnimeUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">SearchLibraryAnimeUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1817028621%2FProperties%2F934993038" anchor-label="searchManager" id="-1817028621%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="search-manager.html"><span>search</span><wbr></wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1817028621%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="search-manager.html">searchManager</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.manager&quot;,&quot;classNames&quot;:&quot;SearchManager&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">SearchManager</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1215419190%2FProperties%2F934993038" anchor-label="updateEpisodeProgressUseCase" id="-1215419190%2FProperties%2F934993038" data-filterable-set=":app/staging"></a>
+          <div class="table-row" data-filterable-current=":app/staging" data-filterable-set=":app/staging">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update-episode-progress-use-case.html"><span>update</span><wbr></wbr><span>Episode</span><wbr></wbr><span>Progress</span><wbr></wbr><span>Use</span><wbr></wbr><span><span>Case</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1215419190%2FProperties%2F934993038"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app/staging"><div class="symbol monospace"><span class="token keyword">val </span><a href="update-episode-progress-use-case.html">updateEpisodeProgressUseCase</a><span class="token operator">: </span><dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ResolveLinkCommand&quot;,&quot;dri&quot;:{&quot;packageName&quot;:&quot;com.heartlessveteran.myriad.core.domain.usecase&quot;,&quot;classNames&quot;:&quot;UpdateEpisodeProgressUseCase&quot;,&quot;callable&quot;:null,&quot;target&quot;:{&quot;@class&quot;:&quot;org.jetbrains.dokka.links.PointingToDeclaration&quot;},&quot;extra&quot;:null}}">UpdateEpisodeProgressUseCase</dokka-template-command></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
