@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    File paths configuration for secure file sharing
+    Defines which directories the FileProvider can access
+-->
+<paths>
+    <!-- Internal storage paths -->
+    <files-path name="internal_files" path="." />
+    <cache-path name="cache_files" path="." />
+    
+    <!-- External storage paths (if needed) -->
+    <external-files-path name="external_files" path="." />
+    <external-cache-path name="external_cache" path="." />
+    
+    <!-- Media storage for vault functionality -->
+    <files-path name="vault_media" path="vault/" />
+    <cache-path name="temp_media" path="temp/" />
+</paths>
