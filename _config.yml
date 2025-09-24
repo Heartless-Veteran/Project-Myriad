@@ -53,3 +53,8 @@ exclude:
   - local.properties.example
   - scripts
   - config
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - "*.orig"

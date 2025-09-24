@@ -45,7 +45,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Generate Dokka documentation
-        run: ./gradlew app:dokkaGenerateModuleHtml
+        run: ./gradlew app:dokkaGenerateModuleHtml --stacktrace
         continue-on-error: true
 
       - name: Set up Node.js
@@ -70,7 +70,9 @@ jobs:
           bundler-cache: true
 
       - name: Install Jekyll dependencies
-        run: bundle install
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle install
 
       - name: Prepare site content
         run: |
@@ -78,10 +80,29 @@ jobs:
           if [ -d app/build/dokka-module/html/module ]; then
             mkdir -p api
             cp -r app/build/dokka-module/html/module/* api/
+            echo "✅ Dokka API documentation copied to api/"
+          else
+            echo "⚠️ No Dokka documentation found, creating placeholder"
+            mkdir -p api
+            echo "# API Documentation\n\nAPI documentation will be available after the first successful build." > api/index.md
           fi
+          
+          # Validate critical files exist
+          echo "🔍 Validating site structure..."
+          for file in index.html _config.yml docs/index.html; do
+            if [ -f "$file" ]; then
+              echo "✅ Found: $file"
+            else
+              echo "❌ Missing: $file"
+              exit 1
+            fi
+          done
 
       - name: Build with Jekyll
-        run: bundle exec jekyll build
+        run: |
+          bundle exec jekyll build --verbose --trace
+        env:
+          JEKYLL_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
