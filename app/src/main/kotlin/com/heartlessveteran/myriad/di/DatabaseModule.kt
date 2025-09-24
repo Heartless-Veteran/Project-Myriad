@@ -6,6 +6,7 @@ import com.heartlessveteran.myriad.core.data.database.ChapterDao
 import com.heartlessveteran.myriad.core.data.database.MangaDao
 import com.heartlessveteran.myriad.core.data.database.MyriadDatabase
 import com.heartlessveteran.myriad.core.data.database.PluginDao
+import com.heartlessveteran.myriad.core.data.database.ReaderSettingsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,4 +42,7 @@ object DatabaseModule {
 
     @Provides
     fun providePluginDao(database: MyriadDatabase): PluginDao = database.pluginDao()
+
+    @Provides
+    fun provideReaderSettingsDao(database: MyriadDatabase): ReaderSettingsDao = database.readerSettingsDao()
 }
