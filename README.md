@@ -217,6 +217,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <div align="center">
 
 [![GitHub](https://img.shields.io/badge/GitHub-Project%20Repository-black?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad)
+[![Pages](https://img.shields.io/badge/GitHub%20Pages-Documentation%20Site-brightgreen?logo=github)](https://heartless-veteran.github.io/Project-Myriad)
 [![Issues](https://img.shields.io/badge/Issues-Bug%20Reports%20%26%20Features-red?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/issues)
 [![Discussions](https://img.shields.io/badge/Discussions-Community%20Chat-blue?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/discussions)
 [![Wiki](https://img.shields.io/badge/Wiki-Documentation-green?logo=github)](https://github.com/Heartless-Veteran/Project-Myriad/wiki)
@@ -225,6 +226,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### Additional Resources
 
+- 🌐 **[Documentation Website](https://heartless-veteran.github.io/Project-Myriad)** - Comprehensive documentation site with API reference
 - 📖 **[Documentation Index](docs/INDEX.md)** - Complete documentation navigation guide
 - 📖 **[Development Guide](DEVELOPMENT.md)** - Detailed development setup
 - 🔍 **[Code Analysis](CODE_ANALYSIS.md)** - Current implementation status  
