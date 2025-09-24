@@ -62,26 +62,35 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Ruby for Jekyll
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Create Gemfile
+        run: |
+          cat > Gemfile << 'EOF'
+          source "https://rubygems.org"
+          gem "github-pages", group: :jekyll_plugins
+          gem "jekyll-feed"
+          gem "jekyll-sitemap" 
+          gem "jekyll-seo-tag"
+          EOF
+
+      - name: Install Jekyll dependencies
+        run: bundle install
+
       - name: Prepare site content
         run: |
-          mkdir -p _site
-          
-          # Copy markdown documentation
-          cp -r docs/* _site/
-          
           # Copy generated API documentation if it exists
           if [ -d app/build/dokka-module/html/module ]; then
-            mkdir -p _site/api
-            cp -r app/build/dokka-module/html/module/* _site/api/
+            mkdir -p api
+            cp -r app/build/dokka-module/html/module/* api/
           fi
-          
-          # Copy root documentation files
-          cp README.md _site/
-          cp ARCHITECTURE.md _site/ 2>/dev/null || true
-          cp DEVELOPMENT.md _site/ 2>/dev/null || true
-          cp CONTRIBUTING.md _site/ 2>/dev/null || true
-          cp ROADMAP.md _site/ 2>/dev/null || true
-          cp SECURITY.md _site/ 2>/dev/null || true
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
