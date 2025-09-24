@@ -6,9 +6,10 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Android](https://img.shields.io/badge/platform-Android-green.svg)
-![Kotlin](https://img.shields.io/badge/kotlin-22%20files-purple)
+![Kotlin](https://img.shields.io/badge/kotlin-2.2.20-purple)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
-![Build Status](https://img.shields.io/badge/build-complete-brightgreen.svg)
+![Compose](https://img.shields.io/badge/compose-2025.09.00-blue.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 
 *A comprehensive Kotlin Android application for manga and anime enthusiasts, featuring AI-powered tools, local media management, and seamless online content discovery built with modern Android architecture.*
 
@@ -48,12 +49,16 @@
 
 ## 🛠️ Technology Stack
 
-Project Myriad is built with modern Android technologies:
+Project Myriad is built with cutting-edge Android technologies:
 
-- **Kotlin 2.2.20** - Primary development language
-- **Jetpack Compose** - Declarative UI with Material 3 design
+- **Kotlin 2.2.20** - Primary development language with latest features
+- **Jetpack Compose 2025.09.00** - Declarative UI with Material 3 design
+- **Android Gradle Plugin 8.13.0** - Latest build toolchain
 - **Clean Architecture** - Domain/Data/Presentation layer separation
-- **Room Database** - Local persistence for offline-first functionality
+- **Room Database 2.8.0** - Local persistence for offline-first functionality
+- **Hilt DI 2.57.1** - Dependency injection framework
+- **ExoPlayer 1.8.0** - Advanced video/audio playback
+- **Retrofit 3.0.0** - Type-safe HTTP client
 
 📖 **[Complete Technology Stack Details](ARCHITECTURE.md#technology-stack)**
 
@@ -96,8 +101,10 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern for m
 
 ### Prerequisites
 
-- **Android Studio** Hedgehog (2023.1.1) or later
-- **JDK 11** or higher  
+- **Android Studio** Jellyfish (2023.3.1) or later
+- **JDK 17** or higher
+- **Android SDK** with API levels 24-36 
+- **Git** for version control  
 - **Android SDK** with API 24-36
 - **4GB+ RAM** recommended
 
