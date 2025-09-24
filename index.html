@@ -1,0 +1,175 @@
+---
+layout: default
+title: Project Myriad Documentation
+---
+
+<div class="hero">
+  <h1>{{ site.title }}</h1>
+  <p class="lead">{{ site.description }}</p>
+</div>
+
+## 🚀 Quick Start
+
+Welcome to Project Myriad's documentation hub! This site provides comprehensive documentation for developers, contributors, and users.
+
+### 📚 Documentation Categories
+
+<div class="docs-grid">
+  <div class="doc-category">
+    <h3>🏗️ Getting Started</h3>
+    <ul>
+      <li><a href="README.html">📖 Project Overview</a> - Learn about Project Myriad's features and capabilities</li>
+      <li><a href="DEVELOPMENT.html">🛠️ Development Setup</a> - Set up your development environment</li>
+      <li><a href="CONTRIBUTING.html">🤝 Contributing Guide</a> - How to contribute to the project</li>
+    </ul>
+  </div>
+
+  <div class="doc-category">
+    <h3>🏛️ Architecture & Design</h3>
+    <ul>
+      <li><a href="ARCHITECTURE.html">🏗️ Architecture Overview</a> - Complete technical architecture</li>
+      <li><a href="ROADMAP.html">🗺️ Project Roadmap</a> - Development timeline and phases</li>
+      <li><a href="docs/requirements.html">📋 Requirements</a> - Technical specifications</li>
+    </ul>
+  </div>
+
+  <div class="doc-category">
+    <h3>🔧 Development Resources</h3>
+    <ul>
+      <li><a href="docs/INDEX.html">📇 Documentation Index</a> - Complete navigation guide</li>
+      <li><a href="docs/dependency-management.html">📦 Dependency Management</a> - How dependencies are managed</li>
+      <li><a href="docs/AUTOMATED_WORKFLOW.html">⚙️ CI/CD Workflows</a> - Automated testing and deployment</li>
+    </ul>
+  </div>
+
+  <div class="doc-category">
+    <h3>🎯 Features & Implementation</h3>
+    <ul>
+      <li><a href="docs/AI_PROVIDER_ARCHITECTURE.html">🤖 AI Architecture</a> - AI integration and providers</li>
+      <li><a href="docs/ANIME_IMPLEMENTATION.html">📺 Anime Features</a> - Video playback and management</li>
+      <li><a href="docs/ENHANCED_VIDEO_PLAYER_GUIDE.html">🎬 Video Player</a> - Enhanced video player implementation</li>
+      <li><a href="docs/cloud-sync-implementation.html">☁️ Cloud Sync</a> - Cloud synchronization features</li>
+    </ul>
+  </div>
+</div>
+
+## 📖 API Documentation
+
+<div class="api-section">
+  <h3>🔗 Kotlin API Reference</h3>
+  <p>Comprehensive API documentation generated from the source code:</p>
+  <a href="api/" class="api-link">
+    <strong>Browse API Documentation →</strong>
+  </a>
+</div>
+
+## 🌟 Key Features
+
+- **📚 The Vault** - Local media management system
+- **🤖 AI Core** - Intelligent OCR, translation, and recommendations  
+- **🌐 The Browser** - Extensible online content discovery
+- **🎨 Modern UI** - Built with Jetpack Compose and Material Design 3
+
+## 🛠️ Technology Stack
+
+- **Kotlin** 2.2.20 - Modern, concise programming language
+- **Jetpack Compose** - Declarative UI toolkit
+- **Android Architecture Components** - Room, ViewModel, LiveData
+- **Hilt** - Dependency injection
+- **Retrofit** - HTTP client for API communication
+- **ExoPlayer** - Advanced media playback
+
+## 🤝 Community & Support
+
+- **[GitHub Repository](https://github.com/Heartless-Veteran/Project-Myriad)** - Source code and issue tracking
+- **[Discussions](https://github.com/Heartless-Veteran/Project-Myriad/discussions)** - Community chat and Q&A
+- **[Issues](https://github.com/Heartless-Veteran/Project-Myriad/issues)** - Bug reports and feature requests
+
+---
+
+*This documentation is automatically updated with each release. Last updated: {{ site.time | date: "%B %d, %Y" }}*
+
+<style>
+.hero {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.hero .lead {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.doc-category {
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #fafafa;
+}
+
+.doc-category h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.doc-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.doc-category li {
+  margin-bottom: 0.5rem;
+}
+
+.doc-category a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.doc-category a:hover {
+  text-decoration: underline;
+}
+
+.api-section {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.api-link {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+.api-link:hover {
+  background: #0056b3;
+  color: white;
+  text-decoration: none;
+}
+</style>

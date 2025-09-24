@@ -31,6 +31,7 @@ Project Myriad uses a **streamlined automated workflow system** that runs on eve
 
 **Automated Documentation:**
 - **Dokka** - Kotlin API documentation generation
+- **GitHub Pages** - Automated deployment of documentation website
 - **Package Documentation** - Automatic package.md updates
 - **README Statistics** - Project metrics and badges
 - **Architecture Validation** - Structural consistency checks
@@ -79,6 +80,16 @@ Project Myriad uses a **streamlined automated workflow system** that runs on eve
 # Runs on: version tags, manual dispatch
 # Jobs:
 # - release: Version extraction, APK signing, GitHub release creation
+```
+
+### `.github/workflows/pages.yml`
+**Documentation deployment** - Automated GitHub Pages deployment:
+
+```yaml
+# Runs on: push to main, manual dispatch
+# Jobs:
+# - build: Generate Dokka docs, prepare site content
+# - deploy: Deploy to GitHub Pages
 ```
 
 ## Local Development Integration

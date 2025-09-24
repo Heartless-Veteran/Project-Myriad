@@ -38,6 +38,7 @@ For active development work:
 - **[DEVELOPMENT.md](../DEVELOPMENT.md)** - Build instructions, coding standards, testing guidelines (includes CLI build methods)
 - **[RELEASE_BUILD_GUIDE.md](../RELEASE_BUILD_GUIDE.md)** - Production release process
 - **[AUTOMATED_WORKFLOW.md](AUTOMATED_WORKFLOW.md)** - CI/CD and automation details
+- **[GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md)** - GitHub Pages documentation site configuration
 
 ### Feature Documentation
 For specific features and implementations:
@@ -121,6 +122,14 @@ This documentation index is maintained alongside the project and updated when:
 - Navigation structure is modified
 
 For documentation issues or suggestions, please open an issue in the project repository.
+
+## 🌐 Online Documentation
+
+For the best browsing experience, visit our **[GitHub Pages Documentation Site](https://heartless-veteran.github.io/Project-Myriad)** which includes:
+- 📖 All documentation with improved navigation
+- 🔍 Full-text search capabilities
+- 📚 Interactive API documentation
+- 🎨 Enhanced visual presentation
 
 ---
 
