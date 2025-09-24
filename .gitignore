@@ -46,6 +46,11 @@ logs/
 node_modules/
 package-lock.json
 
+# Ruby/Jekyll
+.bundle/
+vendor/
+Gemfile.lock
+
 # Misc
 .tmp/
 .cache/
