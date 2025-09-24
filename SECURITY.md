@@ -61,33 +61,41 @@ Project Myriad implements several security measures:
 
 ### Network Security
 - **HTTPS Enforcement**: All network traffic must use HTTPS
-- **Certificate Pinning**: Pinned certificates for critical APIs
+- **Certificate Pinning**: Pinned certificates for critical APIs (configurable)
 - **Network Security Config**: Android Network Security Configuration enforced
+- **Cleartext Traffic Prevention**: No unencrypted HTTP connections allowed
 
 ### Data Protection
 - **No Backup**: Application data is not included in device backups
 - **Secure Storage**: Sensitive data is encrypted at rest
 - **API Key Protection**: API keys are validated and sanitized
+- **File Provider**: Secure file sharing using Android FileProvider
 
 ### Application Security
-- **Code Obfuscation**: Release builds use ProGuard/R8 obfuscation
-- **Debug Detection**: Security features adjusted based on build type
+- **Code Obfuscation**: Release builds use ProGuard/R8 obfuscation with advanced features
+- **String Encryption**: String and resource obfuscation enabled
+- **Debug Protection**: Security features adjusted based on build type, debugging disabled in release
 - **Input Validation**: All user inputs are sanitized
+- **Anti-Tampering**: Multiple optimization passes and advanced obfuscation
 
 ### Build Security
 - **Dependency Scanning**: Automated vulnerability scanning of dependencies
 - **Code Analysis**: Static analysis with security-focused rules
 - **Signed Releases**: All releases are cryptographically signed
+- **Keystore Protection**: Keystore files are never committed to version control
+- **Secure Configuration**: Uses keystore.properties for secure credential management
 
 ## Security Best Practices for Contributors
 
 When contributing to Project Myriad:
 
-1. **Never commit secrets** - Use local.properties for sensitive data
-2. **Validate all inputs** - Sanitize user inputs and API responses
-3. **Use secure APIs** - Prefer Android Keystore and secure random generators
-4. **Follow least privilege** - Request minimal permissions necessary
-5. **Handle errors securely** - Don't expose sensitive information in error messages
+1. **Never commit secrets** - Use keystore.properties for signing credentials, local.properties for API keys
+2. **Keystore Security** - NEVER commit .jks, .keystore, .p12 files to version control
+3. **Use secure configuration** - Follow keystore.properties.example for signing setup
+4. **Validate all inputs** - Sanitize user inputs and API responses
+5. **Use secure APIs** - Prefer Android Keystore and secure random generators
+6. **Follow least privilege** - Request minimal permissions necessary
+7. **Handle errors securely** - Don't expose sensitive information in error messages
 
 ## Security Testing
 
