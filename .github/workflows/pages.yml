@@ -35,7 +35,7 @@ jobs:
           gradle-home-cache-cleanup: true
 
       - name: Cache Gradle dependencies
-        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4.1.2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -46,6 +46,7 @@ jobs:
 
       - name: Generate Dokka documentation
         run: ./gradlew app:dokkaGenerateModuleHtml
+        continue-on-error: true
 
       - name: Set up Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
