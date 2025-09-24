@@ -76,22 +76,27 @@ Project Myriad follows **Clean Architecture** principles with MVVM pattern, ensu
 ## Technology Stack
 
 ### Core Technologies
-- **Kotlin 2.2.20** - Modern, expressive programming language
-- **Android SDK 36** - Latest Android platform capabilities
-- **Jetpack Compose** - Declarative UI framework with Material 3
+- **Kotlin 2.2.20** - Modern, expressive programming language with latest features
+- **Android Gradle Plugin 8.13.0** - Latest build toolchain
+- **Jetpack Compose 2025.09.00** - Declarative UI framework with Material 3
 - **Coroutines & Flow** - Asynchronous programming and reactive streams
 
 ### Architecture Components
 - **Clean Architecture** - Domain/Data/Presentation layer separation
-- **MVVM Pattern** - ViewModel + StateFlow for state management
-- **Dependency Injection** - Manual DI (Hilt planned when KAPT/KSP ready)
-- **Room Database** - Local database with type-safe queries
+- **MVVM Pattern** - ViewModel + StateFlow for state management  
+- **Hilt 2.57.1** - Dependency injection framework (production ready)
+- **Room Database 2.8.0** - Local database with type-safe queries
 
 ### Data Management
-- **Room 2.6.1** - Local database persistence
-- **Retrofit 2.9.0** - Type-safe HTTP client for API communication
-- **OkHttp 4.12.0** - Efficient network operations
-- **Kotlinx Serialization** - JSON parsing and data serialization
+- **Room 2.8.0** - Advanced local database persistence with migrations
+- **Retrofit 3.0.0** - Modern type-safe HTTP client for API communication
+- **OkHttp 5.1.0** - High-performance network operations
+- **Kotlinx Serialization 1.9.0** - Efficient JSON parsing and data serialization
+
+### Media & AI
+- **ExoPlayer 1.8.0** - Advanced video/audio playback for anime features
+- **ML Kit** - OCR and translation capabilities for manga
+- **Coil 2.7.0** - Efficient image loading and caching
 
 ## Module Structure
 

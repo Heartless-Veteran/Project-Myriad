@@ -6,7 +6,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Android](https://img.shields.io/badge/platform-Android-green.svg)
-![Kotlin](https://img.shields.io/badge/kotlin-2.2.20-purple)
+![Kotlin](https://img.shields.io/badge/kotlin-33%20files-purple)
 ![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)
 ![Compose](https://img.shields.io/badge/compose-2025.09.00-blue.svg)
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)

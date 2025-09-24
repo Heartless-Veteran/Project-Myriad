@@ -6,11 +6,11 @@ Welcome to **Project Myriad** - The Definitive Manga and Anime Platform! We're e
 
 ### Prerequisites
 
-- **Android Studio** Arctic Fox (2020.3.1) or later
+- **Android Studio** Jellyfish (2023.3.1) or later
 - **JDK 17** or higher
 - **Android SDK** with API levels 24-36
 - **Git** for version control
-- **Kotlin** 2.2.20 knowledge
+- **Kotlin 2.2.20** experience recommended
 
 ### Development Environment Setup
 
@@ -31,11 +31,22 @@ Welcome to **Project Myriad** - The Definitive Manga and Anime Platform! We're e
    ./gradlew build
    ```
    
-   > **Note**: The build system is currently under update. If you encounter issues, please check the latest status in the repository.
+   > **Note**: First build may take 2-5 minutes for Kotlin compilation. This is expected for the comprehensive build system with quality checks.
 
 4. **Run Tests**
    ```bash
    ./gradlew test
+   ```
+
+5. **Run Quality Checks**
+   ```bash
+   # Run all quality checks
+   ./gradlew check
+   
+   # Run specific checks
+   ./gradlew ktlintCheck  # Code formatting
+   ./gradlew detekt       # Static analysis
+   ./gradlew lint         # Android lint
    ```
 
 ## 🏗️ Architecture Overview
