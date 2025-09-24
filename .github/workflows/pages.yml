@@ -68,16 +68,6 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
 
-      - name: Create Gemfile
-        run: |
-          cat > Gemfile << 'EOF'
-          source "https://rubygems.org"
-          gem "github-pages", group: :jekyll_plugins
-          gem "jekyll-feed"
-          gem "jekyll-sitemap" 
-          gem "jekyll-seo-tag"
-          EOF
-
       - name: Install Jekyll dependencies
         run: bundle install
 
