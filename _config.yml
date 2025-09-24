@@ -9,6 +9,9 @@ markdown: kramdown
 highlighter: rouge
 theme: minima
 
+# Security settings
+safe: true
+
 plugins:
   - jekyll-feed
   - jekyll-sitemap
