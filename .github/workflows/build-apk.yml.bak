@@ -58,13 +58,13 @@ jobs:
     name: Validate Build Environment
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
       build-type: ${{ steps.determine-build.outputs.build-type }}
       create-bundle: ${{ steps.determine-build.outputs.create-bundle }}
       should-continue: ${{ steps.check-compilation.outputs.should-continue }}
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v5.2.0
@@ -122,13 +122,13 @@ jobs:
     needs: validate
     timeout-minutes: 45
     if: needs.validate.outputs.should-continue == 'true'
-
+    
     strategy:
       matrix:
         include:
           - build-type: ${{ needs.validate.outputs.build-type }}
             artifact-name: "myriad-apk-${{ needs.validate.outputs.build-type }}"
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v5.2.0
@@ -165,16 +165,16 @@ jobs:
       - name: Fix compilation issues (if needed)
         run: |
           echo "🔧 Applying quick fixes for compilation issues..."
-
+          
           # Fix missing Material Icons imports
           if [ -f "app/src/main/kotlin/com/heartlessveteran/myriad/ui/navigation/MyriadNavigation.kt" ]; then
             sed -i 's/Icons.Default.Folder/Icons.Default.FolderOpen/g' app/src/main/kotlin/com/heartlessveteran/myriad/ui/navigation/MyriadNavigation.kt || true
           fi
-
+          
           # Add missing imports for icons if files exist
           find app/src/main/kotlin -name "*.kt" -exec sed -i '1i import androidx.compose.material.icons.Icons' {} \; 2>/dev/null || true
           find app/src/main/kotlin -name "*.kt" -exec sed -i '1i import androidx.compose.material.icons.filled.*' {} \; 2>/dev/null || true
-
+          
           echo "✅ Quick fixes applied"
 
       - name: Build APK
@@ -183,9 +183,9 @@ jobs:
         run: |
           BUILD_TYPE="${{ matrix.build-type }}"
           BUILD_TYPE_CAPITALIZED="$(echo ${BUILD_TYPE} | sed 's/./\U&/')"
-
+          
           echo "🚀 Building ${BUILD_TYPE} APK..."
-
+          
           # Always try debug first, fallback for other types
           if [ "${BUILD_TYPE}" = "debug" ]; then
             ./gradlew assembleDebug --no-daemon --stacktrace || echo "Build failed but continuing..."
@@ -197,7 +197,7 @@ jobs:
             APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
             APK_NAME="app-debug.apk"
           fi
-
+          
           # Check if APK was created
           if [ -f "$APK_PATH" ]; then
             echo "apk-path=${APK_PATH}" >> $GITHUB_OUTPUT
@@ -214,9 +214,9 @@ jobs:
         continue-on-error: true
         run: |
           BUILD_TYPE="${{ matrix.build-type }}"
-
+          
           echo "📦 Building ${BUILD_TYPE} AAB..."
-
+          
           if [ "${BUILD_TYPE}" = "debug" ]; then
             ./gradlew bundleDebug --no-daemon --stacktrace || echo "Bundle build failed but continuing..."
             AAB_PATH="app/build/outputs/bundle/debug/app-debug.aab"
@@ -227,7 +227,7 @@ jobs:
             AAB_PATH="app/build/outputs/bundle/debug/app-debug.aab"
             AAB_NAME="app-debug.aab"
           fi
-
+          
           if [ -f "$AAB_PATH" ]; then
             echo "aab-path=${AAB_PATH}" >> $GITHUB_OUTPUT
             echo "aab-name=${AAB_NAME}" >> $GITHUB_OUTPUT
@@ -240,15 +240,15 @@ jobs:
         id: verify-outputs
         run: |
           echo "📋 Build Results Summary:"
-
+          
           APK_CREATED="${{ steps.build-apk.outputs.apk-created }}"
           AAB_CREATED="${{ steps.build-aab.outputs.aab-created }}"
-
+          
           if [ "$APK_CREATED" = "true" ]; then
             APK_PATH="${{ steps.build-apk.outputs.apk-path }}"
             APK_SIZE=$(stat -c%s "$APK_PATH" 2>/dev/null || echo "0")
             APK_SIZE_MB=$((APK_SIZE / 1024 / 1024))
-
+            
             echo "✅ APK built successfully:"
             echo "   📦 Path: ${APK_PATH}"
             echo "   📏 Size: ${APK_SIZE_MB}MB (${APK_SIZE} bytes)"
@@ -256,18 +256,18 @@ jobs:
           else
             echo "❌ APK build failed"
           fi
-
+          
           if [ "$AAB_CREATED" = "true" ]; then
             AAB_PATH="${{ steps.build-aab.outputs.aab-path }}"
             AAB_SIZE=$(stat -c%s "$AAB_PATH" 2>/dev/null || echo "0")
             AAB_SIZE_MB=$((AAB_SIZE / 1024 / 1024))
-
+            
             echo "✅ AAB built successfully:"
             echo "   📦 Path: ${AAB_PATH}"
             echo "   📏 Size: ${AAB_SIZE_MB}MB (${AAB_SIZE} bytes)"
             echo "aab-size-mb=${AAB_SIZE_MB}" >> $GITHUB_OUTPUT
           fi
-
+          
           # Set overall build status
           if [ "$APK_CREATED" = "true" ]; then
             echo "build-success=true" >> $GITHUB_OUTPUT
@@ -313,7 +313,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate, build]
     if: always()
-
+    
     steps:
       - name: Generate build summary
         run: |
@@ -326,7 +326,7 @@ jobs:
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
+          
           if [ "${{ needs.validate.outputs.should-continue }}" = "false" ]; then
             echo "## ⚠️ Build Skipped" >> $GITHUB_STEP_SUMMARY
             echo "Build was skipped due to compilation errors." >> $GITHUB_STEP_SUMMARY
@@ -342,7 +342,7 @@ jobs:
             echo "Build encountered issues. Check the build logs for details." >> $GITHUB_STEP_SUMMARY
             echo "Note: Some issues may be due to missing dependencies or compilation errors." >> $GITHUB_STEP_SUMMARY
           fi
-
+          
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -354,7 +354,7 @@ jobs:
             echo "- Check quality reports if available" >> $GITHUB_STEP_SUMMARY
             echo "- Address any compilation issues if present" >> $GITHUB_STEP_SUMMARY
           fi
-
+          
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 🏗️ Project Status" >> $GITHUB_STEP_SUMMARY
           echo "Project Myriad has completed all phases 1-6 implementation including:" >> $GITHUB_STEP_SUMMARY

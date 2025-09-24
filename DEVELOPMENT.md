@@ -6,29 +6,53 @@ This document provides essential information for developers working on Project M
 
 ### Prerequisites
 
-- Android Studio Hedgehog | 2023.1.1 or newer
-- JDK 11 or higher
-- Android SDK API 24-36
-- Kotlin 2.2.20
+- **Android Studio Jellyfish | 2023.3.1** or newer
+- **JDK 17** or higher (required for latest Kotlin features)
+- **Android SDK API 24-36** (full compatibility)
+- **Kotlin 2.2.20** with Compose compiler support
+- **Gradle 9.1.0** (automatically handled by wrapper)
 
 ### Setting Up the Development Environment
 
-1. Clone the repository
-2. Open in Android Studio and sync project
-3. Build and run on Android device/emulator
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Heartless-Veteran/Project-Myriad.git
+   cd Project-Myriad
+   ```
+
+2. **Configure local properties** (if needed for API keys)
+   ```bash
+   cp local.properties.example local.properties
+   ```
+
+3. **Open in Android Studio and sync project**
+   - The project uses version catalogs for dependency management
+   - First sync may take several minutes to download dependencies
+
+4. **Build and run on Android device/emulator**
+   - Ensure device/emulator runs API 24+ for full compatibility
 
 ### Running the Application
 
 **📋 Complete Guide**: For detailed command-line build instructions, see the "Command-Line Build Methods" section below.
 
-#### Debug Build
+#### Quick Development Commands
 
 ```bash
-# Build debug APK
+# Full clean build (takes 2-5 minutes first time)
+./gradlew clean build
+
+# Fast incremental build for development
 ./gradlew assembleDebug
 
-# Install on device/emulator
+# Install on connected device/emulator
 ./gradlew installDebug
+
+# Run all tests
+./gradlew test
+
+# Run quality checks (lint, ktlint, detekt)
+./gradlew check
 ```
 
 #### Building a Release APK
