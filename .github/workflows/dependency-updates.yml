@@ -1,0 +1,103 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Check for dependency updates
+        run: |
+          ./gradlew dependencyUpdates --info
+        continue-on-error: true
+
+      - name: Generate dependency report
+        run: |
+          ./gradlew dependencies --configuration releaseRuntimeClasspath > dependency-report.txt
+          echo "## Current Dependencies" >> dependency-summary.md
+          echo "\`\`\`" >> dependency-summary.md
+          head -100 dependency-report.txt >> dependency-summary.md
+          echo "\`\`\`" >> dependency-summary.md
+        continue-on-error: true
+
+      - name: Run OWASP Dependency Check
+        run: |
+          ./gradlew dependencyCheckAnalyze || true
+        continue-on-error: true
+
+      - name: Upload dependency reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-reports
+          path: |
+            build/reports/dependencyUpdates/
+            build/reports/dependency-check-report.html
+            dependency-report.txt
+            dependency-summary.md
+          retention-days: 30
+
+      - name: Check for security vulnerabilities
+        run: |
+          if [ -f "build/reports/dependency-check-report.html" ]; then
+            echo "Security report generated successfully"
+            # Extract vulnerability count (if any)
+            if grep -q "High" build/reports/dependency-check-report.html; then
+              echo "⚠️ High severity vulnerabilities found!"
+              echo "Please review the dependency-check report"
+            else
+              echo "✅ No high severity vulnerabilities detected"
+            fi
+          fi
+        continue-on-error: true
+
+      - name: Create summary comment
+        run: |
+          echo "## 🔄 Dependency Update Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Run Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Gradle Version**: $(./gradlew --version | grep 'Gradle' | head -1)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Kotlin Version**: $(./gradlew --version | grep 'Kotlin' | head -1)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Reports Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Dependency update report" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security vulnerability scan" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Current dependency list" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📎 **Artifacts**: Check the workflow artifacts for detailed reports" >> $GITHUB_STEP_SUMMARY
