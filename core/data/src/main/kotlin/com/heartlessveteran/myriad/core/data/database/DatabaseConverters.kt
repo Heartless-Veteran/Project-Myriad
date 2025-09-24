@@ -1,6 +1,10 @@
 package com.heartlessveteran.myriad.core.data.database
 
 import androidx.room.TypeConverter
+import com.heartlessveteran.myriad.core.domain.entities.BackgroundColor
+import com.heartlessveteran.myriad.core.domain.entities.PageLayout
+import com.heartlessveteran.myriad.core.domain.entities.ReadingDirection
+import com.heartlessveteran.myriad.core.domain.entities.ZoomType
 import java.util.Date
 
 /**
@@ -52,5 +56,71 @@ class DatabaseConverters {
     @TypeConverter
     fun toDate(timestamp: Long?): Date? {
         return timestamp?.let { Date(it) }
+    }
+
+    // Reader Settings Enum Converters
+
+    /**
+     * Converts ReadingDirection enum to string for database storage
+     */
+    @TypeConverter
+    fun fromReadingDirection(direction: ReadingDirection): String {
+        return direction.name
+    }
+
+    /**
+     * Converts string to ReadingDirection enum from database
+     */
+    @TypeConverter
+    fun toReadingDirection(direction: String): ReadingDirection {
+        return ReadingDirection.valueOf(direction)
+    }
+
+    /**
+     * Converts PageLayout enum to string for database storage
+     */
+    @TypeConverter
+    fun fromPageLayout(layout: PageLayout): String {
+        return layout.name
+    }
+
+    /**
+     * Converts string to PageLayout enum from database
+     */
+    @TypeConverter
+    fun toPageLayout(layout: String): PageLayout {
+        return PageLayout.valueOf(layout)
+    }
+
+    /**
+     * Converts BackgroundColor enum to string for database storage
+     */
+    @TypeConverter
+    fun fromBackgroundColor(color: BackgroundColor): String {
+        return color.name
+    }
+
+    /**
+     * Converts string to BackgroundColor enum from database
+     */
+    @TypeConverter
+    fun toBackgroundColor(color: String): BackgroundColor {
+        return BackgroundColor.valueOf(color)
+    }
+
+    /**
+     * Converts ZoomType enum to string for database storage
+     */
+    @TypeConverter
+    fun fromZoomType(zoomType: ZoomType): String {
+        return zoomType.name
+    }
+
+    /**
+     * Converts string to ZoomType enum from database
+     */
+    @TypeConverter
+    fun toZoomType(zoomType: String): ZoomType {
+        return ZoomType.valueOf(zoomType)
     }
 }

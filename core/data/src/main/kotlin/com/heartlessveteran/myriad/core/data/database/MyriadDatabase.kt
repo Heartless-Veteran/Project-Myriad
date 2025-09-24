@@ -8,6 +8,7 @@ import android.content.Context
 import com.heartlessveteran.myriad.core.domain.entities.Manga
 import com.heartlessveteran.myriad.core.domain.entities.MangaChapter
 import com.heartlessveteran.myriad.core.domain.entities.Plugin
+import com.heartlessveteran.myriad.core.domain.entities.ReaderSettings
 
 /**
  * Room database for Project Myriad.
@@ -19,8 +20,9 @@ import com.heartlessveteran.myriad.core.domain.entities.Plugin
         Manga::class,
         MangaChapter::class,
         Plugin::class,
+        ReaderSettings::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DatabaseConverters::class)
@@ -40,6 +42,11 @@ abstract class MyriadDatabase : RoomDatabase() {
      * Provides access to plugin data operations
      */
     abstract fun pluginDao(): PluginDao
+
+    /**
+     * Provides access to reader settings operations
+     */
+    abstract fun readerSettingsDao(): ReaderSettingsDao
 
     companion object {
         /**
